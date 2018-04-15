@@ -37,16 +37,16 @@ function outputImages = regionExpanding(inputImage,filter,degree)
                     bottom=i;
                     left=j;
                     right=j;                 
-                    xtarget=i;%设定当前目标坐标值
-                    ytarget=j;
+                    xtag=i;%设定当前目标坐标值
+                    ytag=j;
                  
                     %开始区域增长
                     while size(handleList,1)
                         %对于邻域范围内所有的像素点扫描一遍
                         num=0;%初始化邻域内满足阈值的像素点的个数
                         for k=1:size(neibor,1)
-                            x=xtarget+neibor(k,1);%更新坐标
-                            y=ytarget+neibor(k,2);
+                            x=xtag+neibor(k,1);%更新坐标
+                            y=ytag+neibor(k,2);
                             inRange=x>=1 && y>=1 && x<=row && y<=col;%检测是否在图像范围内
                             if inRange && ~stateImage(x,y)%如果在范围内而且没有被扫描过
                                 if inputImage(x,y)>adv+degree%如果不满足阈值
@@ -63,23 +63,23 @@ function outputImages = regionExpanding(inputImage,filter,degree)
                             end       
                         end
                         
-                        stateImage(xtarget,ytarget)=3;%更新状态，已完成检测
+                        stateImage(xtag,ytag)=3;%更新状态，已完成检测
                         %更新完成邻域检测的列表
-                        fulfilList=[xtarget,ytarget,inputImage(xtarget,ytarget);fulfilList];                   
+                        fulfilList=[xtag,ytag,inputImage(xtag,ytag);fulfilList];                   
                         %检测完后，对于所有满足条件的像素，进行色彩最接近比较
                         if num
                             %找到最接近像素的序号
                             [~,index]=min(abs(handleList(1:num,3)-adv));                        
                             %重新计算平均值
                             adv=(adv*size(fulfilList,1)+handleList(index,3))/(size(fulfilList,1)+1);
-                            xtarget=handleList(index,1);%重定位到此目标
-                            ytarget=handleList(index,2); 
+                            xtag=handleList(index,1);%重定位到此目标
+                            ytag=handleList(index,2); 
                             handleList(index,:)=[];%将此目标从待检测列表中移除
                         else
                             handleList(1,:)=[];%将这个像素从待检测列表中移除
                             if size(handleList,1)
-                                xtarget=handleList(1,1);%重定位到下一个待检测目标
-                                ytarget=handleList(1,2);
+                                xtag=handleList(1,1);%重定位到下一个待检测目标
+                                ytag=handleList(1,2);
                             end
                         end                     
                     end
