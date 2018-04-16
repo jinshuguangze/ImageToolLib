@@ -5,9 +5,11 @@ function variable = molloc(varargin)
 %versin:1.0.2
 %author:jinshuguangze
 %data:4/15/2018
-%TODO:首先读取matlab语言信息，然后根据语言读取system('systeminfo')读取信息得到内存
+%TODO:
+%1.首先读取matlab语言信息，然后根据语言读取system('systeminfo')读取信息得到内存
 %最大值后，根据matlab预设项得到RAM占比，然后确定数组大小的最大值，默认为最大大小为
 %intmax('uint16')，除了结构体数组以外，结构体数组最大上限为intmax('uint64')
+%2.增加一个参数确定预分配的数据类型
 
     switch nargin
         case 0%当输入参数不足时，弹出警告
