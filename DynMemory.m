@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 classdef(Sealed) DynMemory%ä¸å…è®¸ç»§æ‰¿
 %DynMemory:ä¸€ä¸ªåŠ¨æ€å†…å­˜ç±»ï¼Œå®ä¾‹åŒ–å‡ºæ¥çš„æ•°æ®ç±»å‹èƒ½åœ¨å¾ªç¯ä¸­è‡ªåŠ¨æ£€æµ‹æ˜¯å¦å·²æ»¡ï¼Œ
 %                  å¹¶è‡ªåŠ¨ç”³è¯·æ–°çš„åˆé€‚çš„å†…å­˜ï¼Œä¹Ÿæä¾›ä¾¿åˆ©çš„å­—æ®µä¸å‡½æ•°ä»¥ä¾›æ‰‹åŠ¨æ£€æµ‹å¯¹è±¡å†…å­˜æ˜¯å¦è¶³å¤Ÿ
@@ -394,4 +395,377 @@ classdef(Sealed) DynMemory%ä¸å…è®¸ç»§æ‰¿
             dynObj.Type=type;
         end     
     end
+=======
+classdef(Sealed) DynMemory%²»ÔÊĞí¼Ì³Ğ
+%DynMemory:Ò»¸ö¶¯Ì¬ÄÚ´æÀà£¬ÊµÀı»¯³öÀ´µÄÊı¾İÀàĞÍÄÜÔÚÑ­»·ÖĞ×Ô¶¯¼ì²âÊÇ·ñÒÑÂú£¬
+%                  ²¢×Ô¶¯ÉêÇëĞÂµÄºÏÊÊµÄÄÚ´æ£¬Ò²Ìá¹©±ãÀûµÄ×Ö¶ÎÓëº¯ÊıÒÔ¹©ÊÖ¶¯¼ì²â¶ÔÏóÄÚ´æÊÇ·ñ×ã¹»
+%TODO:
+%1.ÁË½âÊÂ¼şÀàĞÍ£¨event£©£¬Ê¹ÓÃ¼àÌıÆ÷Ä£ĞÍÀ´Ìæ´úÊÖ¶¯Íâ²¿Ñ­»·£¬È«¼àÌıÆ÷£¬ºÍ²¿·Ö¼àÌıÆ÷Á½ÖÖÄ£ĞÍ
+%È«¼àÌıÆ÷°üº¬Ò»¸öÊ¹ÓÃÂÊÄ£ĞÍ£¬Ã¿µ±Ô­´óĞ¡ºÍÎ¬¶ÈÖĞµÄ0±»Ìî³äµ½±ğµÄÖµÊ±£¬Ôö¼ÓÊ¹ÓÃÂÊ±ÈÀı£¬ÔÚÊ¹ÓÃÂÊÔö¼Óµ½
+%ParaÊ±£¬»á×Ô¶¯addMemory£¬µ«ÊÇÕ¼ÓÃÄÚ´æ»òĞí½Ï¶à£»²¿·Ö¼àÌıÆ÷Ö»»á¼àÌıÔÚParaÖ®ÍâµÄÊıÖµ±ä»¯£¬Ò»µ©ÓĞ±ä»¯£¬
+%»áÁ¢¼´addMemory£¬ÕâÑù¿ÉÄÜ²»Ì«×¼È·£¬ÒòÎªÓĞ¿ÉÄÜÔÚÍâ²¿¶ÔÖµÊÇ´Óºó²¿¿ªÊ¼Ñ­»·µÄ
+%2.×öÒ»¸öÃ¶¾Ù¼üÖµ¶ÔÀ´´æ´¢typeÓëÊµ¼ÊÀàĞÍ
+    properties%¹«¿ª×Ö¶Î
+        Value%´æ´¢ÊıÖµ
+        %¶ÔÏóµÄÖµÓò´æ´¢ÔÚ´Ë×Ö¶ÎÖĞ£¬
+        %¹«¿ªÔ­ÒòÊÇĞèÒªÍâ²¿·ÃÎÊ£¬¸³Öµ
+    end
+    
+    properties(SetAccess=private)%°ëË½ÃÜ×Ö¶Î
+        OriginalSize%Ô­Ê¼ÉêÇëÈİÁ¿
+        %°ë¹«¿ªÔ­ÒòÊÇĞèÒªÄÚ²¿¸³Öµ£¬Íâ²¿·ÃÎÊ
+    end
+    
+    properties(GetAccess=private,SetAccess=private)%Ë½ÃÜ×Ö¶Î
+        Type%¶ÔÏóÀàĞÍ
+        %½«ÔÚÊ¹ÓÃÈÎºÎ¹«¿ª·½·¨Ê±×Ô¶¯¸üĞÂ£¬
+        %Ë½ÃÜÔ­ÒòÊÇ¿ÉÄÜÓÉÓÚÃ»ÓĞµ÷ÓÃ¶ÔÏóµÄ·½·¨£¬
+        %¶øÖ±½Ó·ÃÎÊ×Ö¶Î¶øµ¼ÖÂĞÅÏ¢´íÎó
+        %-1:Î´Öª
+        %0:Êı×é
+        %1:½á¹¹ÌåÊı×é
+        %2:Ï¸°ûÊı×é
+    end
+    
+    properties(Constant)%³£Á¿×Ö¶Î
+        Scale=0.9%Ä¬ÈÏ³¤¶È±ÈÀıÖµ
+        %³£Á¿Ô­ÒòÊÇĞèÒª¶à¸ö¶ÔÏó¹²Ïíµ¥¸öÖµÇÒ²»ÄÜ¸ü¸Ä
+    end
+    
+    
+    methods%¹¹Ôìº¯Êı
+        function dynObj = DynMemory(varargin)
+        %DynMemory:ÉêÇëÒ»¶ÎÄÚ´æ£¬²¢ÔÚµ±ÄÚ´æ²»¹»µÄÊ±ºò×Ô¶¯À©³ä
+        %varargin:¿É±ä²ÎÊı£¬¿ÉÒÔÊäÈëÒ»µ½Èı¸ö²ÎÊı£¬ÍêÕû°æ±¾µÄ²ÎÊı·Ö²¼ÊÇ¡°ĞĞÊı£¬ÁĞÊı£¬Êı¾İÀàĞÍ¡±
+        %dynObj:·µ»ØÒ»¸öÒÑ¾­·ÖÅäºÃÄÚ´æµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó£¬ÀïÃæ¶àÓàµÄ¿Õ¼ä»á±»0Ìî³ä
+        %versin:1.0.2
+        %author:jinshuguangze
+        %data:4/15/2018
+        %TODO:
+        %1.Ê×ÏÈ¶ÁÈ¡matlabÓïÑÔĞÅÏ¢£¬È»ºó¸ù¾İÓïÑÔ¶ÁÈ¡system('systeminfo')¶ÁÈ¡ĞÅÏ¢µÃµ½ÄÚ´æ
+        %×î´óÖµºó£¬¸ù¾İmatlabÔ¤ÉèÏîµÃµ½RAMÕ¼±È£¬È»ºóÈ·¶¨Êı×é´óĞ¡µÄ×î´óÖµ£¬Ä¬ÈÏÎª×î´ó´óĞ¡Îª
+        %intmax('uint16')£¬³ıÁË½á¹¹ÌåÊı×éÒÔÍâ£¬½á¹¹ÌåÊı×é×î´óÉÏÏŞÎªintmax('uint64')
+        %2.Ôö¼ÓÒ»¸ö²ÎÊıÈ·¶¨Ô¤·ÖÅäµÄÊı¾İÀàĞÍ
+		%3.ĞŞ¸Äº¯ÊıÒÔÊÊÓ¦¹¹Ôìº¯ÊıÀà£¬½«×Ö¶Î¸³Öµ
+		%4.Ôö¼Ótall,tableµÈÀàĞÍ
+		%5.Ôö¼Ó¶àÎ¬¶ÈÖ§³Ö
+
+            switch nargin
+                case 0%µ±ÊäÈë²ÎÊı²»×ãÊ±£¬µ¯³ö¾¯¸æ£¬´´½¨¶ÔÏóÊ§°Ü
+                    disp('´´½¨¶ÔÏóÊ§°Ü£¬ÇëÊäÈëÖÁÉÙÒ»¸ö²ÎÊı£¡');    
+                    return;
+
+                case 1%µ±ÊäÈë²ÎÊıÖ»ÎªÒ»¸öÊ±£¬»áÄ¬ÈÏÉú³ÉÊı×é£¬ÇÒ²ÎÊıÖ»ÔÊĞí³öÏÖÕıÊı  
+                    if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0        
+                        %´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎªĞĞÏòÁ¿£¬ÇÒ×î³¤³¤¶ÈÎªintmax('uint16')
+                        if varargin{1}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                            dynObj.Value=zeros(1,intmax('uint16'));%´´½¨¶ÔÏó						
+                            disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬³¬¹ıÁË',num2str(intmax('uint16')),...
+								'£¬Ä¬ÈÏÉú³É´óĞ¡Îª1x',num2str(intmax('uint16'),'µÄÊı×é¡£')]);             
+                        else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
+                            dynObj.Value=zeros(1,uint16(varargin{1}));%´´½¨¶ÔÏó
+                        end
+                    else%Èç¹ûÊäÈëµÄÊı×Ö²»ÎªÕıÊı
+                        disp('´´½¨¶ÔÏóÊ§°Ü£¬²ÎÊı1£ºÁĞÊı±ØĞëÎªÒ»¸öÕıÊı£¡');
+                        return;
+                    end
+					dynObj.Type=0;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÊı×é
+
+                case 2%µ±ÊäÈë²ÎÊıÎªÁ½¸öÊ±£¬ÔÊĞí³öÏÖÁ½¸öÕıÊı»òÕßÕıÊı¼Ó×Ö·û´®
+                    if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0
+                        if isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0%Êı×Ö¼ÓÊı×Ö
+                            %´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎªÊı×é£¬ÇÒÉêÇë´óĞ¡²»³¬¹ıintmax('uint16')
+                            if varargin{1}*varargin{2}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                dynObj.Value=zeros(intmax('uint8'),intmax('uint8'));%´´½¨¶ÔÏó
+								disp(['²ÎÊı1£ºĞĞÊıÓë²ÎÊı2£ºÁĞÊıµÄ³Ë»ı¹ı´ó£¬³¬¹ıÁË',...
+									num2str(intmax('uint16')),'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',...
+									num2str(intmax('uint8')),'x',num2str(intmax('uint8')),'µÄÊı×é¡£']);
+                            else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ                 
+                                dynObj.Value=zeros(uint16(varargin{1}),uint16(varargin{2}));%´´½¨¶ÔÏó
+                            end
+							dynObj.Type=0;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÊı×é
+                        elseif ischar(varargin{2})%Êı×Ö¼Ó×Ö·û´®
+                            switch varargin{2}
+                                case 'array'%´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎªĞĞÏòÁ¿£¬ÇÒ×î³¤³¤¶ÈÎªintmax('uint16')
+                                    if varargin{1}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                        dynObj.Value=zeros(1,intmax('uint16'));%´´½¨¶ÔÏó
+										disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬³¬¹ıÁË',num2str(intmax('uint16')),...
+											'£¬Ä¬ÈÏÉú³É´óĞ¡Îª1x',num2str(intmax('uint16'),'µÄÊı×é¡£')]);      
+                                    else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
+                                        dynObj.Value=zeros(1,uint16(varargin{1}));%´´½¨¶ÔÏó
+                                    end
+									dynObj.Type=0;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÊı×é
+									
+                                case 'struct'%´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎª½á¹¹ÌåĞĞÏòÁ¿£¬×î³¤³¤¶ÈÎªintmax('uint64')
+                                    if varargin{1}>intmax('uint64')%ÊäÈë²ÎÊı¹ı´ó
+                                        dynObj.Value(1,intmax('uint64'))=struct;%´´½¨¶ÔÏó,¶àÎ¬¶ÈÖ§³Öºó³¢ÊÔÓÃrepmat
+										disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬³¬¹ıÁË',num2str(intmax('uint64')),...
+											'£¬Ä¬ÈÏÉú³É´óĞ¡Îª1x',num2str(intmax('uint64'),'µÄ½á¹¹ÌåÊı×é¡£')]);    
+                                    else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
+                                        dynObj.Value(1,uint64(varargin{1}))=struct;%´´½¨¶ÔÏó
+                                    end
+									dynObj.Type=1;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£º½á¹¹ÌåÊı×é
+
+                                case 'cell'%´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎªÏ¸°ûĞĞÏòÁ¿£¬ÇÒ×î³¤³¤¶ÈÎªintmax('uint16')
+                                    if varargin{1}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                        dynObj.Value=cell(1,intmax('uint16'));%´´½¨¶ÔÏó
+										disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬³¬¹ıÁË',num2str(intmax('uint16')),...
+											'£¬Ä¬ÈÏÉú³É´óĞ¡Îª1x',num2str(intmax('uint16'),'µÄÏ¸°ûÊı×é¡£')]); 
+                                    else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
+                                        dynObj.Value=cell(1,varargin{1});%´´½¨¶ÔÏó
+                                    end
+									dynObj.Type=2;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÏ¸°ûÊı×é
+									
+                                otherwise%×Ö·û´®²»ÊÇÒÔÉÏÈıÖÖ
+                                    dynObj.Value=zeros(1,intmax('uint16'));%´´½¨¶ÔÏó
+                                    disp(['Ä¿Ç°Ö»Ö§³Ö''array''£¬''struct''£¬''cell''ÈıÖÖÀàĞÍµÄ¶¯Ì¬ÄÚ´æÉêÇë',...
+                                        '£¬Ä¬ÈÏÉú³É´óĞ¡Îª1x',num2str(intmax('uint16'),'µÄÊı×é¡£')]); 
+									dynObj.Type=0;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÊı×é	
+                            end
+                        else%µÚ¶ş¸ö²ÎÊı²»Âú×ãÌõ¼ş
+                            disp('´´½¨¶ÔÏóÊ§°Ü£¬²ÎÊı2£ºÁĞÊı£¨Êı¾İÀàĞÍ£©±ØĞëÎªÒ»¸öÕıÊı£¨×Ö·û´®£©£¡');
+                            return;
+                        end
+                    else%µÚÒ»¸ö²ÎÊı²»Âú×ãÌõ¼ş
+                        disp('´´½¨¶ÔÏóÊ§°Ü£¬²ÎÊı1£ºÁĞÊı±ØĞëÎªÒ»¸öÕıÊı£¡');
+                        return;
+                    end
+
+                case 3%µ±ÊäÈë²ÎÊıÎªÈı¸öÊ±£¬Ë³Ğò±ØĞëÊÇÊı×Ö£¬Êı×Ö£¬×Ö·û´®
+                    if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0 ...
+                            && isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0 ...
+                            && ischar(varargin{3})%Âú×ãÕıÊıÕıÊı×Ö·û´®×éºÏ
+                        switch varargin{3}
+                            case 'array'%´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎªÊı×é£¬ÇÒÉêÇë´óĞ¡²»³¬¹ıintmax('uint16')
+                                if varargin{1}*varargin{2}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                    dynObj.Value=zeros(intmax('uint8'),intmax('uint8'));%´´½¨¶ÔÏó
+									disp(['²ÎÊı1£ºĞĞÊıÓë²ÎÊı2£ºÁĞÊıµÄ³Ë»ı¹ı´ó£¬³¬¹ıÁË',...
+										num2str(intmax('uint16')),'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',...
+										num2str(intmax('uint8')),'x',num2str(intmax('uint8')),'µÄÊı×é¡£']);
+                                else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ                 
+                                    dynObj.Value=zeros(uint16(varargin{1}),uint16(varargin{2}));%´´½¨¶ÔÏó
+                                end
+								dynObj.Type=0;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÊı×é
+
+                            case 'struct'%´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎª½á¹¹ÌåÊı×é£¬ĞĞÊıÓëÁĞÊı¶¼²»³¬¹ıintmax('uint64')
+                                if varargin{1}>intmax('uint64') && varargin{2}<=intmax('uint64')%²ÎÊı1¹ı´ó
+                                    dynObj.Value(intmax('uint64'),uint64(varargin{2}))=struct;%´´½¨¶ÔÏó
+                                    disp(['²ÎÊı1£ºĞĞÊı¹ı´ó£¬³¬¹ıÁË',num2str(intmax('uint64')),...
+										'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',num2str(intmax('uint64')),'x',...
+										num2str(uint64(varargin{2})),'µÄ½á¹¹ÌåÊı×é¡£']);
+                                elseif varargin{1}<=intmax('uint64') && varargin{2}>intmax('uint64')%²ÎÊı2¹ı´ó
+                                    dynObj.Value(uint64(varargin{1}),intmax('uint64'))=struct;%´´½¨¶ÔÏó
+                                    disp(['²ÎÊı2£ºÁĞÊı¹ı´ó£¬³¬¹ıÁË',num2str(intmax('uint64')),...
+										'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',num2str(uint64(varargin{1})),'x',...
+										num2str(intmax('uint64')),'µÄ½á¹¹ÌåÊı×é¡£']);
+								elseif	varargin{1}>intmax('uint64') && varargin{2}>intmax('uint64')%²ÎÊı1,2¶¼¹ı´ó
+                                    dynObj.Value(intmax('uint64'),intmax('uint64'))=struct;%´´½¨¶ÔÏó
+                                    disp(['²ÎÊı1£ºĞĞÊıºÍ²ÎÊı2£ºÁĞÊı¶¼¹ı´ó£¬¶¼³¬¹ıÁË',num2str(intmax('uint64')),...
+										'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',num2str(uint64(varargin{1})),'x',...
+										num2str(intmax('uint64')),'µÄ½á¹¹ÌåÊı×é¡£']);																								
+                                else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
+                                    dynObj.Value(uint64(varargin{1}),uint64(varargin{2}))=struct;%´´½¨¶ÔÏó
+                                end
+								dynObj.Type=1;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£º½á¹¹ÌåÊı×é
+								
+                            case 'cell'%´ËÊ±¶¯Ì¬ÄÚ´æ¶ÔÏó±»¸³ÓèÎªÏ¸°ûÊı×é£¬ÇÒÉêÇë´óĞ¡²»³¬¹ıintmax('uint16')
+                                if varargin{1}*varargin{2}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                    dynObj.Value=cell(intmax('uint8'),intmax('uint8'));%´´½¨¶ÔÏó
+									disp(['²ÎÊı1£ºĞĞÊıÓë²ÎÊı2£ºÁĞÊıµÄ³Ë»ı¹ı´ó£¬³¬¹ıÁË',...
+										num2str(intmax('uint16')),'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',...
+										num2str(intmax('uint8')),'x',num2str(intmax('uint8')),'µÄÏ¸°ûÊı×é¡£']);
+                                else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ                 
+                                    dynObj.Value=cell(uint16(varargin{1}),uint16(varargin{2}));%´´½¨¶ÔÏó
+                                end
+								dynObj.Type=2;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÏ¸°ûÊı×é
+
+                            otherwise%×Ö·û´®²»ÊÇÒÔÉÏÈıÖÖ
+                                dynObj.Value=zeros(intmax('uint8'),intmax('uint8'));%´´½¨¶ÔÏó
+								disp(['Ä¿Ç°Ö»Ö§³Ö''array''£¬''struct''£¬''cell''ÈıÖÖÀàĞÍµÄ¶¯Ì¬ÄÚ´æÉêÇë',...
+									'£¬Ä¬ÈÏÉú³É´óĞ¡Îª',num2str(intmax('uint8'),'x',...
+									num2str(intmax('uint8')),'µÄÊı×é¡£')]); 
+								dynObj.Type=0;%´æ´¢ÀàĞÍµ½×Ö¶Î£¬ÀàĞÍ£ºÊı×é	
+                        end
+                    else%²ÎÊıÅÅÁĞ×éºÏ²»Âú×ãÌõ¼ş
+                        disp(['´´½¨¶ÔÏóÊ§°Ü£¬'...
+							'²ÎÊı1£ºÁĞÊı±ØĞëÎªÒ»¸öÕıÊı£¬',...
+                            '²ÎÊı2£ºĞĞÊı±ØĞëÎªÒ»¸öÕıÊı£¬',...
+                            '²ÎÊı3£ºÊı¾İÀàĞÍ±ØĞëÎªÒ»¸ö×Ö·û´®£¡']);
+                        return;
+                    end
+
+                otherwise%µ±ÊäÈë²ÎÊı¹ı¶àÊ±
+                    disp('´´½¨¶ÔÏóÊ§°Ü£¬ÊäÈë²ÎÊı¹ı¶à£¡');
+                    return;
+            end
+			dynObj.OriginalSize=size(dynObj.Value);%±£´æÔ­Ê¼´óĞ¡µ½×Ö¶Î
+        end	
+    end
+    
+	
+    methods%¹«¿ªº¯Êı
+        function dynObj=refresh(dynObj,varargin)
+        %refresh:·ÃÎÊ¶ÔÏóÄÚÄÚ´æÄ©¶Ë×îºóÒ»ÏµÁĞÊı×ÖÊÇ·ñÎª0£¬Èç¹ûÓĞÊı×Ö¸ü¸Ä¹ı£¬
+		%		    ÔòÉêÇë¸ü´óµÄÄÚ´æÓĞ¿ÉÄÜ»áÒòÎª±¾ÉíÊı×é×îºóÒ»ÏµÁĞÊı×ÖÎª0¶øË¢ĞÂÊ§°Ü£¬
+		%		    »áÒò´Ë¶øÔİÊ±½µµÍĞ§ÂÊ£¬Ò»µ©ÓĞ·Ç0Êı×ÖÊäÈë£¬»áÂíÉÏÌá¸ßĞ§ÂÊ
+		%dynObj:±»´¦ÀíµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó£¬¿ÉÄÜÓĞ³¤¶ÈµÄÀ©Èİ
+		%varargin:¿ÉÑ¡µÄÊäÈë£¬¿ÉÒÔÉèÖÃÑ­»·¼ì²âµÄ³¤¶È±ÈÀı£¬·¶Î§ÔÚ0~1Ö®¼ä£¬Ô½½Ó½ü1£¬
+		%		      ¼ì²âµÄ·¶Î§¾ÍÔ½Ğ¡£¬µ±²»ÊäÈëÊ±£¬Ä¬ÈÏÎª0.9
+        %versin:1.0.0
+        %author:jinshuguangze
+        %data:4/17/2018	
+		%TODO:¿¼ÂÇ²¢·ÇÊ¹ÓÃ³¤¶È±ÈÀı£¬¶øÊ¹ÓÃ¹Ì¶¨ÊıÖµ
+		%¿¼ÂÇ¶àÎ¬Çé¿ö£¬¿ÉÒÔÊäÈë¶à¸ö²ÎÊı
+        %Èë¿Ú¼ì²â
+        
+            para=dynObj.Scale;%³¤¶È±ÈÀıµÄÄ¬ÈÏÖµÉèÖÃÎªScale
+            if nargin==1%²»ÊäÈëÊ±£¬ÉèÖÃÄ¬ÈÏÖµ
+            elseif nargin==2%ÊäÈëÒ»¸ö¶îÍâ²ÎÊı
+                if varargin{1}>0 && varargin{1}<1%¼ì²â·¶Î§ÊÇ·ñÂú×ã
+                    para=varargin{1};
+                else%²»Âú×ãµ¯³öÌáÊ¾£¬²¢ÉèÖÃ³ÉÄ¬ÈÏÖµ
+                    disp('²ÎÊı1£º³¤¶È±ÈÀı²»Âú×ãÔÚ0~1·¶Î§ÄÚ£¬ÒÑÉèÖÃ³ÉÄ¬ÈÏÖµ£º',num2str(para),'¡£');
+                end
+            else%ÊäÈë²ÎÊı¹ı¶à
+                disp('Ë¢ĞÂ¶ÔÏóÊ§°Ü£¬Ô­Òò£ºÊäÈë²ÎÊı¹ı¶à£¡');
+                return;
+            end
+			
+			[row,col]=size(dynObj.Value);%»ñÈ¡¶ÔÏóĞĞÊıºÍÁĞÊı		
+			switch dynObj.Type%¶ÔÓÚ¶ÔÏóµÄ²»Í¬ÀàĞÍÓĞ²»Í¬´¦Àí			
+				case 0%Èç¹û¶ÔÏóÊÇÊı×é
+					for i=row:-1:ceil(para*row)
+						for j=col:-1:ceil(para*col)
+							if dynObj.Value(i,j)%·ÃÎÊÊı×é¸ÃË÷ÒıÏÂµÄÖµÊÇ·ñÎª0
+								dynObj=dynObj.addMemory;
+                                return;
+							end
+						end
+					end
+					
+				case 1%Èç¹û¶ÔÏóÊÇ½á¹¹ÌåÊı×é£¬ÓĞÌØÊâĞÔ£¬Òª·ÃÎÊ×Ö¶Î
+					fields=fieldnames(dynObj.Value);
+					if size(fields,1)%È·±£½á¹¹ÌåÊı×éÖÁÉÙÓĞÒ»¸ö×Ö¶Î
+						for k=1:size(fields,1)
+							for i=row:-1:ceil(para*row)
+								for j=col:-1:ceil(para*col)
+									if ~isempty(getfield(dynObj.Value(i,j),fields{i,1}))%·ÃÎÊÃ¿¸ö×Ö¶ÎµÄÖµÊÇ·ñÎª¿Õ
+										dynObj=dynObj.addMemory;
+                                        return;
+									end
+								end
+							end
+						end
+					end
+					
+				case 2%Èç¹û¶ÔÏóÊÇÏ¸°ûÊı×é
+					for i=row:-1:ceil(para*row)
+						for j=col:-1:ceil(para*col)
+							if ~isempty(dynObj.Value{i,j})%·ÃÎÊ¸ÃÏ¸°ûÊı×é×éÔªÏÂµÄÖµÊÇ·ñÎª¿Õ
+								dynObj=dynObj.addMemory;
+                                return;
+							end
+						end
+					end
+					
+				otherwise%Èç¹û¶ÔÏóÊÇÎ´ÖªÀàĞÍ£¬³ı·ÇÔâµ½¶ñÒâ´Û¸Ä£¬·ñÔò²»»á·¢Éú
+                    clear dynObj;
+					disp('Ë¢ĞÂ¶ÔÏóÊ§°Ü£¬Ô­Òò£º¶ÔÏó×´Ì¬Òì³££¬ÒÑ¾­×Ô»Ù£¡');						
+					return;
+			end
+        end       
+        
+		
+        function dynObj=addMemory(dynObj,varargin)
+        %addMemory:ÓÉÓÚº¯ÊıÊÇ¹«¿ªµÄ£¬ËùÒÔ¿ÉÒÔÊÖ¶¯È¥ÉêÇë¸ü´óµÄÄÚ´æ£¬
+		%                  Ä¬ÈÏÎªÔö¼ÓĞĞÊı£¬ÊıÖµÎª³õÊ¼ÉêÇëÄÚ´æµÄĞĞÊı
+        %dynObj:±»´¦ÀíµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó£¬³¤¶ÈÒÑ¾­Ôö¼Ó
+		%varargin:¿ÉÑ¡µÄÊäÈë£¬¿ÉÒÔ¸ù¾İÊäÈëÀ´ÉèÖÃÔö¼ÓÖµµÄ´óĞ¡£¬
+		%             »òÕßÑ¡ÔñÔö¼ÓµÄ·½ÏòÊÇĞĞ»òÕßÁĞ£¬»òÕß¶¼ÉèÖÃ
+        %versin:1.0.2
+        %author:jinshuguangze
+        %data:4/17/2018	
+		%TODO:
+		%1.¶àÎ¬¶ÈÔö¼ÓÖ§³Ö£¨¶ø²»ÊÇÁ½Î¬¶È£©£º('D1',2,'D2',4,'D5',9,10<-Õâ¸öÄ¬ÈÏÎªÇ°ÃæÈ·¶¨Î¬¶ÈµÄºóÒ»Î¬£¬¼´D6)	
+		%2.Èç¹û¶ÔÏóÎ¬¶ÈºÍ´óĞ¡¸Ä±äÁË£¬catº¯Êı»áÁé»îµ÷Õû£¬Èç¹ûÊÇdim·½ÏòÉÏµÄÆ´½Ó£¬Ôò±ØĞë±£Ö¤³ıÁËdim£¬ÆäËû´óĞ¡¶¼ÒªÂú×ã	
+		%	for i=1:nargin
+		%		if ischar(varargin{i}) && ...×Ö·ûÆ´½ÓÏà¹Ø	
+		
+			dim=1;%·½ÏòÄ¬ÈÏÎªĞĞÊı·½Ïò
+			rowadd=dynObj.OriginalSize(1);%ĞĞÊıÄ¬ÈÏÔö¼ÓorignalRow
+			coladd=0;%ÁĞÊıÄ¬ÈÏÔö¼Ó0
+			if nargin==1%Èç¹ûÎŞ²ÎÊıÊäÈë£¬½á¹ûÎªÄ¬ÈÏ			
+			elseif nargin==2%Èç¹ûÓĞÒ»¸ö²ÎÊıÊäÈë£¬ÓĞ¿ÉÄÜÊÇÒ»¸ö¾ö¶¨Ôö¼Ó·½ÏòµÄ×Ö·û´®£¬»òÕßÊÇ¾ö¶¨Ôö¼ÓÊıÖµµÄÕıÊı
+				if ischar(varargin{1})%Âú×ãÊÇ¸ö×Ö·û´®
+					if varargin{1}=='col'
+						dim=1;%·½Ïò¸ÄÎªÔö¼ÓÁĞÊı
+					else
+						disp('²ÎÊı1£º·½Ïò±ØĞëÎª''row''ºÍ''col''ÆäÖĞÖ®Ò»£¬ÒÑÉèÖÃ³ÉÄ¬ÈÏÖµ£ºµÚÒ»Î¬¶È¡£');
+					end
+				elseif isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0%Âú×ãÊÇ¸öÕıÊı
+					rowadd=uint16(varargin{1});%ĞŞ¸ÄÔö¼ÓĞĞÊı
+				else%Èç¹û²»Âú×ãÌõ¼ş
+					disp('Ôö¼ÓÄÚ´æÊ§°Ü£¬Ô­Òò£º²ÎÊı1£º·½Ïò£¨Ôö¼ÓĞĞÊı£©±ØĞëÎª×Ö·û´®£¨ÕıÊı£©£¡');
+					return;
+				end
+			elseif nargin==3%Èç¹ûÓĞÁ½¸ö²ÎÊıÊäÈë£¬±ØĞëÎªÁ½¸öÕıÊı
+				if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0 ...
+                    && isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0%Á½¸öÕıÊı
+					rowadd=unit16(varargin{1});%ÉèÖÃĞĞÊıÔö¼ÓÖµ
+					coladd=unit16(varargin{2});%ÉèÖÃÁĞÊıÔö¼ÓÖµ
+				else
+					disp('Ôö¼ÓÄÚ´æÊ§°Ü£¬Ô­Òò£º²ÎÊı1£ºÔö¼ÓĞĞÊıÓë²ÎÊı2£ºÔö¼ÓÁĞÊı±ØĞë¶¼ÎªÕıÊı£¡');
+					return;
+				end	
+			else%²ÎÊıÊäÈë¹ı¶à
+				disp('Ôö¼ÓÄÚ´æÊ§°Ü£¬Ô­Òò£ºÊäÈë²ÎÊı¹ı¶à£¡');
+				return;
+			end
+			
+            switch dynObj.Type%¶ÔÓÚ¶ÔÏóµÄ²»Í¬ÀàĞÍÓĞ²»Í¬´¦Àí
+				case 0%Èç¹û¶ÔÏóÊÇÊı×é
+					newMemory=zeros(dynObj.OriginalSize);
+					
+				case 1%Èç¹û¶ÔÏóÊÇ½á¹¹ÌåÊı×é
+					newMemory=repmat(struct,dynObj.OriginalSize);
+					
+				case 2%Èç¹û¶ÔÏóÊÇÏ¸°ûÊı×é
+					newMemory=cell(dynObj.OriginalSize);
+					
+				otherwise
+					dynObj.free;	
+					disp('Ôö¼ÓÄÚ´æÊ§°Ü£¬Ô­Òò£º¶ÔÏó×´Ì¬Òì³££¬ÒÑ¾­×Ô»Ù£¡');						
+					return;
+            end
+			dynObj.Value=cat(dim,dynObj.Value,newMemory);%Æ´½ÓÊı×é			
+        end                    
+    end
+    
+    methods%set,get·½·¨¼¯ºÏ
+        function value=get.Value(dynObj)
+            value=dynObj.Value;
+        end
+        
+        function dynObj=set.Value(dynObj,value)
+            dynObj.Value=value;
+        end
+        
+        function originalSize=get.OriginalSize(dynObj)
+            originalSize=dynObj.OriginalSize;
+        end
+        
+        function dynObj=set.OriginalSize(dynObj,originalSize)
+            dynObj.OriginalSize=originalSize;
+        end
+        
+        function type=get.Type(dynObj)
+            type=dynObj.Type;
+        end
+        
+        function dynObj=set.Type(dynObj,type)
+            dynObj.Type=type;
+        end     
+    end
+    
+>>>>>>> 45c2f446b7e2900776a7fea54c7ce62d99658884
 end
