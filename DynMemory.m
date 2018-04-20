@@ -1,8 +1,8 @@
 classdef(Sealed) DynMemory%不允许继承
-%DynMemory:一个动态内存类，实例化出来的数据类型能在循环中自动检测是否已满，
+%DynMemory:一个动态内存类，实例化出来的二维数据类型能在循环中自动检测是否已满，
 %                  并自动申请新的合适的内存，也提供便利的字段与函数以供手动检测对象内存是否足够
 %TODO:
-%1.了解事件类型（event），使用监听器模型来替代手动外部循环，全监听器，和部分监听器两种模型
+%1.引入事件类型（event），使用监听器模型来替代手动外部循环，全监听器，和部分监听器两种模型
 %全监听器包含一个使用率模型，每当原大小和维度中的0被填充到别的值时，增加使用率比例，在使用率增加到
 %Para时，会自动addMemory，但是占用内存或许较多；部分监听器只会监听在Para之外的数值变化，一旦有变化，
 %会立即addMemory，这样可能不太准确，因为有可能在外部对值是从后部开始循环的
@@ -41,7 +41,7 @@ classdef(Sealed) DynMemory%不允许继承
         %DynMemory:申请一段内存，并在当内存不够的时候自动扩充
         %varargin:可变参数，可以输入一到三个参数，完整版本的参数分布是“行数，列数，数据类型”
         %dynObj:返回一个已经分配好内存的动态内存对象，里面多余的空间会被0填充
-        %versin:1.0.2
+        %versin:1.0.3
         %author:jinshuguangze
         %data:4/15/2018
         %TODO:
@@ -229,9 +229,15 @@ classdef(Sealed) DynMemory%不允许继承
         %versin:1.0.3
         %author:jinshuguangze
         %data:4/17/2018	
-			
-			dynObj.checkType;%对对象的值域进行类型检查
-			[row,col]=size(dynObj.Value);%获取对象行数和列数
+        
+            dynObj.Type=dynObj.checkType;%对对象的值域进行类型检查
+            if dynObj.Type==-1
+                disp('对象值域类型错误,必须是二维数组！');
+                return;
+            end       
+            
+            %获取对象行数和列数
+			[row,col]=size(dynObj.Value);
 			
 			p=inputParser;%构造入口检验对象
 			p.addOptional('rowScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
@@ -278,7 +284,8 @@ classdef(Sealed) DynMemory%不允许继承
                     for i=1:size(checkArray,1)
                         for j=1:size(checkArray,2)
                             if checkArray(i,j)%检测
-                                dynObj=dynObj.addMemory;
+                                %根据输入的符号判断添加内存的方向
+                                dynObj=dynObj.addMemory(dynObj.OriginalSize(1)*rScale/abs(rScale));
                                 return;
                             end
                         end
@@ -290,12 +297,14 @@ classdef(Sealed) DynMemory%不允许继承
                         return;
                     end
 					kloop=1:size(fields,1);%构造访问所有字段的循环器
-                    checkArray=getfield(dynObj.Value(rloop,cloop),fields{kloop,1})%创建检测数组
+                    %创建检测数组，同时忽略一个应该是编译器不清楚getfield是库函数而不是get函数的错误
+                    checkArray=getfield(dynObj.Value(rloop,cloop),fields{kloop,1});%#ok<GFLD>
                     %使用逐循环而不是数组的全局控制有助于程序效率的提高，会在检测一个数字成功之后就return
                     for i=1:size(checkArray,1)
                         for j=1:size(checkArray,2)
                             if ~isempty(checkArray(:))%检测
-                                dynObj=dynObj.addMemory;
+                                %根据输入的符号判断添加内存的方向
+                                dynObj=dynObj.addMemory(dynObj.OriginalSize(1)*rScale/abs(rScale));
                                 return;
                             end
                         end
@@ -307,7 +316,8 @@ classdef(Sealed) DynMemory%不允许继承
                     for i=1:size(checkArray,1)
                         for j=1:size(checkArray,2)                   
                             if ~isempty(checkArray(:))%检测
-                                dynObj=dynObj.addMemory;
+                                %根据输入的符号判断添加内存的方向
+                                dynObj=dynObj.addMemory(dynObj.OriginalSize(1)*rScale/abs(rScale));
                                 return;
                             end
                         end
@@ -322,74 +332,77 @@ classdef(Sealed) DynMemory%不允许继承
         %dynObj:被处理的动态内存对象，长度已经增加
 		%varargin:可选的输入，可以根据输入来设置增加值的大小，
 		%             或者选择增加的方向是行或者列，或者都设置
-        %versin:1.0.2
+        %versin:1.0.3
         %author:jinshuguangze
         %data:4/17/2018	
-		%TODO:
-		%1.多维度增加支持（而不是两维度）：('D1',2,'D2',4,'D5',9,10<-这个默认为前面确定维度的后一维，即D6)	
-		%2.如果对象维度和大小改变了，cat函数会灵活调整，如果是dim方向上的拼接，则必须保证除了dim，其他大小都要满足	
-		%	for i=1:nargin
-		%		if ischar(varargin{i}) && ...字符拼接相关	
-		
-			dim=1;%方向默认为行数方向
-			rowadd=dynObj.OriginalSize(1);%行数默认增加orignalRow
-			coladd=0;%列数默认增加0
-			if nargin==1%如果无参数输入，结果为默认			
-			elseif nargin==2%如果有一个参数输入，有可能是一个决定增加方向的字符串，或者是决定增加数值的正数
-				if ischar(varargin{1})%满足是个字符串
-					if varargin{1}=='col'
-						dim=1;%方向改为增加列数
-					else
-						disp('参数1：方向必须为''row''和''col''其中之一，已设置成默认值：第一维度。');
-					end
-				elseif isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0%满足是个正数
-					rowadd=uint16(varargin{1});%修改增加行数
-				else%如果不满足条件
-					disp('增加内存失败，原因：参数1：方向（增加行数）必须为字符串（正数）！');
-					return;
-				end
-			elseif nargin==3%如果有两个参数输入，必须为两个正数
-				if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0 ...
-                    && isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0%两个正数
-					rowadd=unit16(varargin{1});%设置行数增加值
-					coladd=unit16(varargin{2});%设置列数增加值
-				else
-					disp('增加内存失败，原因：参数1：增加行数与参数2：增加列数必须都为正数！');
-					return;
-				end	
-			else%参数输入过多
-				disp('增加内存失败，原因：输入参数过多！');
-				return;
-			end
-			
-            switch dynObj.Type%对于对象的不同类型有不同处理
-				case 0%如果对象是数组
-					newMemory=zeros(dynObj.OriginalSize);
-					
-				case 1%如果对象是结构体数组
-					newMemory=repmat(struct,dynObj.OriginalSize);
-					
-				case 2%如果对象是细胞数组
-					newMemory=cell(dynObj.OriginalSize);
+        
+            dynObj.Type=dynObj.checkType;%对对象的值域进行类型检查
+            if dynObj.Type==-1
+                disp('对象值域类型错误,必须是二维数组！');
+                return;
             end
-			dynObj.Value=cat(dim,dynObj.Value,newMemory);%拼接数组			
+            
+            p=inputParser;%构造入口检验对象
+            p.addOptional('rowadd',dynObj.OriginalSize(1),@(x)validateattributes(x,{'numeric'},...
+                {'scalar','integer'},'addMemory','rowadd',1));%在得到电脑配置与RAM限制黑科技后，会有对数组整体大小的限制
+            p.addOptional('coladd',0,@(x)validateattributes(x,{'numeric'},...
+                {'scalar','integer'},'addMemory','coladd',2));
+            p.parse(varargin{:});
+            rowadd=p.Results.rowadd;
+            coladd=p.Results.coladd;
+			
+            if rowadd%如果行增加量不为0，虽然可以取0不会出错，但是为了优化计算还是增加入口检验
+                switch dynObj.Type%对行数进行选择增加数组
+                    case 0%如果对象是数组
+                        newMemory=zeros(abs(rowadd),size(dynObj.Value,2));
+
+                    case 1%如果对象是结构体数组
+                        newMemory=repmat(struct,abs(rowadd),size(dynObj.Value,2));
+
+                    case 2%如果对象是细胞数组
+                        newMemory=cell(abs(rowadd),size(dynObj.Value,2));
+                end
+                
+                if rowadd>0
+                    dynObj.Value=cat(1,dynObj.Value,newMemory);%在行末方向上拼接数组
+                else
+                    dynObj.Value=cat(1,newMemory,dynObj.Value);%在行初方向上拼接数组
+                end
+            end
+            
+            if coladd%如果列增加量不为0，虽然可以取0不会出错，但是为了优化计算还是增加入口检验
+                switch dynObj.Type%对行数进行选择增加数组
+                    case 0%如果对象是数组
+                        newMemory=zeros(size(dynObj.Value,1),abs(coladd));
+
+                    case 1%如果对象是结构体数组
+                        newMemory=repmat(struct,size(dynObj.Value,1),abs(coladd));
+
+                    case 2%如果对象是细胞数组
+                        newMemory=cell(size(dynObj.Value,1),abs(coladd));
+                end
+                
+                if coladd>0
+                    dynObj.Value=cat(2,dynObj.Value,newMemory);%在列末方向上拼接数组
+                else
+                    dynObj.Value=cat(2,newMemory,dynObj.Value);%在列初方向上拼接数组
+                end
+            end              
         end                    
     end
+    
     
 	methods(Access=private)%私密方法
 		function type=checkType(dynObj)
 		%checkType:适用于内部再判断对象的类型，会自动改变Type属性至当前对象类型
 		%dynObj:被检测的动态内存对象
 		%type:返回当前的类型
-		%versin:1.0.0
+		%versin:1.0.1
         %author:jinshuguangze
 		%data:4/19/2018	
 		
 			if ~ismatrix(dynObj.Value)%非数组判定为未知类型
 				type=-1;
-				clear dynObj;
-				disp('对象类型错误，已经自我清除！');
-				return;
 			elseif isstruct(dynObj.Value)%结构体数组
 				type=1;
 			elseif iscell(dynObj.Value)%细胞数组
@@ -398,8 +411,9 @@ classdef(Sealed) DynMemory%不允许继承
 				type=0;
 			end
 		end
-	end
+    end
 		
+    
     methods%set,get方法集合
         function value=get.Value(dynObj)
             value=dynObj.Value;
