@@ -98,11 +98,15 @@ classdef(Sealed) DynMemory%不允许继承
 									
                                 case 'struct'%此时动态内存对象被赋予为结构体行向量，最长长度为intmax('uint64')
                                     if varargin{1}>intmax('uint64')%输入参数过大
-                                        dynObj.Value(1,intmax('uint64'))=struct;%创建对象,多维度支持后尝试用repmat
+                                        %创建对象，由于MATLAB实现机制问题，只能使用临时变量
+                                        temp(1,intmax('uint64'))=struct;
+                                        dynObj.Value=temp;                                          
 										disp(['参数1：列数过大，超过了',num2str(intmax('uint64')),...
 											'，默认生成大小为1x',num2str(intmax('uint64'),'的结构体数组。')]);    
                                     else%输入参数在范围内
-                                        dynObj.Value(1,uint64(varargin{1}))=struct;%创建对象
+                                        %创建对象，由于MATLAB实现机制问题，只能使用临时变量
+                                        temp(1,uint64(varargin{1}))=struct;
+                                        dynObj.Value=temp;                                           
                                     end
 									dynObj.Type=1;%存储类型到字段，类型：结构体数组
 
@@ -149,22 +153,30 @@ classdef(Sealed) DynMemory%不允许继承
 
                             case 'struct'%此时动态内存对象被赋予为结构体数组，行数与列数都不超过intmax('uint64')
                                 if varargin{1}>intmax('uint64') && varargin{2}<=intmax('uint64')%参数1过大
-                                    dynObj.Value(intmax('uint64'),uint64(varargin{2}))=struct;%创建对象
+                                    %创建对象，由于MATLAB实现机制问题，只能使用临时变量
+                                    temp(intmax('uint64'),uint64(varargin{2}))=struct;
+                                    dynObj.Value=temp;                                        
                                     disp(['参数1：行数过大，超过了',num2str(intmax('uint64')),...
 										'，默认生成大小为',num2str(intmax('uint64')),'x',...
 										num2str(uint64(varargin{2})),'的结构体数组。']);
                                 elseif varargin{1}<=intmax('uint64') && varargin{2}>intmax('uint64')%参数2过大
-                                    dynObj.Value(uint64(varargin{1}),intmax('uint64'))=struct;%创建对象
+                                    %创建对象，由于MATLAB实现机制问题，只能使用临时变量
+                                    temp(uint64(varargin{1}),intmax('uint64'))=struct;
+                                    dynObj.Value=temp;    
                                     disp(['参数2：列数过大，超过了',num2str(intmax('uint64')),...
 										'，默认生成大小为',num2str(uint64(varargin{1})),'x',...
 										num2str(intmax('uint64')),'的结构体数组。']);
 								elseif	varargin{1}>intmax('uint64') && varargin{2}>intmax('uint64')%参数1,2都过大
-                                    dynObj.Value(intmax('uint64'),intmax('uint64'))=struct;%创建对象
+                                    %创建对象，由于MATLAB实现机制问题，只能使用临时变量
+                                    temp(intmax('uint64'),intmax('uint64'))=struct;
+                                    dynObj.Value=temp;                                    
                                     disp(['参数1：行数和参数2：列数都过大，都超过了',num2str(intmax('uint64')),...
 										'，默认生成大小为',num2str(uint64(varargin{1})),'x',...
 										num2str(intmax('uint64')),'的结构体数组。']);																								
                                 else%输入参数在范围内
-                                    dynObj.Value(uint64(varargin{1}),uint64(varargin{2}))=struct;%创建对象
+                                    %创建对象，由于MATLAB实现机制问题，只能使用临时变量
+                                    temp(uint64(varargin{1}),uint64(varargin{2}))=struct;
+                                    dynObj.Value=temp;
                                 end
 								dynObj.Type=1;%存储类型到字段，类型：结构体数组
 								
@@ -214,7 +226,7 @@ classdef(Sealed) DynMemory%不允许继承
 		%			  如果是负数，则从头开始检测而不是从尾部开始检测，
 		%		      如果不输入，则会使用默认值，如果只输入一个值，那么会优先设置
 		%			  行数，并尝试将列数和行数参数变成一致，如果失败，则列数会设置成默认值
-        %versin:1.0.2
+        %versin:1.0.3
         %author:jinshuguangze
         %data:4/17/2018	
 			
@@ -261,26 +273,45 @@ classdef(Sealed) DynMemory%不允许继承
 			
 			switch dynObj.Type%对于对象的不同类型有不同处理
 				case 0%数组
-					if dynObj.Value(rloop,cloop)
-						dynObj=dynObj.addMemory;
-						return;
-					end
+                    checkArray=dynObj.Value(rloop,cloop);%创建检测数组
+                    %使用逐循环而不是数组的全局控制有助于程序效率的提高，会在检测一个数字成功之后就return
+                    for i=1:size(checkArray,1)
+                        for j=1:size(checkArray,2)
+                            if checkArray(i,j)%检测
+                                dynObj=dynObj.addMemory;
+                                return;
+                            end
+                        end
+                    end
 				
 				case 1%结构体数组
 					fields=fieldnames(dynObj.Value);
+                    if ~size(fields,1)%确保至少有一个字段
+                        return;
+                    end
 					kloop=1:size(fields,1);%构造访问所有字段的循环器
-					if size(fields,1)
-						if ~isempty(getfield(dynObj.Value(rloop,cloop),fields{kloop,1}))%访问每个字段的值是否为空
-							dynObj=dynObj.addMemory;
-							return;
-						end
-					end
+                    checkArray=getfield(dynObj.Value(rloop,cloop),fields{kloop,1})%创建检测数组
+                    %使用逐循环而不是数组的全局控制有助于程序效率的提高，会在检测一个数字成功之后就return
+                    for i=1:size(checkArray,1)
+                        for j=1:size(checkArray,2)
+                            if ~isempty(checkArray(:))%检测
+                                dynObj=dynObj.addMemory;
+                                return;
+                            end
+                        end
+                    end
 					
 				case 2%细胞数组
-					if ~isempty(dynObj.Value{rloop,cloop})
-						dynObj=dynObj.addMemory;
-						return;
-					end	
+                    checkArray=dynObj.Value{rloop,cloop};%创建检测数组
+                    %使用逐循环而不是数组的全局控制有助于程序效率的提高，会在检测一个数字成功之后就return
+                    for i=1:size(checkArray,1)
+                        for j=1:size(checkArray,2)                   
+                            if ~isempty(checkArray(:))%检测
+                                dynObj=dynObj.addMemory;
+                                return;
+                            end
+                        end
+                    end
 			end
         end       
         
