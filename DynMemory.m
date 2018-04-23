@@ -259,11 +259,11 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
     end
        
 	methods(Access=private)%私密方法
-		function dynObj=checkType(dynObj)
+		function checkType(dynObj)
 		%checkType:适用于内部再判断对象的类型，会自动改变Type属性至当前对象类型
 		%dynObj:被检测的动态内存对象
 		%type:返回当前的类型
-		%versin:1.0.1
+		%versin:1.0.2
         %author:jinshuguangze
 		%data:4/19/2018	
 

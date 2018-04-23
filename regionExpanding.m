@@ -1,13 +1,13 @@
 function outputImages = regionExpanding(inputImage,filter,degree)
 %regionExpanding:使用区域膨胀法将灰度图像分割单例化
-%inputImage:输入图像，可以为灰度图像或者二值图像
+%inputImage:输入图像，可以为灰度图像或者二值图像或者RGB
 %filter:给定初始灰度阈值
 %degree:给定新像素允许灰度波动最大值
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
 %versin:1.0.0
 %author:jinshuguangze
 %data:4/13/2018
-%TODO:写个自动分配内存器，入口检查，支持RGB等，取消filter参数改为自动判断
+%TODO:写个自动分配内存器(√)，入口检查(easyGG)，支持RGB等，取消filter参数改为自动判断
        
     %预处理
     inputImage=im2double(inputImage);%将输入图像转成双精度
@@ -69,12 +69,13 @@ function outputImages = regionExpanding(inputImage,filter,degree)
                         %检测完后，对于所有满足条件的像素，进行色彩最接近比较
                         if num
                             %找到最接近像素的序号
-                            [~,index]=min(abs(handleList(1:num,3)-adv));                        
+                            [~,index]=min(abs(handleList(1:num,3)-adv));
+                            handleList([1,index],:)=handleList([index,1],:);%交换两行
                             %重新计算平均值
-                            adv=(adv*size(fulfilList,1)+handleList(index,3))/(size(fulfilList,1)+1);
-                            xtag=handleList(index,1);%重定位到此目标
-                            ytag=handleList(index,2); 
-                            handleList(index,:)=[];%将此目标从待检测列表中移除
+                            adv=(adv*size(fulfilList,1)+handleList(1,3))/(size(fulfilList,1)+1);
+                            xtag=handleList(1,1);%重定位到此目标
+                            ytag=handleList(1,2); 
+                            handleList(1,:)=[];%将此目标从待检测列表中移除
                         else
                             handleList(1,:)=[];%将这个像素从待检测列表中移除
                             if size(handleList,1)
