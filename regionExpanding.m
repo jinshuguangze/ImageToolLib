@@ -21,7 +21,7 @@ function outputImages = regionExpanding(inputImage,filter,degree)
     
     %可调参部分
     neibor=[-1 0;1 0;0 -1;0 1];%邻域范围表，可扩展与更改   
-    outputImages{1}=ones(row,col);%默认输出
+    outputImages{1}=ones(row,col);%默认输出为全白图像
     
     for i=1:row
         for j=1:col
@@ -29,19 +29,24 @@ function outputImages = regionExpanding(inputImage,filter,degree)
                 if inputImage(i,j)>filter%如果不满足阈值
                     stateImage(i,j)=1;%更新状态，不满足阈值
                 else%如果满足灰度阈值
-                    stateImage(i,j)=2;%更新状态，未检测邻域
-                    adv=inputImage(i,j);%初始化平均值
-                    handleList=[i,j,inputImage(i,j)];%加入待邻域检测列表
+                    %初始化预设值    
+                    handleList=[i,j,inputImage(i,j)];%初始化待邻域检测列表
                     fulfilList=[];%初始化完成邻域检测的列表
+                    adv=inputImage(i,j);%初始化平均值
                     top=i;%初始化图像范围值
                     bottom=i;
                     left=j;
                     right=j;                 
-                    xtag=i;%设定当前目标坐标值
-                    ytag=j;
                  
                     %开始区域增长
                     while size(handleList,1)
+                        %循环堆栈处理
+                        xtag=handleList(1,1);%重定位到此目标
+                        ytag=handleList(1,2);
+                        stateImage(xtag,ytag)=3;%更新状态，已完成检测
+                        handleList(1,:)=[];%将这个像素从待检测列表中移除
+                        fulfilList=[xtag,ytag,inputImage(xtag,ytag);fulfilList];%更新完成邻域检测的列表  
+                        
                         %对于邻域范围内所有的像素点扫描一遍
                         num=0;%初始化邻域内满足阈值的像素点的个数
                         for k=1:size(neibor,1)
@@ -62,30 +67,17 @@ function outputImages = regionExpanding(inputImage,filter,degree)
                                 end
                             end       
                         end
-                        
-                        stateImage(xtag,ytag)=3;%更新状态，已完成检测
-                        %更新完成邻域检测的列表
-                        fulfilList=[xtag,ytag,inputImage(xtag,ytag);fulfilList];                   
+                                      
                         %检测完后，对于所有满足条件的像素，进行色彩最接近比较
-                        if num
-                            %找到最接近像素的序号
-                            [~,index]=min(abs(handleList(1:num,3)-adv));
-                            handleList([1,index],:)=handleList([index,1],:);%交换两行
-                            %重新计算平均值
-                            adv=(adv*size(fulfilList,1)+handleList(1,3))/(size(fulfilList,1)+1);
-                            xtag=handleList(1,1);%重定位到此目标
-                            ytag=handleList(1,2); 
-                            handleList(1,:)=[];%将此目标从待检测列表中移除
-                        else
-                            handleList(1,:)=[];%将这个像素从待检测列表中移除
-                            if size(handleList,1)
-                                xtag=handleList(1,1);%重定位到下一个待检测目标
-                                ytag=handleList(1,2);
-                            end
-                        end                     
+                        if num                  
+                            [~,index]=min(abs(handleList(1:num,3)-adv));%找到最接近像素的序号
+                            handleList([1,index],:)=handleList([index,1],:);%交换两行                         
+                            adv=(adv*size(fulfilList,1)+handleList(1,3))/(size(fulfilList,1)+1);%重新计算平均值
+                        end   
                     end
                     
-                    if size(fulfilList,1)>1000%设置阈值，去除杂质
+                    %设置阈值，去除杂质
+                    if size(fulfilList,1)>3000
                         count=count+1;%输出图像数量增加
                         outputImages{count}=ones(bottom-top+1,right-left+1);%背景色默认为白
                         for k=1:size(fulfilList,1)
@@ -96,6 +88,6 @@ function outputImages = regionExpanding(inputImage,filter,degree)
                 end
             end
         end
-    end 
+    end
 end
 
