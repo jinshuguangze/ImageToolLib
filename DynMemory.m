@@ -46,7 +46,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
         %intmax('uint16')，除了结构体数组以外，结构体数组最大上限为intmax('uint64')
 		%2.增加tall,table等类型
 
-            p=inputParser;%构造入口检测对象
+            p=inputParser;%构造检测器对象
             p.addOptional('row',1,@(x)validateattributes(x,{'numeric'},...
                 {'scalar','integer','positive'},'DynMemory','row',1));
             p.addOptional('col',1,@(x)validateattributes(x,{'numeric'},...
@@ -96,7 +96,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
 
 			[row,col]=size(dynObj.Value);%获取对象行数和列数
 			
-			p=inputParser;%构造入口检验对象
+			p=inputParser;%构造检测器对象
 			p.addOptional('rowScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
 				{'scalar','nonzero','>',-row,'<',row},'refresh','rowScale',1));			
 			p.addOptional('colScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
@@ -198,7 +198,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
         
             dynObj.checkType;%对对象的值域进行类型检查
             
-            p=inputParser;%构造入口检验对象
+            p=inputParser;%构造检测器对象
             p.addOptional('rowadd',dynObj.OriginalSize(1),@(x)validateattributes(x,{'numeric'},...
                 {'scalar','integer'},'addMemory','rowadd',1));%在得到电脑配置与RAM限制黑科技后，会有对数组整体大小的限制
             p.addOptional('coladd',0,@(x)validateattributes(x,{'numeric'},...
