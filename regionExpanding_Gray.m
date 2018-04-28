@@ -1,5 +1,5 @@
 function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
-%regionExpanding_Gray:使用区域膨胀法将灰度图像分割单例化
+%regionExpanding_Gray:使用区域膨胀法将灰度图像分割单例化，并可使用edge函数额外辅助判定边界
 %inputImage:输入图像，指定为灰度图像，且感兴趣区域为深色区域
 %degree:新像素允许灰度波动的范围，允许范围是0~0.5
 %outputNum:希望输出的至多图像个数，如果不输出或输入0，则会基于像素点个数下降梯度智能选择图像个数
@@ -7,14 +7,23 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%versin:1.0.6
+%versin:1.0.8
 %author:jinshuguangze
 %data:4/13/2018
+%
+%stateImage真值表：
 %State0:未扫描的像素点
 %State1:已扫描但不满足阈值的像素点
 %State2:已扫描，满足阈值但待检测邻域的像素点
 %State3:已扫描，满足阈值且已检测邻域的像素点
-%TODO:写个自动分配内存器(√)，支持RGB等，取消filter参数改为自动判断
+%
+%edgeImage真值表：
+%State0:不为边界
+%State1:为边界
+%
+%TODO:
+%1.写个自动分配内存器(√)
+%2.当算子等级为medium或以上时，不需要谁用边界辅助判断
        
     %入口检测
     p=inputParser;%构造检测器对象
@@ -30,9 +39,9 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
     %灰度估计值，如果不输入，则使用Otsu算法获得得灰度减去输入的灰度允许范围值
     p.addOptional('estimated','None',@(x)validateattributes(x,{'double'},...
         {'scalar','>=',0,'<=',1},'regionExpanding_Gray','estimated',4));   
-    %识别边缘的方法，支持所有在库函数’edge‘中出现的方法，默认为‘Canny’方法
-    p.addParameter('method','Robert',@(x)any(validatestring(x,...
-        {'Sobel','Prewitt','Roberts','Log','Zerocross','Canny','Approxcanny'},'regionExpanding_Gray','method',5)));
+    %识别边缘的方法，支持所有在库函数’edge‘中出现的方法，默认不使用边界额外判定即'None'
+    p.addParameter('method','None',@(x)any(validatestring(x,...
+        {'None','Sobel','Prewitt','Roberts','Log','Zerocross','Canny','Approxcanny'},'regionExpanding_Gray','method',5)));
     %二维聚合算子，支持四种从小到大的范围，范围越小，运算越快，默认为’Low‘算子的四联通区域
     p.addParameter('operator','Low',@(x)any(validatestring(x,...
         {'Low','Medium','High','Extra'},'regionExpanding_Gray','operator',6)));
@@ -47,12 +56,11 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
     %预处理
     inputImage=im2double(inputImage);%将输入图像转成双精度
     [row,col]=size(inputImage);%获得原图像参数   
-    stateImage=zeros(row,col);%初始化状态表
-    edgeImage=edge(inputImage,method);%初始化边缘表
+    stateImage=zeros(row,col);%初始化状态表   
     count=0;%初始化输出图像计数器
     gather={};%初始化存储所有输出图像的聚集数组
     
-    if estimated=='None'%如果估计值没有输入
+    if strcmp(estimated,'None')%如果估计值没有输入
         thresh=graythresh(inputImage);%获取统计意义上的最优阈值
         if thresh>degree
             estimated=thresh-degree;
@@ -79,6 +87,12 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
             neibor=[-1 0;0 1;1 0;0 -1];
     end
     
+    if strcmp(method,'None') || size(neibor,1)>8%对边缘算法进行判断，如果聚合算子过大，则不适合使用边界辅助判断
+        edgeImage=zeros(row,col);%不使用边界额外判定，edgeImgae是一幅0值图
+    else
+        edgeImage=edge(inputImage,method);%使用边界额外判定，初始化边缘表，是一幅逻辑图，其检测边缘为1
+    end
+    
     %找出满足条件的生长开始点
     for i=1:row
         for j=1:col
@@ -87,7 +101,7 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
                     stateImage(i,j)=1;%更新状态，不满足阈值
                 else%如果满足灰度阈值
                     %初始化预设值    
-                    handleList=[i,j,inputImage(i,j)];%初始化待邻域检测列表
+                    handleList=[i,j,inputImage(i,j),3];%初始化待邻域检测列表，由于是从左到右检索，故初始trace值为3
                     fulfilList=[];%初始化完成邻域检测的列表
                     adv=inputImage(i,j);%初始化平均值
                     top=i;%初始化图像范围值
@@ -101,6 +115,7 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
                         xtag=handleList(1,1);%重定位到此目标
                         ytag=handleList(1,2);
                         stateImage(xtag,ytag)=3;%更新状态，已完成检测
+                        trace=handleList(1,4);%提取该像素点的轨迹
                         handleList(1,:)=[];%将这个像素从待检测列表中移除
                         fulfilList=[xtag,ytag,inputImage(xtag,ytag);fulfilList];%更新完成邻域检测的列表  
                         
@@ -111,12 +126,16 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
                             y=ytag+neibor(k,2);
                             inRange=x>=1 && y>=1 && x<=row && y<=col;%检测是否在图像范围内
                             if inRange && ~stateImage(x,y)%如果在范围内而且没有被扫描过
+                                if edgeImage(x,y) && k==trace%如果是边缘点而且k是沿着轨迹方向，则跳过
+                                    continue;
+                                end
+                                    
                                 if inputImage(x,y)>adv+degree || inputImage(x,y)<adv-degree%如果不满足阈值
                                     stateImage(x,y)=1;%更新状态，不满足阈值
                                 else%如果满足阈值
                                     stateImage(x,y)=2;%更新状态，未检测邻域
                                     num=num+1;%邻域内满足阈值的像素点的个数增加
-                                    handleList=[x,y,inputImage(x,y);handleList];%加入待检测列表
+                                    handleList=[x,y,inputImage(x,y),k;handleList];%加入待检测列表，并存储原始方向
                                     top=min(top,x);%更新图像范围值
                                     bottom=max(bottom,x);
                                     left=min(left,y);
