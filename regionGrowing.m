@@ -4,7 +4,7 @@ function outputImages = regionGrowing(inputImage,filter,range)
 %filter:给定初始灰度阈值
 %range:给定新像素允许灰度波动最大值
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%versin:1.0.1
+%version:1.0.2
 %author:jinshuguangze
 %data:4/10/2018
 

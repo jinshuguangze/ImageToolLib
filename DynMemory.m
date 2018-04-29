@@ -37,7 +37,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
         %DynMemory:申请一段内存，并在当内存不够的时候可以实现自动扩充
         %varargin:可变参数，可以输入至多三个参数，完整版本的参数分布是“行数，列数，数据类型”
         %dynObj:返回一个已经分配好内存的动态内存对象，里面多余的空间会被0填充
-        %versin:1.0.5
+        %version:1.0.6
         %author:jinshuguangze
         %data:4/15/2018
         %TODO:
@@ -88,7 +88,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
 		%			  如果是负数，则从头开始检测而不是从尾部开始检测，
 		%		      如果不输入，则会使用默认值，如果只输入一个值，那么会优先设置
 		%			  行数，并尝试将列数和行数参数变成一致，如果失败，则列数会设置成默认值
-        %versin:1.0.5
+        %version:1.0.6
         %author:jinshuguangze
         %data:4/17/2018	
         
@@ -192,7 +192,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
         %dynObj:被处理的动态内存对象，长度已经增加
 		%varargin:可选的输入，可以根据输入来设置增加值的大小，
 		%             或者选择增加的方向是行或者列，或者都设置
-        %versin:1.0.5
+        %version:1.0.6
         %author:jinshuguangze
         %data:4/17/2018	
         

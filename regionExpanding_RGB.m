@@ -1,43 +1,30 @@
-function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
+function outputImages = regionExpanding_RGB(inputImage,degree,varargin)
 %regionExpanding_Gray:使用区域膨胀法将灰度图像分割单例化，并可使用edge函数额外辅助判定边界
-%inputImage:输入图像，指定为灰度图像，若感兴趣区域为浅色图像，则会反色后再判定
-%degree:新像素允许灰度波动的范围，允许范围是0~1，若为1，则直接输出原图
+%inputImage:输入图像，指定为RGB图像，且感兴趣区域为满足颜色较为单一
+%degree:新像素允许灰度波动的范围，允许范围是0~0.5
 %outputNum:希望输出的至多图像个数，如果不输出或输入0，则会基于像素点个数下降梯度智能选择图像个数
-%estimated:感兴趣区域的灰度估计值，如果不输入，则默认深色为感兴趣区域，并会基于Otsu算法自动得到统计意义上的估计值
+%estimated:感兴趣区域的灰度估计值，如果不输入，则会基于Otsu算法自动得到统计意义上的估计值
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.1.4
+%version:1.0.0
 %author:jinshuguangze
-%data:4/13/2018
-%
-%stateImage真值表：
-%State0:未扫描的像素点
-%State1:已扫描但不满足阈值的像素点
-%State2:已扫描，满足阈值但待检测邻域的像素点
-%State3:已扫描，满足阈值且已检测邻域的像素点
-%
-%edgeImage真值表：
-%State0:不为边界
-%State1:为边界
-%
-%TODO:
-%1.运用动态分配内存器(√)
-       
+%data:4/29/2018
+    
     %入口检测
     p=inputParser;%构造检测器对象
-    %输入图像，限定为灰度图像，且需要分割的图像为深色，支持多种灰度等级的灰度图像
+    %输入图像，限定为RGB，且感兴趣区域最好为单色，若为多色，可以多次输入后取并集
     p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
-        {'2d','integer','nonnegative'},'regionExpanding_Gray','inputImage',1));
-    %灰度允许范围值，限定为0到0.5之间的数，数字越小，运算越快
+        {'size',[NaN,NaN,3],'integer' ,'nonnegative'},'regionExpanding_RGB','inputImage',1));
+    %单原色允许范围值，分三个通道限定为0到0.5之间的数，数字越小，运算越快
     p.addRequired('degree',@(x)validateattributes(x,{'double'},...
-        {'scalar','>',0,'<=',1},'regionExpanding_Gray','degree',2));
+        {'size',[1,3],'>',0,'<=',1},'regionExpanding_Gray','degree',2));
     %输出图像的个数，如果不输入或者输入0，则默认输出包含像素个数梯度最大的点之前的所有图像
     p.addOptional('outputNum',0,@(x)validateattributes(x,{'numeric'},...
         {'scalar','integer','nonnegative'},'regionExpanding_Gray','outputNum',3));   
-    %灰度估计值，如果不输入，则使用Otsu算法获得的灰度减去输入的灰度允许范围值
+    %估计值数组，即感兴趣区域的RGB估计值，若缺失则使用Otsu算法获得的分界点减去输入的各个单原色允许范围值
     p.addOptional('estimated','None',@(x)validateattributes(x,{'double'},...
-        {'scalar','>=',0,'<=',1},'regionExpanding_Gray','estimated',4));   
+        {'size',[1,3],'>=',0,'<=',1},'regionExpanding_Gray','estimated',4));   
     %识别边缘的方法，支持所有在库函数’edge‘中出现的方法，默认不使用边界额外判定即'None'
     p.addParameter('method','None',@(x)any(validatestring(x,...
         {'None','Sobel','Prewitt','Roberts','Log','Zerocross','Canny','Approxcanny'},'regionExpanding_Gray','method',5)));
@@ -54,14 +41,16 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
     
     %预处理
     inputImage=im2double(inputImage);%将输入图像转成双精度
-    [row,col]=size(inputImage);%获得原图像参数   
-    stateImage=zeros(row,col);%初始化状态表   
+    [row,col,~]=size(inputImage);%获得原图像参数   
+    stateImage=zeros(row,col);%初始化状态表
+    looper=[1,2,3];%初始化循环器
     count=0;%初始化输出图像计数器
     gather={};%初始化存储所有输出图像的聚集数组
-    
-    if degree==1%如果灰度波动是全范围，那么直接返回原图
-        outputImages{1}=inputImage;
-        return;
+    %-->慢慢改把
+    for i=1:size(degree,2)
+        if degree(i)==1%如果某个单原色波动是全范围，那么忽略它<-改进循环里面去吧
+        looper(i)=[];
+        end
     end
     
     if strcmp(estimated,'None')%如果估计值没有输入
@@ -219,4 +208,3 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
         end
     end
 end
-

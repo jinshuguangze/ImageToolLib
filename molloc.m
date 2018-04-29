@@ -2,7 +2,7 @@ function variable = molloc(varargin)
 %molloc:申请一段内存，并在当内存不够的时候自动扩充
 %varargin:可变参数，可以输入一到三个参数，完整版本的参数分布是“行数，列数，数据类型”
 %variable:返回一个已经分配好内存的变量，里面多余的空间会被0填充
-%versin:1.0.2
+%version:1.0.3
 %author:jinshuguangze
 %data:4/15/2018
 %TODO:
