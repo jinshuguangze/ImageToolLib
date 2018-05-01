@@ -173,12 +173,8 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
     end
     
     %处理输出图像
-    if ~count%无图像，默认输出为空白图
-        if estimated>0.5%根据预期区域灰度来确定空白色
-            outputImages{1}=zeros(row,col);%空白色为黑
-        else
-            outputImages{1}=ones(row,col);%空白色为白
-        end
+    if ~count%无图像，默认输出为原图像
+        outputImages{1}=inputImage;
     elseif count==1%只有一副图像，直接输出
         outputImages{1}=gather{1,1};
     else%有多幅图像，用冒泡排序降序排列
