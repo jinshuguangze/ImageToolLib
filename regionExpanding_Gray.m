@@ -7,7 +7,7 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.1.4
+%version:1.1.5
 %author:jinshuguangze
 %data:4/13/2018
 %
@@ -161,7 +161,7 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
                     if estimated>0.5%根据预期区域灰度来确定背景颜色
                         gather{count,1}=zeros(bottom-top+1,right-left+1);%背景色为黑
                     else
-                        gather{count,1}=zeros(bottom-top+1,right-left+1);%背景色为白
+                        gather{count,1}=ones(bottom-top+1,right-left+1);%背景色为白
                     end
                     gather{count,2}=size(fulfilList,1);%第二维存入像素点个数信息
                     for k=1:size(fulfilList,1)%填入图像色彩信息

@@ -1,13 +1,13 @@
  function outputImages = regionExpanding_RGB(inputImage,degree,varargin)
-%regionExpanding_Gray:使用区域膨胀法将灰度图像分割单例化，并可使用edge函数额外辅助判定边界
-%inputImage:输入图像，指定为RGB图像，且感兴趣区域为满足颜色较为单一
-%degree:新像素允许灰度波动的范围，允许范围是0~0.5
+%regionExpanding_RGB:使用区域膨胀法将RGB图像分割单例化，并可使用edge函数额外辅助判定边界
+%inputImage:输入图像，指定为RGB图像，且感兴趣区域为满足颜色分布较为单一
+%degree:新像素允许单原色波动的范围数组，允许范围是0~1
 %outputNum:希望输出的至多图像个数，如果不输出或输入0，则会基于像素点个数下降梯度智能选择图像个数
-%estimated:感兴趣区域的灰度估计值，如果不输入，则会基于Otsu算法自动得到统计意义上的估计值
+%estimated:感兴趣区域的RGB估计值数组，如果不输入，则会基于Otsu算法自动得到统计意义上的估计值
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.0.0
+%version:1.0.1
 %author:jinshuguangze
 %data:4/29/2018
     
@@ -16,7 +16,7 @@
     %输入图像，限定为RGB，且感兴趣区域最好为单色，若为多色，可以多次输入后取并集
     p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
         {'size',[NaN,NaN,3],'integer' ,'nonnegative'},'regionExpanding_RGB','inputImage',1));
-    %单原色允许范围值，分三个通道限定为0到0.5之间的数，数字越小，运算越快
+    %单原色允许范围值，分三个通道限定为0到1之间的数，数字越小，运算越快
     p.addRequired('degree',@(x)validateattributes(x,{'double'},...
         {'size',[1,3],'>',0,'<=',1},'regionExpanding_Gray','degree',2));
     %输出图像的个数，如果不输入或者输入0，则默认输出包含像素个数梯度最大的点之前的所有图像
