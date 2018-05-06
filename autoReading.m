@@ -1,15 +1,15 @@
-%è‡ªåŠ¨è¯»å–è§’æœç‚¹äº‘å¹¶å¯¹é½
+%×Ô¶¯¶ÁÈ¡½Ç¹ûµãÔÆ²¢¶ÔÆë
 for i=1:4
     mat=zeros(1,7);
     mat(i+3)=1;
-    pc{i}=pcread(txt2pcd(mat,['C:\Users\é˜¿å¤\Desktop\ç‚¹äº‘æ•°æ®\æ–¹å‘',num2str(i)]));
-    pc{i}=pcdenoise(pc{i});
-    pcsample{i}=pcdownsample(pc{i},'gridAverage',0.2);
+    pc{i}=pcread(txt2pcd(mat,['C:\Users\40825\Desktop\µãÔÆÊı¾İ\·½Ïò',num2str(i)]));
+    %pc{i}=pcdenoise(pc{i});
 end
 
+pcCompose=pc{1};
 for i=2:4
-    pcTform=pcregistericp(pcsample{i},pcsample{1});
-    pcCompose=pcmerge(pc{1},pctransform(pc{i},pcTform),0.01);
+    pcTform=pcregistericp(pc{i},pcCompose,'Extrapolate',true,'MaxIterations',10000000,'Tolerance',[0.0001,0.0005]);
+    pcCompose=pcmerge(pc{1},pctransform(pc{i},pcTform),0.0001);
 end
 
 pcshow(pcCompose);
