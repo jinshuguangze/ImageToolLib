@@ -1,0 +1,11 @@
+oringnalImgae=imread('C:/Users/Default/Desktop/data.CR2');%读取
+oringnalImgae=autoRotating(oringnalImgae);%自动旋转
+grayImage=rgb2gray(oringnalImgae);%灰度化
+grayImage=autoCutting(grayImage);%自动切割多余成分
+fruitCell=regionExpanding_Gray(grayImage,0.1,0,0,'method','None','operator','Low');%分割出单个角果
+pureFruitCell=autoResecting(fruitCell);%去除角柄
+pureFruitCell=autoReducing(pureFruitCell);%缩减图像尺寸
+pureFruitCell=autoFixing(pureFruitCell);%将角果方向旋转至竖直
+pureFruitCell=autoReducing(pureFruitCell);%再次缩减图像尺寸
+pureFruitCell=autoFilling(pureFruitCell,'Medium');%填补角果图像中的空缺
+sizeData=dataAnalyzer(pureFruitCell);%获取角果估算数据

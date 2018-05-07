@@ -1,13 +1,13 @@
 function outputPath = txt2pcd(viewPoint,varargin)
 %txt2pcd:读取txt文件或者额外的数据文件转换为pcd文件并存储在第一个有效文件所在目录中
 %viewPoint:输入采集视点行向量，可以用来后续可能的坐标转换，或者求平面法线坐标，
-%               格式是平移(tx ty tz) + 四元数(qw qx qy qz)，默认是[0 0 0 1 0 0 0]
+%               格式是平移(tx ty tz) + 四元数(qw qx qy qz)，如果不确定，那就填写默认值[0 0 0 1 0 0 0]
 %varargin:输入文件，可以为常见格式RGB/灰度图像，也可以为txt点云数据，
 %             如果有多个有效txt文件输入，则将它们的位置数据合并，
 %             如果有多幅有效灰度图像输入，则后面的反射光数据会覆盖前面的反射光数据
 %             如果有多幅有效彩色图像输入，则后面的RGB数据会覆盖前面的RGB数据
 %outputPath:输出pcd文件的路径
-%version:1.0.8
+%version:1.0.9
 %author:jinshuguangze
 %data:5/4/2018
     
@@ -23,6 +23,7 @@ function outputPath = txt2pcd(viewPoint,varargin)
     positionData=[];%初始化坐标数据
     colorData=[];%初始化RGB数据
     intensityData=[];%初始化反射光数据
+    outputPath='';%初始化返回值
     
     for i=1:size(varargin,2)
         if ischar(varargin{i})
