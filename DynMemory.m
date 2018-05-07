@@ -88,7 +88,7 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
 		%			  如果是负数，则从头开始检测而不是从尾部开始检测，
 		%		      如果不输入，则会使用默认值，如果只输入一个值，那么会优先设置
 		%			  行数，并尝试将列数和行数参数变成一致，如果失败，则列数会设置成默认值
-        %version:1.0.6
+        %version:1.0.7
         %author:jinshuguangze
         %data:4/17/2018	
         
@@ -98,9 +98,9 @@ classdef(Sealed) DynMemory<handle%不允许继承，超类是抽象类handle
 			
 			p=inputParser;%构造检测器对象
 			p.addOptional('rowScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
-				{'scalar','nonzero','>',-row,'<',row},'refresh','rowScale',1));			
+				{'real','scalar','nonzero','>',-row,'<',row},'refresh','rowScale',1));			
 			p.addOptional('colScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
-				{'scalar','nonzero','>',-col,'<',col},'refresh','colScale',2));
+				{'real','scalar','nonzero','>',-col,'<',col},'refresh','colScale',2));
 			p.parse(varargin{:});	
             
 			rScale=p.Results.rowScale;%得到入口检验后的值

@@ -7,7 +7,7 @@
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.0.1
+%version:1.0.2
 %author:jinshuguangze
 %data:4/29/2018
     
@@ -18,13 +18,13 @@
         {'size',[NaN,NaN,3],'integer' ,'nonnegative'},'regionExpanding_RGB','inputImage',1));
     %单原色允许范围值，分三个通道限定为0到1之间的数，数字越小，运算越快
     p.addRequired('degree',@(x)validateattributes(x,{'double'},...
-        {'size',[1,3],'>',0,'<=',1},'regionExpanding_Gray','degree',2));
+        {'real','size',[1,3],'>',0,'<=',1},'regionExpanding_Gray','degree',2));
     %输出图像的个数，如果不输入或者输入0，则默认输出包含像素个数梯度最大的点之前的所有图像
     p.addOptional('outputNum',0,@(x)validateattributes(x,{'numeric'},...
         {'scalar','integer','nonnegative'},'regionExpanding_Gray','outputNum',3));   
     %估计值数组，即感兴趣区域的RGB估计值，若缺失则使用Otsu算法获得的分界点减去输入的各个单原色允许范围值
     p.addOptional('estimated','None',@(x)validateattributes(x,{'double'},...
-        {'size',[1,3],'>=',0,'<=',1},'regionExpanding_Gray','estimated',4));   
+        {'real','size',[1,3],'>=',0,'<=',1},'regionExpanding_Gray','estimated',4));   
     %识别边缘的方法，支持所有在库函数’edge‘中出现的方法，默认不使用边界额外判定即'None'
     p.addParameter('method','None',@(x)any(validatestring(x,...
         {'None','Sobel','Prewitt','Roberts','Log','Zerocross','Canny','Approxcanny'},'regionExpanding_Gray','method',5)));

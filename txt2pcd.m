@@ -1,104 +1,104 @@
 function outputPath = txt2pcd(viewPoint,varargin)
-%txt2pcd:¶ÁÈ¡txtÎÄ¼ş»òÕß¶îÍâµÄÊı¾İÎÄ¼ş×ª»»ÎªpcdÎÄ¼ş²¢´æ´¢ÔÚµÚÒ»¸öÓĞĞ§ÎÄ¼şËùÔÚÄ¿Â¼ÖĞ
-%viewPoint:ÊäÈë²É¼¯ÊÓµãĞĞÏòÁ¿£¬¿ÉÒÔÓÃÀ´ºóĞø¿ÉÄÜµÄ×ø±ê×ª»»£¬»òÕßÇóÆ½Ãæ·¨Ïß×ø±ê£¬
-%               ¸ñÊ½ÊÇÆ½ÒÆ(tx ty tz) + ËÄÔªÊı(qw qx qy qz)£¬Ä¬ÈÏÊÇ[0 0 0 1 0 0 0]
-%varargin:ÊäÈëÎÄ¼ş£¬¿ÉÒÔÎª³£¼û¸ñÊ½RGB/»Ò¶ÈÍ¼Ïñ£¬Ò²¿ÉÒÔÎªtxtµãÔÆÊı¾İ£¬
-%             Èç¹ûÓĞ¶à¸öÓĞĞ§txtÎÄ¼şÊäÈë£¬Ôò½«ËüÃÇµÄÎ»ÖÃÊı¾İºÏ²¢£¬
-%             Èç¹ûÓĞ¶à·ùÓĞĞ§»Ò¶ÈÍ¼ÏñÊäÈë£¬ÔòºóÃæµÄ·´Éä¹âÊı¾İ»á¸²¸ÇÇ°ÃæµÄ·´Éä¹âÊı¾İ
-%             Èç¹ûÓĞ¶à·ùÓĞĞ§²ÊÉ«Í¼ÏñÊäÈë£¬ÔòºóÃæµÄRGBÊı¾İ»á¸²¸ÇÇ°ÃæµÄRGBÊı¾İ
-%outputPath:Êä³öpcdÎÄ¼şµÄÂ·¾¶
-%version:1.0.7
+%txt2pcd:è¯»å–txtæ–‡ä»¶æˆ–è€…é¢å¤–çš„æ•°æ®æ–‡ä»¶è½¬æ¢ä¸ºpcdæ–‡ä»¶å¹¶å­˜å‚¨åœ¨ç¬¬ä¸€ä¸ªæœ‰æ•ˆæ–‡ä»¶æ‰€åœ¨ç›®å½•ä¸­
+%viewPoint:è¾“å…¥é‡‡é›†è§†ç‚¹è¡Œå‘é‡ï¼Œå¯ä»¥ç”¨æ¥åç»­å¯èƒ½çš„åæ ‡è½¬æ¢ï¼Œæˆ–è€…æ±‚å¹³é¢æ³•çº¿åæ ‡ï¼Œ
+%               æ ¼å¼æ˜¯å¹³ç§»(tx ty tz) + å››å…ƒæ•°(qw qx qy qz)ï¼Œé»˜è®¤æ˜¯[0 0 0 1 0 0 0]
+%varargin:è¾“å…¥æ–‡ä»¶ï¼Œå¯ä»¥ä¸ºå¸¸è§æ ¼å¼RGB/ç°åº¦å›¾åƒï¼Œä¹Ÿå¯ä»¥ä¸ºtxtç‚¹äº‘æ•°æ®ï¼Œ
+%             å¦‚æœæœ‰å¤šä¸ªæœ‰æ•ˆtxtæ–‡ä»¶è¾“å…¥ï¼Œåˆ™å°†å®ƒä»¬çš„ä½ç½®æ•°æ®åˆå¹¶ï¼Œ
+%             å¦‚æœæœ‰å¤šå¹…æœ‰æ•ˆç°åº¦å›¾åƒè¾“å…¥ï¼Œåˆ™åé¢çš„åå°„å…‰æ•°æ®ä¼šè¦†ç›–å‰é¢çš„åå°„å…‰æ•°æ®
+%             å¦‚æœæœ‰å¤šå¹…æœ‰æ•ˆå½©è‰²å›¾åƒè¾“å…¥ï¼Œåˆ™åé¢çš„RGBæ•°æ®ä¼šè¦†ç›–å‰é¢çš„RGBæ•°æ®
+%outputPath:è¾“å‡ºpcdæ–‡ä»¶çš„è·¯å¾„
+%version:1.0.8
 %author:jinshuguangze
 %data:5/4/2018
     
-    p=inputParser;%¹¹ÔìÈë¿Ú¼ì²âÆ÷£¬Ö»¼ì²éµÚÒ»¸ö²ÎÊı£º²É¼¯ÊÓµã
+    p=inputParser;%æ„é€ å…¥å£æ£€æµ‹å™¨ï¼Œåªæ£€æŸ¥ç¬¬ä¸€ä¸ªå‚æ•°ï¼šé‡‡é›†è§†ç‚¹
     p.addRequired('viewPoint',@(x)validateattributes(x,{'numeric'},...
-        {'size',[1,7]},'txt2pcd','viewPoint'));
+        {'real','finite','size',[1,7]},'txt2pcd','viewPoint'));
     p.parse(viewPoint);
     viewPoint=p.Results.viewPoint;
     
-    isLegalPath=0;%³õÊ¼»¯Ê×¸öºÏ·¨Â·¾¶Ö¸Ê¾Îï
-    handleList={};%³õÊ¼»¯´¦ÀíÁĞ±í
-    count=0;%³õÊ¼»¯´¦ÀíÁĞ±íÊıÄ¿
-    positionData=[];%³õÊ¼»¯×ø±êÊı¾İ
-    colorData=[];%³õÊ¼»¯RGBÊı¾İ
-    intensityData=[];%³õÊ¼»¯·´Éä¹âÊı¾İ
+    isLegalPath=0;%åˆå§‹åŒ–é¦–ä¸ªåˆæ³•è·¯å¾„æŒ‡ç¤ºç‰©
+    handleList={};%åˆå§‹åŒ–å¤„ç†åˆ—è¡¨
+    count=0;%åˆå§‹åŒ–å¤„ç†åˆ—è¡¨æ•°ç›®
+    positionData=[];%åˆå§‹åŒ–åæ ‡æ•°æ®
+    colorData=[];%åˆå§‹åŒ–RGBæ•°æ®
+    intensityData=[];%åˆå§‹åŒ–åå°„å…‰æ•°æ®
     
     for i=1:size(varargin,2)
         if ischar(varargin{i})
-            if isfolder(varargin{i})%Èç¹ûÊäÈëµÄÊÇÎÄ¼ş¼Ğ
-                files=dir(varargin{i});%»ñÈ¡ÎÄ¼ş¼ĞÏÂËùÓĞµ¥²ãÎÄ¼ş
-                for j=1:size(files,1)%½«ÓĞĞ§ÎÄ¼şÃûÈ«²¿ÊäÈëµ½´¦ÀíÁĞ±íÀïÃæ
+            if isfolder(varargin{i})%å¦‚æœè¾“å…¥çš„æ˜¯æ–‡ä»¶å¤¹
+                files=dir(varargin{i});%è·å–æ–‡ä»¶å¤¹ä¸‹æ‰€æœ‰å•å±‚æ–‡ä»¶
+                for j=1:size(files,1)%å°†æœ‰æ•ˆæ–‡ä»¶åå…¨éƒ¨è¾“å…¥åˆ°å¤„ç†åˆ—è¡¨é‡Œé¢
                     if ~strcmp(files(j).name,'.') && ~strcmp(files(j).name,'..')
                         count=count+1;
                         handleList{count}=[varargin{i},'\',files(j).name];
                     end
                 end
-            elseif isfile(varargin{i})%Èç¹ûÊäÈëµÄÊÇÎÄ¼ş
+            elseif isfile(varargin{i})%å¦‚æœè¾“å…¥çš„æ˜¯æ–‡ä»¶
                 handleList{count}=varargin{i};
             end
         else
-            disp('ÊäÈëµÄµÚ',num2str(i),'¸öÂ·¾¶ÎŞĞ§£¬ÒÑºöÂÔ¸ÃÊı¾İ£¡');
+            disp('è¾“å…¥çš„ç¬¬',num2str(i),'ä¸ªè·¯å¾„æ— æ•ˆï¼Œå·²å¿½ç•¥è¯¥æ•°æ®ï¼');
         end
     end
     
-    for i=1:count%´¦ÀíÁĞ±í
+    for i=1:count%å¤„ç†åˆ—è¡¨
         try
-            [filepath,~,ext]=fileparts(handleList{i});%·ÖÀëÂ·¾¶
+            [filepath,~,ext]=fileparts(handleList{i});%åˆ†ç¦»è·¯å¾„
             if ~isLegalPath
-                if ~isempty(filepath)%Èç¹ûÊÇºÏ·¨Â·¾¶
-                    outputPath=[filepath,'\',strrep(datestr(now),':','-'),'.pcd'];%Êä³öÂ·¾¶
+                if ~isempty(filepath)%å¦‚æœæ˜¯åˆæ³•è·¯å¾„
+                    outputPath=[filepath,'\',strrep(datestr(now),':','-'),'.pcd'];%è¾“å‡ºè·¯å¾„
                     isLegalPath=1;
                 end
             end
            
-            switch ext%¶ÁÈ¡ÎÄ¼ş¸ñÊ½
-                case '.jpg' | '.png' | '.bmp'%Í¼ÏñÎÄ¼ş
+            switch ext%è¯»å–æ–‡ä»¶æ ¼å¼
+                case '.jpg' | '.png' | '.bmp'%å›¾åƒæ–‡ä»¶
                     temp=imread(handleList{i});
-                    if size(temp,3)==1%Èç¹ûÊÇ»Ò¶ÈÍ¼Ïñ£¬Ôò¸³Öµ¸ø·´Éä¹âÊı¾İ
+                    if size(temp,3)==1%å¦‚æœæ˜¯ç°åº¦å›¾åƒï¼Œåˆ™èµ‹å€¼ç»™åå°„å…‰æ•°æ®
                         intensityData=temp;
-                    elseif size(temp,3)==3%Èç¹ûÊÇ²ÊÉ«Í¼Ïñ£¬Ôò¸³Öµ¸øRGBÊı¾İ
+                    elseif size(temp,3)==3%å¦‚æœæ˜¯å½©è‰²å›¾åƒï¼Œåˆ™èµ‹å€¼ç»™RGBæ•°æ®
                         colorData=temp;
                     end
                     
-                case '.txt'%ÎÄ±¾ÎÄµµ
+                case '.txt'%æ–‡æœ¬æ–‡æ¡£
                     positionData=[positionData;load(handleList{i})];
                     
-                otherwise%²»Ö§³ÖµÄ¸ñÊ½
-                    disp(['´¦ÀíÁĞ±íÖĞµÄµÚ',num2str(i),'¸öÎÄ¼şµÄ¸ñÊ½²»±»Ö§³Ö£¬ÒÑºöÂÔ¸ÃÊı¾İ£¡']);
+                otherwise%ä¸æ”¯æŒçš„æ ¼å¼
+                    disp(['å¤„ç†åˆ—è¡¨ä¸­çš„ç¬¬',num2str(i),'ä¸ªæ–‡ä»¶çš„æ ¼å¼ä¸è¢«æ”¯æŒï¼Œå·²å¿½ç•¥è¯¥æ•°æ®ï¼']);
             end
-        catch%²»ÊÇÓĞĞ§Â·¾¶
-            disp(['´¦ÀíÁĞ±íÖĞµÄµÚ',num2str(i),'¸öÂ·¾¶ÎŞĞ§£¬ÒÑºöÂÔ¸ÃÊı¾İ£¡']);
+        catch%ä¸æ˜¯æœ‰æ•ˆè·¯å¾„
+            disp(['å¤„ç†åˆ—è¡¨ä¸­çš„ç¬¬',num2str(i),'ä¸ªè·¯å¾„æ— æ•ˆï¼Œå·²å¿½ç•¥è¯¥æ•°æ®ï¼']);
         end
     end
     
-    if isempty(positionData)%ÖÁÉÙĞèÒªÓĞÒ»¸ö×ø±êÊı¾İ
-        disp('ÇëÖÁÉÙÊäÈëÒ»¸ötxtÎÄ¼ş£¡');
+    if isempty(positionData)%è‡³å°‘éœ€è¦æœ‰ä¸€ä¸ªåæ ‡æ•°æ®
+        disp('è¯·è‡³å°‘è¾“å…¥ä¸€ä¸ªtxtæ–‡ä»¶ï¼');
         return;
     else
-        Fields='FIELDS x y z';%ÎŞÆäËûÊı¾İÏÂµÄÔ¤Éè
+        Fields='FIELDS x y z';%æ— å…¶ä»–æ•°æ®ä¸‹çš„é¢„è®¾
         Size='SIZE 4 4 4';
         Type='TYPE F F F';
         Count='COUNT 1 1 1';
-        Width=size(positionData,1);%»ñÈ¡×ø±êÊı¾İ¸öÊı
-        %½«ÎŞ¹Ø±äÁ¿´ÓcolorDataºÍintensityDataÖĞÌŞ³ı£¬TODO
-        Data=horzcat(positionData,colorData,intensityData);%Æ´½ÓËùÓĞÊı¾İ
+        Width=size(positionData,1);%è·å–åæ ‡æ•°æ®ä¸ªæ•°
+        %å°†æ— å…³å˜é‡ä»colorDataå’ŒintensityDataä¸­å‰”é™¤ï¼ŒTODO
+        Data=horzcat(positionData,colorData,intensityData);%æ‹¼æ¥æ‰€æœ‰æ•°æ®
         
-        if ~isempty(colorData)%Èç¹û´æÔÚRGBÊı¾İ
+        if ~isempty(colorData)%å¦‚æœå­˜åœ¨RGBæ•°æ®
             Fields=[Fields,' r g b'];
             Size=[Size,' 1 1 1'];
             Type=[Type,' U U U'];
             Count=[Count,' 1 1 1'];
         end
         
-        if ~isempty(intensityData)%Èç¹û´æÔÚ·´Éä¹âÊı¾İ
+        if ~isempty(intensityData)%å¦‚æœå­˜åœ¨åå°„å…‰æ•°æ®
             Fields=[Fields,' intensity'];
             Size=[Size,' 1'];
             Type=[Type,' U'];
             Count=[Count,' 1'];         
         end
  
-        try%´´½¨ÎÄ¼ş£¬Ğ´ÈëÊı¾İ
+        try%åˆ›å»ºæ–‡ä»¶ï¼Œå†™å…¥æ•°æ®
             pcdFile=fopen(outputPath,'w+','n','GBK');
             fprintf(pcdFile,'%s\r\n','#.PCD v0.7 - The .pcd file is created automatically by the function txt2pcd.m');
             fprintf(pcdFile,'%s\r\n','VERSION 0.7');
@@ -116,7 +116,7 @@ function outputPath = txt2pcd(viewPoint,varargin)
             end
             fclose(pcdFile);
         catch
-            disp('¶ÁĞ´ÎÄ¼ş³öÏÖÎ´Öª´íÎó£¡');
+            disp('è¯»å†™æ–‡ä»¶å‡ºç°æœªçŸ¥é”™è¯¯ï¼');
             fclose(pcdFile);
             return;
         end

@@ -1,10 +1,10 @@
-function outputImages = regionExpanding_Gray(inputImage,varargin)
+function outputImages = regionExpanding(inputImage,varargin)
 %regionExpanding:使用区域膨胀法将灰度图像分割单例化
 %inputImage:输入图像，可以为灰度图像或者二值图像或者RGB
 %filter:给定初始灰度阈值
 %degree:给定新像素允许灰度波动最大值
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%versin:1.0.4
+%versin:1.0.5
 %author:jinshuguangze
 %data:4/13/2018
 %TODO:写个自动分配内存器(√)，入口检查(easyGG)，支持RGB等，取消filter参数改为自动判断
@@ -20,9 +20,9 @@ function outputImages = regionExpanding_Gray(inputImage,varargin)
         {'sclar','integer','positive'},'regionExpanding_Gray'),'number',2);
     
     p.addOptional('estimated',@(x)validateattributes(x,{'double'},...%灰度估计值
-        {'sclar','>=',0,'<=',1},'regionExpanding_Gray'),'estimated',3);
+        {'real','sclar','>=',0,'<=',1},'regionExpanding_Gray'),'estimated',3);
     p.addOptional('degree',@(x)validateattributes(x,{'double'},...%灰度范围值
-        {'sclar','>',0,'<',0.5},'regionExpanding_Gray'),'degree',4);
+        {'real','sclar','>',0,'<',0.5},'regionExpanding_Gray'),'degree',4);
     p.addParameter('method','Canny',@(x)any(validatestring(x,...
         {'Sobel','Prewitt','Roberts','Log','Zerocross','Approxcanny'})));%计算边缘的方式，支持多种‘Sobel’,'PR...')如果在算子合并过程中出现时边缘的情况，
     %存储变量告知像素，这个方向不再检测
