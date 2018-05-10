@@ -7,7 +7,7 @@
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.0.2
+%version:1.0.4
 %author:jinshuguangze
 %data:4/29/2018
     
@@ -168,7 +168,8 @@
                     %存入聚集数组并填入信息
                     count=count+1;%输出图像数量增加
                     gather{count,1}=zeros(bottom-top+1,right-left+1);%背景色默认为白
-                    gather{count,2}=size(fulfilList,1);%第二维存入像素点个数信息
+                    gather{count,2}=size(fulfilList,1);%第二列存入像素点个数信息
+                    gather{count,3}=[fulfilList(end,1),fulfilList(end,2)];%第三列存入该图像初始聚集像素位置
                     for k=1:size(fulfilList,1)%填入图像各个通道色彩信息
                         gather{count,1}(fulfilList(k,1)-top+1,fulfilList(k,2)-left+1,1)=fulfilList(k,3);
                         gather{count,1}(fulfilList(k,1)-top+1,fulfilList(k,2)-left+1,2)=fulfilList(k,4);
@@ -185,28 +186,29 @@
     elseif count==1%只有一副图像，直接输出
         outputImages{1}=gather{1,1};
     else%有多幅图像，用冒泡排序降序排列
+        outputImages={};%初始化输出图像细胞数组
         for i=1:count
             for j=2:count
                 if gather{j-1,2}<gather{j,2}
                     tempA=gather{j-1,1};%交换两行
                     tempB=gather{j-1,2};
+                    tempC=gather{j-1,3};
                     gather{j-1,1}=gather{j,1};
                     gather{j-1,2}=gather{j,2};
+                    gather{j-1,3}=gather{j,3};
                     gather{j,1}=tempA;
                     gather{j,2}=tempB;
+                    gather{j,3}=tempC;
                 end
             end
         end
         
+        %决定真实输出数量
         if outputNum%如果规定了输出图像数目
-            if count>outputNum%输出指定数量图像
-                for i=1:outputNum
-                    outputImages{i}=gather{i,1};
-                end
+            if count>outputNum%输出指定数量图像             
+                indexMax=outputNum;%输出数量为规定数量
             else%输出所有图像
-                for i=1:count
-                    outputImages{i}=gather{i,1};
-                end
+                indexMax=count;%输出数量为总数
             end
         else%如果没有规定输出图像数目，则选择梯度下降最陡的点之前的图像
             maxGrad=0;%初始化最大梯度
@@ -216,8 +218,20 @@
                     indexMax=i-1;%记录此序号
                 end
             end
-            for i=1:indexMax
-                outputImages{i}=gather{i,1};
+        end
+        
+        %根据排列顺序决定输出顺序
+        orderSign=[];%初始化顺序标号数组
+        for i=1:indexMax%提取所有输出图片的顺序标号
+            orderSign=[orderSign;gather{i,3}];
+        end
+        [rowCell,tform]=blindLayer(orderSign(:,1));%获取每行的坐标聚集
+        
+        for i=1:size(rowCell,2)%每一行的坐标迭代
+            for j=1:size(rowCell{i},1)%每一行的一列迭代
+                [~,index]=min(orderSign(tform{i},2));%找到最小的列坐标的序号
+                orderSign(tform{i}(index),2)=col+1;%将此坐标移出图外
+                outputImages=[outputImages,gather{tform{i}(index),1}];%拼接输出图像细胞数组
             end
         end
     end

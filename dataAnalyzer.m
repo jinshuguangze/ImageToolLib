@@ -2,7 +2,7 @@ function data = dataAnalyzer(varargin)
 %dataAnalyzer:得到角果面积与体积等参数
 %varargin:可变参数，输入的单例图像或单例图像细胞数组
 %data:输出每个对应单例图像的相应参数的结构体
-%versin:1.0.1
+%versin:1.0.2
 %author:jinshuguangze
 %data:4/13/2018
 %TODO:增加更多输出参数，将data设置成可变长度
@@ -20,7 +20,7 @@ function data = dataAnalyzer(varargin)
                     vstruct=varargin{i};
                 end
                 [row,col]=size(vstruct);%获得图像大小
-                area=0;%初始化体积计算器
+                area=0;%初始化体积计数器
                 total=0;%初始化总体计数器
                 for j=1:row
                     count=0;%初始化行计数器
