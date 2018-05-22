@@ -7,7 +7,7 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.1.8
+%version:1.1.9
 %author:jinshuguangze
 %data:4/13/2018
 %
@@ -219,12 +219,15 @@ function outputImages = regionExpanding_Gray(inputImage,degree,varargin)
             orderSign=[orderSign;gather{i,3}];
         end
         [rowCell,tform]=blindLayer(orderSign(:,1));%获取每行的坐标聚集
-        
-        for i=1:size(rowCell,2)%每一行的坐标迭代
-            for j=1:size(rowCell{i},1)%每一行的一列迭代
-                [~,index]=min(orderSign(tform{i},2));%找到最小的列坐标的序号
-                orderSign(tform{i}(index),2)=col+1;%将此坐标移出图外
-                outputImages=[outputImages,gather{tform{i}(index),1}];%拼接输出图像细胞数组
+        if isempty(rowCell) || isempty(tform)%如果排序失败，使用包含像素多少降序排列
+            outputImages=gather(1:indexMax,1);
+        else%排序成功，使用行列排序
+            for i=1:size(rowCell,2)%每一行的坐标迭代
+                for j=1:size(rowCell{i},1)%每一行的一列迭代
+                    [~,index]=min(orderSign(tform{i},2));%找到最小的列坐标的序号
+                    orderSign(tform{i}(index),2)=col+1;%将此坐标移出图外
+                    outputImages=[outputImages,gather{tform{i}(index),1}];%拼接输出图像细胞数组
+                end
             end
         end
     end

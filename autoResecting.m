@@ -2,14 +2,14 @@ function outputImage = autoResecting(inputImage)
 %autoResecting:去除角果的柄和末端等无效物质
 %inputImage:可以输入单例图像或图像细胞行向量
 %outputImage:去除物质后的图像细胞数组
-%version:1.0.7
+%version:1.0.9
 %author:jinshuguangze
 %data:5/6/2018
     
     outputImage={};%初始化输出
     if iscell(inputImage) && isrow(inputImage)%将单例图和转换为细胞数组处理表
         handleList=inputImage;
-    elseif ismatrix(inputImage)
+    elseif isnumeric(inputImage) && (ismatrix(inputImage) || ndims(inputImage)==3)%正常的RGB/灰度图像
         handleList{1}=inputImage;
     else
         disp('输入类型错误！');

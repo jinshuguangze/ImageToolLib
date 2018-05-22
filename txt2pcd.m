@@ -13,7 +13,7 @@ function outputPath = txt2pcd(viewPoint,varargin)
     
     p=inputParser;%构造入口检测器，只检查第一个参数：采集视点
     p.addRequired('viewPoint',@(x)validateattributes(x,{'numeric'},...
-        {'real','finite','size',[1,7]},'txt2pcd','viewPoint'));
+        {'real','finite','size',[1,7]},'txt2pcd','viewPoint',1));
     p.parse(viewPoint);
     viewPoint=p.Results.viewPoint;
     

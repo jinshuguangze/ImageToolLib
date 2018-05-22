@@ -3,14 +3,14 @@ function outputImage = autoFilling(inputImage,varargin)
 %inputImage:可以输入单例图像或图像细胞行向量
 %operator:邻域算子等级，可以选择‘Low‘，’Medium‘，’High‘，’Extra‘四个等级
 %outputImage:自动填充后的图像细胞数组
-%version:1.0.4
+%version:1.0.5
 %author:jinshuguangze
 %data:5/7/2018
 
     outputImage={};%初始化输出
     if iscell(inputImage) && isrow(inputImage)%将单例图和转换为细胞数组处理表
         handleList=inputImage;
-    elseif ismatrix(inputImage)
+    elseif isnumeric(inputImage) && (ismatrix(inputImage) || ndims(inputImage)==3)%正常的RGB/灰度图像
         handleList{1}=inputImage;
     else
         disp('输入类型错误！');
