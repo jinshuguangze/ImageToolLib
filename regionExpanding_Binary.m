@@ -77,7 +77,7 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
     for i=1:row
         for j=1:col
             if ~stateImage(i,j) 
-                if ~inputImage(i,j)%如果为白色，则标记
+                if inputImage(i,j)%如果为白色，则标记
                     stateImage(i,j)=1;
                 else
                     %初始化预设值    
@@ -109,7 +109,7 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
                                     continue;
                                 end
                                     
-                                if ~inputImage(x,y)%如果不满足阈值
+                                if inputImage(x,y)%如果不满足阈值
                                     stateImage(x,y)=1;%更新状态，不是黑点
                                 else%如果满足阈值
                                     stateImage(x,y)=2;%更新状态，未检测邻域

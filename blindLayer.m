@@ -4,7 +4,7 @@ function [outputData,tform] = blindLayer(inputData,varargin)
 %range:当分层数为一时，判断为有效的阈值，范围是(0,,1]，如果不输入，则默认为0.9
 %outputData:已经分好层的细胞数组，每层均值是由小到大
 %tform:记录输出数据中，数据在输入数组中的原始位置，即inputData(:)中的下标
-%version:1.0.6
+%version:1.0.7
 %author:jinshuguangze
 %data:5/9/2018
 
@@ -20,10 +20,10 @@ function [outputData,tform] = blindLayer(inputData,varargin)
     outputData={};%初始化输出数据
     tform={};%初始化转换细胞数组
     thresh={};%初始化分割细胞数组
-    metric={};%初始化评判细胞数组
+    metric=[];%初始化评判细胞数组
     
     warning('off','all');%暂时取消由于算法本身的警告显示
-    for i=1:(size(inputData,1)-1)%得到所有节点个数情况下的分组和有效度
+    for i=1:min(20,(size(inputData,1)-1))%得到所有节点个数情况下的分组和有效度
         [thresh{i},metric(i)]=multithresh(inputData,i);
     end
     warning('on','all');%再次开启
