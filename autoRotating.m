@@ -2,7 +2,7 @@ function outputImage = autoRotating(inputImage)
 %autoRotating:用于自动将图像旋转至长度大于高度
 %inputImage:输入图像，可以为任意类型图像
 %outputImage:输出图像，与输入图像类型一致
-%versin:1.0.2
+%version:1.0.4
 %author:jinshuguangze
 %data:4/9/2018
 
@@ -10,7 +10,7 @@ function outputImage = autoRotating(inputImage)
     outputImage=inputImage;
     
     %入口判断，判断是否为数组型数组
-    if(~isnumeric(inputImage))
+    if ~(isnumeric(inputImage) || islogical(inputImage))
         disp('请输入图像！');
         return;
     end

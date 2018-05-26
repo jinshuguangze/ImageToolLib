@@ -4,7 +4,7 @@ function outputImages = regionExpanding(inputImage,varargin)
 %filter:给定初始灰度阈值
 %degree:给定新像素允许灰度波动最大值
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%versin:1.0.5
+%version:1.0.6
 %author:jinshuguangze
 %data:4/13/2018
 %TODO:写个自动分配内存器(√)，入口检查(easyGG)，支持RGB等，取消filter参数改为自动判断

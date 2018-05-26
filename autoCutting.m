@@ -1,21 +1,20 @@
 function outputImage = autoCutting(inputImage)
 %autoCutting:用于自动切割出信息密度更大的图像
-%inputImage:输入图像，可以为灰度图像或者二值图像
-%outputImage:输出图像，与输入图像类型一致
-%versin:1.0.5
+%inputImage:输入图像，限定为RGB图像
+%outputImage:输出图像，经过剪切
+%version:1.1.2
 %author:jinshuguangze
 %data:4/9/2018
 
-    %入口判断，判断是否为数值型二维数组
-    if(~isnumeric(inputImage)||~ismatrix(inputImage)...
-        ||size(inputImage,1)<2||size(inputImage,2)<2)
-         disp('请输入二值或灰度图像！');
-         outputImage=inputImage;%如果不满足条件，则输出原图
-         return;
-    end
+    p=inputParser;%构造检测器对象
+    p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
+        {'size',[NaN,NaN,3],'integer' ,'nonnegative'},'autoCutting','inputImage',1));
+    p.parse(inputImage);
+    inputImage=p.Results.inputImage;
     
     %利用霍夫变换找出合适线段
-    edgeImage=edge(inputImage,'canny');%可加参数
+    grayImage=rgb2gray(inputImage);
+    edgeImage=edge(grayImage,'Canny');%可加参数
     [Hough,Theta,Rho]=hough(edgeImage,'RhoResolution',1,'Theta',-60:0.5:60);
     Points=houghpeaks(Hough,10,'Threshold',0.5*max(Hough(:)));%'NHoodSize':Default
     Lines=houghlines(edgeImage,Theta,Rho,Points,'FillGap',20,'MinLength',40);

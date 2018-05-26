@@ -1,7 +1,7 @@
 function mutishow(varargin)
 %mutishow:用于更快的弹出对比图像窗口
 %varargin:可变参数，输入数量不定的图像，支持普通数组与对应一维细胞数组集合
-%versin:1.0.5
+%version:1.0.6
 %author:jinshuguangze
 %data:3/22/2018
 
