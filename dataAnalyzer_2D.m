@@ -1,51 +1,51 @@
 function dataCell = dataAnalyzer_2D(inputImage,scale)
-%dataAnalyzer_2D:è¾“å…¥å›¾åƒï¼Œåˆ†æè§’æœå„æ–¹é¢æ•°æ®
-%inputImage:å¯ä»¥è¾“å…¥å•ä¾‹å›¾åƒæˆ–å›¾åƒç»†èƒè¡Œå‘é‡
-%scale:åƒç´ å’ŒçœŸå®é•¿åº¦çš„æ¯”ä¾‹ï¼Œå•ä½ï¼šæ¯«ç±³/åƒç´ 
-%outputImage:æ•°æ®ç»†èƒæ•°ç»„ï¼Œæ¯ä¸ªç»†èƒå†…å«ä¸€ä¸ªæ•°æ®ç»“æ„
+%dataAnalyzer_2D:ÊäÈëÍ¼Ïñ£¬·ÖÎö½Ç¹û¸÷·½ÃæÊı¾İ
+%inputImage:¿ÉÒÔÊäÈëµ¥ÀıÍ¼Ïñ»òÍ¼ÏñÏ¸°ûĞĞÏòÁ¿
+%scale:ÏñËØºÍÕæÊµ³¤¶ÈµÄ±ÈÀı£¬µ¥Î»£ººÁÃ×/ÏñËØ
+%outputImage:Êı¾İÏ¸°ûÊı×é£¬Ã¿¸öÏ¸°ûÄÚº¬Ò»¸öÊı¾İ½á¹¹
 %version:1.2.5
 %author:jinsuguangze
 %data:5/8/2018
     
-    %å…¥å£æ£€æµ‹æ¨¡å—
-    dataCell={};%åˆå§‹åŒ–è¾“å‡º
-    if iscell(inputImage) && isrow(inputImage)%å°†å•ä¾‹å›¾å’Œè½¬æ¢ä¸ºç»†èƒæ•°ç»„å¤„ç†è¡¨
+    %Èë¿Ú¼ì²âÄ£¿é
+    dataCell={};%³õÊ¼»¯Êä³ö
+    if iscell(inputImage) && isrow(inputImage)%½«µ¥ÀıÍ¼ºÍ×ª»»ÎªÏ¸°ûÊı×é´¦Àí±í
         handleList=inputImage;
     elseif ismatrix(inputImage)
         handleList{1}=inputImage;
     else
-        disp('è¾“å…¥ç±»å‹é”™è¯¯ï¼');
+        disp('ÊäÈëÀàĞÍ´íÎó£¡');
         return;
     end
-    num=size(handleList,2);%å¤„ç†åˆ—è¡¨çš„ä¸ªæ•°
+    num=size(handleList,2);%´¦ÀíÁĞ±íµÄ¸öÊı
     
-    p=inputParser;%æ„é€ å…¥å£æ£€æµ‹å¯¹è±¡
+    p=inputParser;%¹¹ÔìÈë¿Ú¼ì²â¶ÔÏó
     p.addRequired('scale',@(x)validateattributes(x,{'numeric'},...
         {'real','finite','scalar','positive'},'dataAnalyzer_2D','scale',2));
     p.parse(scale);
     scale=p.Results.scale;
     
     for i=1:num
-        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%å…¥å£æ£€æµ‹
-        handleList{i}=im2double(handleList{i});%å°†å›¾åƒåŒç²¾åº¦åŒ–
-        [row,~,~]=size(handleList{i});%è·å–å›¾åƒå°ºå¯¸çš„è¡Œæ•°
-        outerLeft=[];%åˆå§‹åŒ–å·¦å¤–å±‚ç‚¹
-        outerRight=[];%åˆå§‹åŒ–å³å¤–å±‚ç‚¹
-        skeleton=[];%åˆå§‹åŒ–éª¨æ¶ç‚¹åæ ‡
-        lengthLeft=0;%åˆå§‹åŒ–å·¦è¾¹ç¼˜é•¿åº¦
-        lengthMid=0;%åˆå§‹åŒ–éª¨æ¶é•¿åº¦
-        lengthRight=0;%åˆå§‹åŒ–å³è¾¹ç¼˜é•¿åº¦
+        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%Èë¿Ú¼ì²â
+        handleList{i}=im2double(handleList{i});%½«Í¼ÏñË«¾«¶È»¯
+        [row,~,~]=size(handleList{i});%»ñÈ¡Í¼Ïñ³ß´çµÄĞĞÊı
+        outerLeft=[];%³õÊ¼»¯×óÍâ²ãµã
+        outerRight=[];%³õÊ¼»¯ÓÒÍâ²ãµã
+        skeleton=[];%³õÊ¼»¯¹Ç¼Üµã×ø±ê
+        lengthLeft=0;%³õÊ¼»¯×ó±ßÔµ³¤¶È
+        lengthMid=0;%³õÊ¼»¯¹Ç¼Ü³¤¶È
+        lengthRight=0;%³õÊ¼»¯ÓÒ±ßÔµ³¤¶È
         
-        %åˆ†æåƒç´ æ¨¡å—
-        for j=1:row%æ¯è¡Œè¿­ä»£
-            rowIndex=find(handleList{i}(j,:,:)<1);%è·å–ä¸€è¡Œä¸Šçš„æ‰€æœ‰è§’æœåƒç´ çš„æ ‡å·æ•°ç»„
-            if ~isempty(rowIndex)%å¦‚æœè¯¥è¡Œå­˜åœ¨åƒç´ 
-                outerLeft=[outerLeft;j,rowIndex(1)];%å­˜å‚¨æœ€å·¦å€¼
-                outerRight=[outerRight;j,rowIndex(end)];%å­˜å‚¨æœ€å³å€¼
-                diameter(j,1)=rowIndex(end)-rowIndex(1)+1;%ç›´å¾„ï¼ˆåƒç´ ï¼‰
-                skeleton=[skeleton;j,rowIndex(1)+floor(diameter(j)/2)];%å­˜å‚¨éª¨æ¶ç‚¹ï¼Œå‘ä¸‹å–æ•´é˜²æ­¢åªæœ‰ä¸€ä¸ªç‚¹çš„æƒ…å†µ 
+        %·ÖÎöÏñËØÄ£¿é
+        for j=1:row%Ã¿ĞĞµü´ú
+            rowIndex=find(handleList{i}(j,:,:)<1);%»ñÈ¡Ò»ĞĞÉÏµÄËùÓĞ½Ç¹ûÏñËØµÄ±êºÅÊı×é
+            if ~isempty(rowIndex)%Èç¹û¸ÃĞĞ´æÔÚÏñËØ
+                outerLeft=[outerLeft;j,rowIndex(1)];%´æ´¢×î×óÖµ
+                outerRight=[outerRight;j,rowIndex(end)];%´æ´¢×îÓÒÖµ
+                diameter(j,1)=rowIndex(end)-rowIndex(1)+1;%Ö±¾¶£¨ÏñËØ£©
+                skeleton=[skeleton;j,rowIndex(1)+floor(diameter(j)/2)];%´æ´¢¹Ç¼Üµã£¬ÏòÏÂÈ¡Õû·ÀÖ¹Ö»ÓĞÒ»¸öµãµÄÇé¿ö 
                 if j>1
-                    %æ›´æ–°å·¦å³è¾¹ç¼˜ä¸éª¨æ¶é•¿åº¦ï¼ˆåƒç´ ï¼‰
+                    %¸üĞÂ×óÓÒ±ßÔµÓë¹Ç¼Ü³¤¶È£¨ÏñËØ£©
                     lengthLeft=lengthLeft+pdist([outerLeft(end,1),outerLeft(end,2);...
                         outerLeft(end-1,1),outerLeft(end-1,2)]);
                     lengthMid=lengthMid+pdist([skeleton(end,1),skeleton(end,2);...
@@ -54,90 +54,90 @@ function dataCell = dataAnalyzer_2D(inputImage,scale)
                         outerRight(end-1,1),outerRight(end-1,2)]);
                 end
             else
-                diameter(j,1)=0;%æ²¡æœ‰æ»¡è¶³çš„åƒç´ ç›´å¾„ç½®é›¶
+                diameter(j,1)=0;%Ã»ÓĞÂú×ãµÄÏñËØÖ±¾¶ÖÃÁã
             end
         end
         
-        dataCell{i}.outerLeft=outerLeft;%å­˜å‚¨å·¦å¤–å±‚ç‚¹åæ ‡çš„å­—æ®µ
-        dataCell{i}.outerRight=outerRight;%å­˜å‚¨å³å¤–å±‚ç‚¹åæ ‡çš„å­—æ®µ    
-        dataCell{i}.skeleton=skeleton;%å­˜å‚¨éª¨æ¶ç‚¹åæ ‡å­—æ®µ
-        dataCell{i}.diameter=diameter*scale;%å­˜å‚¨ç›´å¾„å­—æ®µ
-        dataCell{i}.advDiameter=mean(diameter(floor(row/3):ceil(row*2/3)))*scale;%å­˜å‚¨å¹³å‡æ ¸å¿ƒç›´å¾„
-        dataCell{i}.lengthLeft=lengthLeft*scale;%å­˜å‚¨å·¦è¾¹ç¼˜é•¿åº¦å­—æ®µ
-        dataCell{i}.lengthMid=lengthMid*scale;%å­˜å‚¨éª¨æ¶é•¿åº¦å­—æ®µ
-        dataCell{i}.lengthRight=lengthRight*scale;%å­˜å‚¨å³è¾¹ç¼˜é•¿åº¦å­—æ®µ
-        dataCell{i}.area=sum(diameter*scale^2);%å­˜å‚¨é¢ç§¯å­—æ®µ
-        dataCell{i}.fruitCountExp=floor(lengthLeft*scale/5)+floor(lengthRight*scale/5)+2;%å­˜å‚¨ç”¨ç»éªŒæ³•ä¼°ç®—ç±½çš„æ•°ç›®
+        dataCell{i}.outerLeft=outerLeft;%´æ´¢×óÍâ²ãµã×ø±êµÄ×Ö¶Î
+        dataCell{i}.outerRight=outerRight;%´æ´¢ÓÒÍâ²ãµã×ø±êµÄ×Ö¶Î    
+        dataCell{i}.skeleton=skeleton;%´æ´¢¹Ç¼Üµã×ø±ê×Ö¶Î
+        dataCell{i}.diameter=diameter*scale;%´æ´¢Ö±¾¶×Ö¶Î
+        dataCell{i}.advDiameter=mean(diameter(floor(row/3):ceil(row*2/3)))*scale;%´æ´¢Æ½¾ùºËĞÄÖ±¾¶
+        dataCell{i}.lengthLeft=lengthLeft*scale;%´æ´¢×ó±ßÔµ³¤¶È×Ö¶Î
+        dataCell{i}.lengthMid=lengthMid*scale;%´æ´¢¹Ç¼Ü³¤¶È×Ö¶Î
+        dataCell{i}.lengthRight=lengthRight*scale;%´æ´¢ÓÒ±ßÔµ³¤¶È×Ö¶Î
+        dataCell{i}.area=sum(diameter*scale^2);%´æ´¢Ãæ»ı×Ö¶Î
+        dataCell{i}.fruitCountExp=floor(lengthLeft*scale/5)+floor(lengthRight*scale/5)+2;%´æ´¢ÓÃ¾­Ñé·¨¹ÀËã×ÑµÄÊıÄ¿
         
-        %æ›²çº¿æ‹Ÿåˆæ¨¡å—
-        options = fitoptions('Method','Smooth','SmoothingParam',0.001);%é¢„è®¾é€‰é¡¹
-        [xLeft,yLeft]=prepareCurveData(skeleton(:,1),skeleton(:,2)-outerLeft(:,2));%å¯¹è¾“å…¥è¿›è¡Œé‡å¡‘
+        %ÇúÏßÄâºÏÄ£¿é
+        options = fitoptions('Method','Smooth','SmoothingParam',0.001);%Ô¤ÉèÑ¡Ïî
+        [xLeft,yLeft]=prepareCurveData(skeleton(:,1),skeleton(:,2)-outerLeft(:,2));%¶ÔÊäÈë½øĞĞÖØËÜ
         [xRight,yRight]=prepareCurveData(skeleton(:,1),outerRight(:,2)-skeleton(:,2));
-        funcLeft = fit(xLeft,yLeft,'smooth',options);%æ›²çº¿æ‹Ÿåˆ
+        funcLeft = fit(xLeft,yLeft,'smooth',options);%ÇúÏßÄâºÏ
         funcRight = fit(xRight,yRight,'smooth',options);
-        [derifuncLeft1,derifuncLeft2]=differentiate(funcLeft,skeleton(:,1));%å¾—åˆ°å¯¼æ•°å’ŒäºŒé˜¶å¯¼æ•°
+        [derifuncLeft1,derifuncLeft2]=differentiate(funcLeft,skeleton(:,1));%µÃµ½µ¼ÊıºÍ¶ş½×µ¼Êı
         [derifuncRight1,derifuncRight2]=differentiate(funcRight,skeleton(:,1));
         
-        extremeLeft=[];%åˆå§‹åŒ–å·¦æ›²çº¿æå€¼ç‚¹æ•°ç»„
-        meanLeft=0;%åˆå§‹åŒ–å·¦æå¤§å€¼å¹³å‡é—´éš”
-        if ~(isempty(derifuncLeft1) || isempty(derifuncLeft2))%ç¡®ä¿å¯¼å‡½æ•°å€¼ä¸ä¸ºç©º
-            for j=1:size(skeleton,1)%å¯»æ‰¾æ‰€æœ‰æå€¼ç‚¹
-                if ~derifuncLeft1(j) && derifuncLeft2(j)<0%ä¸€é˜¶å¯¼ä¸º0ï¼ŒäºŒé˜¶å¯¼ä¸ºè´Ÿ
-                    extremeLeft=[extremeLeft;skeleton(j,1)];%å­˜å‚¨è‡³æå¤§å€¼åˆ—è¡¨
-                elseif j>1 && derifuncLeft1(j-1)>0 && derifuncLeft1(j)<0%ä¸€é˜¶å¯¼ä¸¤ç¦»æ•£ç‚¹æœ‰é›¶ç‚¹ï¼Œä¸”ä¸ºæå¤§å€¼
+        extremeLeft=[];%³õÊ¼»¯×óÇúÏß¼«ÖµµãÊı×é
+        meanLeft=0;%³õÊ¼»¯×ó¼«´óÖµÆ½¾ù¼ä¸ô
+        if ~(isempty(derifuncLeft1) || isempty(derifuncLeft2))%È·±£µ¼º¯ÊıÖµ²»Îª¿Õ
+            for j=1:size(skeleton,1)%Ñ°ÕÒËùÓĞ¼«Öµµã
+                if ~derifuncLeft1(j) && derifuncLeft2(j)<0%Ò»½×µ¼Îª0£¬¶ş½×µ¼Îª¸º
+                    extremeLeft=[extremeLeft;skeleton(j,1)];%´æ´¢ÖÁ¼«´óÖµÁĞ±í
+                elseif j>1 && derifuncLeft1(j-1)>0 && derifuncLeft1(j)<0%Ò»½×µ¼Á½ÀëÉ¢µãÓĞÁãµã£¬ÇÒÎª¼«´óÖµ
                     extremeLeft=[extremeLeft;abs(derifuncLeft1(j-1)/(derifuncLeft1(j)-derifuncLeft1(j-1)))*...
-                        (skeleton(j,1)-skeleton(j-1,1))+skeleton(j-1,1)];%çº¿æ€§æ¯”ä¾‹æ”¾ç¼©
+                        (skeleton(j,1)-skeleton(j-1,1))+skeleton(j-1,1)];%ÏßĞÔ±ÈÀı·ÅËõ
                 end
             end
             
-            for j=2:size(extremeLeft,1)%åˆ›å»ºæå¤§å€¼çš„é—´éš”æ•°ç»„
+            for j=2:size(extremeLeft,1)%´´½¨¼«´óÖµµÄ¼ä¸ôÊı×é
                 diffLeft(j-1)=extremeLeft(j)-extremeLeft(j-1);
             end
-            meanLeft=mean(diffLeft);%æ±‚æ•°ç»„å¹³å‡å€¼
+            meanLeft=mean(diffLeft);%ÇóÊı×éÆ½¾ùÖµ
         end
         
-        extremeRight=[];%åˆå§‹åŒ–å³æ›²çº¿æå€¼ç‚¹æ•°ç»„
-        meanRight=0;%åˆå§‹åŒ–å³æå¤§å€¼å¹³å‡é—´éš”
-        if ~(isempty(derifuncRight1) || isempty(derifuncRight2))%ç¡®ä¿å¯¼å‡½æ•°å€¼ä¸ä¸ºç©º
-            for j=1:size(skeleton,1)%å¯»æ‰¾æ‰€æœ‰æå€¼ç‚¹
-                if ~derifuncRight1(j) && derifuncRight2(j)<0%ä¸€é˜¶å¯¼ä¸º0ï¼ŒäºŒé˜¶å¯¼ä¸ºè´Ÿ
-                    extremeRight=[extremeRight;skeleton(j,1)];%å­˜å‚¨è‡³æå¤§å€¼åˆ—è¡¨
-                elseif j>1 && derifuncRight1(j-1)>0 && derifuncRight1(j)<0%ä¸€é˜¶å¯¼ä¸¤ç¦»æ•£ç‚¹æœ‰é›¶ç‚¹ï¼Œä¸”ä¸ºæå¤§å€¼
+        extremeRight=[];%³õÊ¼»¯ÓÒÇúÏß¼«ÖµµãÊı×é
+        meanRight=0;%³õÊ¼»¯ÓÒ¼«´óÖµÆ½¾ù¼ä¸ô
+        if ~(isempty(derifuncRight1) || isempty(derifuncRight2))%È·±£µ¼º¯ÊıÖµ²»Îª¿Õ
+            for j=1:size(skeleton,1)%Ñ°ÕÒËùÓĞ¼«Öµµã
+                if ~derifuncRight1(j) && derifuncRight2(j)<0%Ò»½×µ¼Îª0£¬¶ş½×µ¼Îª¸º
+                    extremeRight=[extremeRight;skeleton(j,1)];%´æ´¢ÖÁ¼«´óÖµÁĞ±í
+                elseif j>1 && derifuncRight1(j-1)>0 && derifuncRight1(j)<0%Ò»½×µ¼Á½ÀëÉ¢µãÓĞÁãµã£¬ÇÒÎª¼«´óÖµ
                     extremeRight=[extremeRight;abs(derifuncRight1(j-1)/(derifuncRight1(j)-derifuncRight1(j-1)))*...
-                        (skeleton(j,1)-skeleton(j-1,1))+skeleton(j-1,1)];%çº¿æ€§æ¯”ä¾‹æ”¾ç¼©
+                        (skeleton(j,1)-skeleton(j-1,1))+skeleton(j-1,1)];%ÏßĞÔ±ÈÀı·ÅËõ
                 end
             end
 
-            for j=2:size(extremeRight,1)%åˆ›å»ºæå¤§å€¼çš„é—´éš”æ•°ç»„
+            for j=2:size(extremeRight,1)%´´½¨¼«´óÖµµÄ¼ä¸ôÊı×é
                 diffRight(j-1)=extremeRight(j)-extremeRight(j-1);
             end            
-            meanRight=mean(diffRight);%æ±‚æ•°ç»„å¹³å‡å€¼
+            meanRight=mean(diffRight);%ÇóÊı×éÆ½¾ùÖµ
         end
         
-        if meanLeft && meanRight%å¦‚æœä¸¤è€…éƒ½æ— å¼‚å¸¸
-            dataCell{i}.fruitCountGap=floor(lengthLeft/meanLeft)+...%å­˜å‚¨ç”¨æå€¼é—´éš”æ³•ä¼°ç®—ç±½çš„æ•°ç›®
+        if meanLeft && meanRight%Èç¹ûÁ½Õß¶¼ÎŞÒì³£
+            dataCell{i}.fruitCountGap=floor(lengthLeft/meanLeft)+...%´æ´¢ÓÃ¼«Öµ¼ä¸ô·¨¹ÀËã×ÑµÄÊıÄ¿
                 floor(lengthRight/meanRight)+2;
-        elseif ~meanLeft && meanRight%å¦‚æœå·¦å€¼ç¼ºå¤±ï¼Œåˆ™ä½¿ç”¨å³å€¼æ•°æ®
-            dataCell{i}.fruitCountGap=floor(lengthLeft/meanRight)+...%å­˜å‚¨ç”¨æå€¼é—´éš”æ³•ä¼°ç®—ç±½çš„æ•°ç›®
+        elseif ~meanLeft && meanRight%Èç¹û×óÖµÈ±Ê§£¬ÔòÊ¹ÓÃÓÒÖµÊı¾İ
+            dataCell{i}.fruitCountGap=floor(lengthLeft/meanRight)+...%´æ´¢ÓÃ¼«Öµ¼ä¸ô·¨¹ÀËã×ÑµÄÊıÄ¿
                 floor(lengthRight/meanRight)+2;     
-        elseif meanLeft && ~meanRight%å¦‚æœå³å€¼ç¼ºå¤±ï¼Œåˆ™ä½¿ç”¨å·¦å€¼æ•°æ®
-            dataCell{i}.fruitCountGap=floor(lengthLeft/meanLeft)+...%å­˜å‚¨ç”¨æå€¼é—´éš”æ³•ä¼°ç®—ç±½çš„æ•°ç›®
+        elseif meanLeft && ~meanRight%Èç¹ûÓÒÖµÈ±Ê§£¬ÔòÊ¹ÓÃ×óÖµÊı¾İ
+            dataCell{i}.fruitCountGap=floor(lengthLeft/meanLeft)+...%´æ´¢ÓÃ¼«Öµ¼ä¸ô·¨¹ÀËã×ÑµÄÊıÄ¿
                 floor(lengthRight/meanLeft)+2;                 
-        else%å¦‚æœéƒ½æ²¡æœ‰æœ‰æ•ˆæ•°å€¼ï¼Œåˆ™ç½®0
-            dataCell{i}.fruitCountGap=0;%å­˜å‚¨ç”¨æå€¼é—´éš”æ³•ä¼°ç®—ç±½çš„æ•°ç›®
+        else%Èç¹û¶¼Ã»ÓĞÓĞĞ§ÊıÖµ£¬ÔòÖÃ0
+            dataCell{i}.fruitCountGap=0;%´æ´¢ÓÃ¼«Öµ¼ä¸ô·¨¹ÀËã×ÑµÄÊıÄ¿
         end
     end
     
-    %åˆ†æä½“ç§¯æ¨¡å—
-    for i=1:num%æå–å¹³å‡ç›´å¾„
+    %·ÖÎöÌå»ıÄ£¿é
+    for i=1:num%ÌáÈ¡Æ½¾ùÖ±¾¶
         advArray(i)=dataCell{i}.advDiameter;
     end
  
-    %âˆšæ³•ä¸€ï¼šå¤§æ´¥æ³•ï¼Œé€‚åˆæ­£é¢è§’æœå’Œä¾§é¢è§’æœæ•°é‡ç›¸å·®è¾ƒè¿‘æ—¶ä½¿ç”¨
+    %¡Ì·¨Ò»£º´ó½ò·¨£¬ÊÊºÏÕıÃæ½Ç¹ûºÍ²àÃæ½Ç¹ûÊıÁ¿Ïà²î½Ï½üÊ±Ê¹ÓÃ
     advArray=(advArray-min(advArray))/(max(advArray)-min(advArray));
     thresh=graythresh(advArray);
 
-    %æ³•äºŒï¼šæ¢¯åº¦ä¸‹é™æ³•ï¼Œé€‚åˆè§’æœæ¯”è¾ƒæ‰å¹³å‡åŒ€æ—¶ä½¿ç”¨
+    %·¨¶ş£ºÌİ¶ÈÏÂ½µ·¨£¬ÊÊºÏ½Ç¹û±È½Ï±âÆ½¾ùÔÈÊ±Ê¹ÓÃ
 %     sortArray=sort(advArray);
 %     tempMax=0;
 %     for i=2:size(sortArray,2)
@@ -148,28 +148,28 @@ function dataCell = dataAnalyzer_2D(inputImage,scale)
 %         end
 %     end
 
-    %æ³•ä¸‰ï¼šç»éªŒæ³•ï¼Œè§’æœå‚æ•°å‚å·®ä¸é½å·®å¼‚æ€§å¤ªå¤§æ—¶ä½¿ç”¨
+    %·¨Èı£º¾­Ñé·¨£¬½Ç¹û²ÎÊı²Î²î²»Æë²îÒìĞÔÌ«´óÊ±Ê¹ÓÃ
 %    thresh=10*pi*scale;
 
-    %æ³•å››ï¼šæ¦‚ç‡æ³•ï¼Œé€‚åˆå·¥å‚å¤§æ•°é‡æ£€æµ‹æ—¶ä½¿ç”¨
+    %·¨ËÄ£º¸ÅÂÊ·¨£¬ÊÊºÏ¹¤³§´óÊıÁ¿¼ì²âÊ±Ê¹ÓÃ
 %    advArray=(advArray-min(advArray))/(max(advArray)-min(advArray));
 %    thresh=0.5;
     
-    mod=0.75;%ç•¸å˜ç³»æ•°
-    for i=1:num%è®¡ç®—ä½“ç§¯
-        volume=0;%åˆå§‹åŒ–ä½“ç§¯
-        if advArray(i)<thresh%å°äºé˜ˆå€¼çš„å½“åšä¾§é¢å¤„ç†
+    mod=0.75;%»û±äÏµÊı
+    for i=1:num%¼ÆËãÌå»ı
+        volume=0;%³õÊ¼»¯Ìå»ı
+        if advArray(i)<thresh%Ğ¡ÓÚãĞÖµµÄµ±×ö²àÃæ´¦Àí
             for j=1:row
                 radius=dataCell{i}.diameter(j)/2;
-                volume=volume+(1+sqrt(2)/2)*mod*scale*pi*radius^2;%æ¤­åœ†é¢ç§¯
+                volume=volume+(1+sqrt(2)/2)*mod*scale*pi*radius^2;%ÍÖÔ²Ãæ»ı
             end
-        else%å¤§äºé˜ˆå€¼çš„å½“åšæ­£é¢å¤„ç†
+        else%´óÓÚãĞÖµµÄµ±×öÕıÃæ´¦Àí
             for j=1:row
                 radius=dataCell{i}.diameter(j)/2;
-                volume=volume+(2-sqrt(2))/mod*scale*pi*radius^2;%æ¤­åœ†é¢ç§¯
+                volume=volume+(2-sqrt(2))/mod*scale*pi*radius^2;%ÍÖÔ²Ãæ»ı
             end
         end
-        dataCell{i}.volume=volume;%å­˜å‚¨ä½“ç§¯å­—æ®µ
+        dataCell{i}.volume=volume;%´æ´¢Ìå»ı×Ö¶Î
     end
 end
 

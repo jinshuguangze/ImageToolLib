@@ -1,4 +1,4 @@
-I=imread('C:/Users/é˜¿å¤/Desktop/image4.jpg');
+I=imread('C:/Users/°¢À¤/Desktop/image4.jpg');
 J1=regionFilter(I,'Canny',2000,50);
 J2=colorFilter(I,[220,255;180,240;80,120]/255,strel('disk',30),strel('disk',10));
 K=imbinarize(J1(:,:,1),'adaptive','Sensitivity',0.599,'ForegroundPolarity','dark');

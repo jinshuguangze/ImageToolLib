@@ -1,85 +1,85 @@
 function outputImages = regionExpanding(inputImage,varargin)
-%regionExpanding:ä½¿ç”¨åŒºåŸŸè†¨èƒ€æ³•å°†ç°åº¦å›¾åƒåˆ†å‰²å•ä¾‹åŒ–
-%inputImage:è¾“å…¥å›¾åƒï¼Œå¯ä»¥ä¸ºç°åº¦å›¾åƒæˆ–è€…äºŒå€¼å›¾åƒæˆ–è€…RGB
-%filter:ç»™å®šåˆå§‹ç°åº¦é˜ˆå€¼
-%degree:ç»™å®šæ–°åƒç´ å…è®¸ç°åº¦æ³¢åŠ¨æœ€å¤§å€¼
-%outputImages:è¾“å‡ºå›¾åƒç»†èƒæ•°ç»„ï¼Œæ¯ä¸ªå…ƒèƒéƒ½æ˜¯ä¸€ä¸ªå•ä¾‹å›¾åƒ
+%regionExpanding:Ê¹ÓÃÇøÓòÅòÕÍ·¨½«»Ò¶ÈÍ¼Ïñ·Ö¸îµ¥Àı»¯
+%inputImage:ÊäÈëÍ¼Ïñ£¬¿ÉÒÔÎª»Ò¶ÈÍ¼Ïñ»òÕß¶şÖµÍ¼Ïñ»òÕßRGB
+%filter:¸ø¶¨³õÊ¼»Ò¶ÈãĞÖµ
+%degree:¸ø¶¨ĞÂÏñËØÔÊĞí»Ò¶È²¨¶¯×î´óÖµ
+%outputImages:Êä³öÍ¼ÏñÏ¸°ûÊı×é£¬Ã¿¸öÔª°û¶¼ÊÇÒ»¸öµ¥ÀıÍ¼Ïñ
 %version:1.0.6
 %author:jinshuguangze
 %data:4/13/2018
-%TODO:å†™ä¸ªè‡ªåŠ¨åˆ†é…å†…å­˜å™¨(âˆš)ï¼Œå…¥å£æ£€æŸ¥(easyGG)ï¼Œæ”¯æŒRGBç­‰ï¼Œå–æ¶ˆfilterå‚æ•°æ”¹ä¸ºè‡ªåŠ¨åˆ¤æ–­
-       %%regionExpanding_Gray(inputImage,ç°åº¦ä¸‹é™,ç°åº¦ä¸Šé™,å®¹çº³æ³¢åŠ¨)
+%TODO:Ğ´¸ö×Ô¶¯·ÖÅäÄÚ´æÆ÷(¡Ì)£¬Èë¿Ú¼ì²é(easyGG)£¬Ö§³ÖRGBµÈ£¬È¡Ïûfilter²ÎÊı¸ÄÎª×Ô¶¯ÅĞ¶Ï
+       %%regionExpanding_Gray(inputImage,»Ò¶ÈÏÂÏŞ,»Ò¶ÈÉÏÏŞ,ÈİÄÉ²¨¶¯)
        
-    %å…¥å£æ£€æµ‹
-    p=inputParse;%æ„é€ æ£€æµ‹å¯¹è±¡
-    p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...%è¾“å…¥å›¾åƒï¼Œé™å®šä¸ºç°åº¦å›¾åƒ
-        {'2d','integer','positive'},'regionExpanding_Gray'),'inputImage',1);%æ”¯æŒå¤šç§ç°åº¦ç­‰çº§çš„ç°åº¦å›¾åƒ
+    %Èë¿Ú¼ì²â
+    p=inputParse;%¹¹Ôì¼ì²â¶ÔÏó
+    p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...%ÊäÈëÍ¼Ïñ£¬ÏŞ¶¨Îª»Ò¶ÈÍ¼Ïñ
+        {'2d','integer','positive'},'regionExpanding_Gray'),'inputImage',1);%Ö§³Ö¶àÖÖ»Ò¶ÈµÈ¼¶µÄ»Ò¶ÈÍ¼Ïñ
     
-    %è¾“å‡ºå›¾åƒçš„ä¸ªæ•°ï¼Œå¦‚æœä¸è¾“å…¥æˆ–è€…è¾“å…¥0ï¼Œåˆ™é»˜è®¤è¾“å‡ºæ¢¯åº¦æœ€å¤§
+    %Êä³öÍ¼ÏñµÄ¸öÊı£¬Èç¹û²»ÊäÈë»òÕßÊäÈë0£¬ÔòÄ¬ÈÏÊä³öÌİ¶È×î´ó
     p.addOptional('number',@(x)validateattributes(x,{'numeric'},...
         {'sclar','integer','positive'},'regionExpanding_Gray'),'number',2);
     
-    p.addOptional('estimated',@(x)validateattributes(x,{'double'},...%ç°åº¦ä¼°è®¡å€¼
+    p.addOptional('estimated',@(x)validateattributes(x,{'double'},...%»Ò¶È¹À¼ÆÖµ
         {'real','sclar','>=',0,'<=',1},'regionExpanding_Gray'),'estimated',3);
-    p.addOptional('degree',@(x)validateattributes(x,{'double'},...%ç°åº¦èŒƒå›´å€¼
+    p.addOptional('degree',@(x)validateattributes(x,{'double'},...%»Ò¶È·¶Î§Öµ
         {'real','sclar','>',0,'<',0.5},'regionExpanding_Gray'),'degree',4);
     p.addParameter('method','Canny',@(x)any(validatestring(x,...
-        {'Sobel','Prewitt','Roberts','Log','Zerocross','Approxcanny'})));%è®¡ç®—è¾¹ç¼˜çš„æ–¹å¼ï¼Œæ”¯æŒå¤šç§â€˜Sobelâ€™,'PR...')å¦‚æœåœ¨ç®—å­åˆå¹¶è¿‡ç¨‹ä¸­å‡ºç°æ—¶è¾¹ç¼˜çš„æƒ…å†µï¼Œ
-    %å­˜å‚¨å˜é‡å‘ŠçŸ¥åƒç´ ï¼Œè¿™ä¸ªæ–¹å‘ä¸å†æ£€æµ‹
-    p.addParameter('low','medium','high','extra');%æ£€æµ‹ç®—å­ã€‚æ”¯æŒâ€˜lowï¼ˆ4ï¼‰â€™ï¼Œâ€˜miedumï¼ˆ8ï¼‰â€™ï¼Œâ€˜highï¼ˆ12ï¼‰â€™ï¼Œâ€˜extraï¼ˆ16ï¼‰â€™å››ç§ç®—å­
+        {'Sobel','Prewitt','Roberts','Log','Zerocross','Approxcanny'})));%¼ÆËã±ßÔµµÄ·½Ê½£¬Ö§³Ö¶àÖÖ¡®Sobel¡¯,'PR...')Èç¹ûÔÚËã×ÓºÏ²¢¹ı³ÌÖĞ³öÏÖÊ±±ßÔµµÄÇé¿ö£¬
+    %´æ´¢±äÁ¿¸æÖªÏñËØ£¬Õâ¸ö·½Ïò²»ÔÙ¼ì²â
+    p.addParameter('low','medium','high','extra');%¼ì²âËã×Ó¡£Ö§³Ö¡®low£¨4£©¡¯£¬¡®miedum£¨8£©¡¯£¬¡®high£¨12£©¡¯£¬¡®extra£¨16£©¡¯ËÄÖÖËã×Ó
 
-    %é¢„å¤„ç†
-    inputImage=im2double(inputImage);%å°†è¾“å…¥å›¾åƒè½¬æˆåŒç²¾åº¦
-    [row,col]=size(inputImage);%è·å¾—åŸå›¾åƒå‚æ•°   
-    stateImage=zeros(row,col);%åˆå§‹åŒ–çŠ¶æ€è¡¨
-    %State0:æœªæ‰«æçš„åƒç´ ç‚¹
-    %State1:å·²æ‰«æä½†ä¸æ»¡è¶³é˜ˆå€¼çš„åƒç´ ç‚¹
-    %State2:å·²æ‰«æï¼Œæ»¡è¶³é˜ˆå€¼ä½†å¾…æ£€æµ‹é‚»åŸŸçš„åƒç´ ç‚¹
-    %State3:å·²æ‰«æï¼Œæ»¡è¶³é˜ˆå€¼ä¸”å·²æ£€æµ‹é‚»åŸŸçš„åƒç´ ç‚¹
-    count=0;%åˆå§‹åŒ–è¾“å‡ºå›¾åƒè®¡æ•°å™¨
+    %Ô¤´¦Àí
+    inputImage=im2double(inputImage);%½«ÊäÈëÍ¼Ïñ×ª³ÉË«¾«¶È
+    [row,col]=size(inputImage);%»ñµÃÔ­Í¼Ïñ²ÎÊı   
+    stateImage=zeros(row,col);%³õÊ¼»¯×´Ì¬±í
+    %State0:Î´É¨ÃèµÄÏñËØµã
+    %State1:ÒÑÉ¨Ãèµ«²»Âú×ããĞÖµµÄÏñËØµã
+    %State2:ÒÑÉ¨Ãè£¬Âú×ããĞÖµµ«´ı¼ì²âÁÚÓòµÄÏñËØµã
+    %State3:ÒÑÉ¨Ãè£¬Âú×ããĞÖµÇÒÒÑ¼ì²âÁÚÓòµÄÏñËØµã
+    count=0;%³õÊ¼»¯Êä³öÍ¼Ïñ¼ÆÊıÆ÷
     
-    %å¯è°ƒå‚éƒ¨åˆ†
-    neibor=[-1 0;1 0;0 -1;0 1];%é‚»åŸŸèŒƒå›´è¡¨ï¼Œå¯æ‰©å±•ä¸æ›´æ”¹   
-    outputImages{1}=ones(row,col);%é»˜è®¤è¾“å‡ºä¸ºå…¨ç™½å›¾åƒ
+    %¿Éµ÷²Î²¿·Ö
+    neibor=[-1 0;1 0;0 -1;0 1];%ÁÚÓò·¶Î§±í£¬¿ÉÀ©Õ¹Óë¸ü¸Ä   
+    outputImages{1}=ones(row,col);%Ä¬ÈÏÊä³öÎªÈ«°×Í¼Ïñ
     
     for i=1:row
         for j=1:col
-            if ~stateImage(i,j)%å¦‚æœæ²¡æœ‰è¢«æ£€æµ‹
-                if inputImage(i,j)>filter%å¦‚æœä¸æ»¡è¶³é˜ˆå€¼
-                    stateImage(i,j)=1;%æ›´æ–°çŠ¶æ€ï¼Œä¸æ»¡è¶³é˜ˆå€¼
-                else%å¦‚æœæ»¡è¶³ç°åº¦é˜ˆå€¼
-                    %åˆå§‹åŒ–é¢„è®¾å€¼    
-                    handleList=[i,j,inputImage(i,j)];%åˆå§‹åŒ–å¾…é‚»åŸŸæ£€æµ‹åˆ—è¡¨
-                    fulfilList=[];%åˆå§‹åŒ–å®Œæˆé‚»åŸŸæ£€æµ‹çš„åˆ—è¡¨
-                    adv=inputImage(i,j);%åˆå§‹åŒ–å¹³å‡å€¼
-                    top=i;%åˆå§‹åŒ–å›¾åƒèŒƒå›´å€¼
+            if ~stateImage(i,j)%Èç¹ûÃ»ÓĞ±»¼ì²â
+                if inputImage(i,j)>filter%Èç¹û²»Âú×ããĞÖµ
+                    stateImage(i,j)=1;%¸üĞÂ×´Ì¬£¬²»Âú×ããĞÖµ
+                else%Èç¹ûÂú×ã»Ò¶ÈãĞÖµ
+                    %³õÊ¼»¯Ô¤ÉèÖµ    
+                    handleList=[i,j,inputImage(i,j)];%³õÊ¼»¯´ıÁÚÓò¼ì²âÁĞ±í
+                    fulfilList=[];%³õÊ¼»¯Íê³ÉÁÚÓò¼ì²âµÄÁĞ±í
+                    adv=inputImage(i,j);%³õÊ¼»¯Æ½¾ùÖµ
+                    top=i;%³õÊ¼»¯Í¼Ïñ·¶Î§Öµ
                     bottom=i;
                     left=j;
                     right=j;                 
                  
-                    %å¼€å§‹åŒºåŸŸå¢é•¿
+                    %¿ªÊ¼ÇøÓòÔö³¤
                     while size(handleList,1)
-                        %å¾ªç¯å †æ ˆå¤„ç†
-                        xtag=handleList(1,1);%é‡å®šä½åˆ°æ­¤ç›®æ ‡
+                        %Ñ­»·¶ÑÕ»´¦Àí
+                        xtag=handleList(1,1);%ÖØ¶¨Î»µ½´ËÄ¿±ê
                         ytag=handleList(1,2);
-                        stateImage(xtag,ytag)=3;%æ›´æ–°çŠ¶æ€ï¼Œå·²å®Œæˆæ£€æµ‹
-                        handleList(1,:)=[];%å°†è¿™ä¸ªåƒç´ ä»å¾…æ£€æµ‹åˆ—è¡¨ä¸­ç§»é™¤
-                        fulfilList=[xtag,ytag,inputImage(xtag,ytag);fulfilList];%æ›´æ–°å®Œæˆé‚»åŸŸæ£€æµ‹çš„åˆ—è¡¨  
+                        stateImage(xtag,ytag)=3;%¸üĞÂ×´Ì¬£¬ÒÑÍê³É¼ì²â
+                        handleList(1,:)=[];%½«Õâ¸öÏñËØ´Ó´ı¼ì²âÁĞ±íÖĞÒÆ³ı
+                        fulfilList=[xtag,ytag,inputImage(xtag,ytag);fulfilList];%¸üĞÂÍê³ÉÁÚÓò¼ì²âµÄÁĞ±í  
                         
-                        %å¯¹äºé‚»åŸŸèŒƒå›´å†…æ‰€æœ‰çš„åƒç´ ç‚¹æ‰«æä¸€é
-                        num=0;%åˆå§‹åŒ–é‚»åŸŸå†…æ»¡è¶³é˜ˆå€¼çš„åƒç´ ç‚¹çš„ä¸ªæ•°
+                        %¶ÔÓÚÁÚÓò·¶Î§ÄÚËùÓĞµÄÏñËØµãÉ¨ÃèÒ»±é
+                        num=0;%³õÊ¼»¯ÁÚÓòÄÚÂú×ããĞÖµµÄÏñËØµãµÄ¸öÊı
                         for k=1:size(neibor,1)
-                            x=xtag+neibor(k,1);%æ›´æ–°åæ ‡
+                            x=xtag+neibor(k,1);%¸üĞÂ×ø±ê
                             y=ytag+neibor(k,2);
-                            inRange=x>=1 && y>=1 && x<=row && y<=col;%æ£€æµ‹æ˜¯å¦åœ¨å›¾åƒèŒƒå›´å†…
-                            if inRange && ~stateImage(x,y)%å¦‚æœåœ¨èŒƒå›´å†…è€Œä¸”æ²¡æœ‰è¢«æ‰«æè¿‡
-                                if inputImage(x,y)>adv+degree%å¦‚æœä¸æ»¡è¶³é˜ˆå€¼
-                                    stateImage(x,y)=1;%æ›´æ–°çŠ¶æ€ï¼Œä¸æ»¡è¶³é˜ˆå€¼
-                                else%å¦‚æœæ»¡è¶³é˜ˆå€¼
-                                    stateImage(x,y)=2;%æ›´æ–°çŠ¶æ€ï¼Œæœªæ£€æµ‹é‚»åŸŸ
-                                    num=num+1;%é‚»åŸŸå†…æ»¡è¶³é˜ˆå€¼çš„åƒç´ ç‚¹çš„ä¸ªæ•°å¢åŠ 
-                                    handleList=[x,y,inputImage(x,y);handleList];%åŠ å…¥å¾…æ£€æµ‹åˆ—è¡¨
-                                    top=min(top,x);%æ›´æ–°å›¾åƒèŒƒå›´å€¼
+                            inRange=x>=1 && y>=1 && x<=row && y<=col;%¼ì²âÊÇ·ñÔÚÍ¼Ïñ·¶Î§ÄÚ
+                            if inRange && ~stateImage(x,y)%Èç¹ûÔÚ·¶Î§ÄÚ¶øÇÒÃ»ÓĞ±»É¨Ãè¹ı
+                                if inputImage(x,y)>adv+degree%Èç¹û²»Âú×ããĞÖµ
+                                    stateImage(x,y)=1;%¸üĞÂ×´Ì¬£¬²»Âú×ããĞÖµ
+                                else%Èç¹ûÂú×ããĞÖµ
+                                    stateImage(x,y)=2;%¸üĞÂ×´Ì¬£¬Î´¼ì²âÁÚÓò
+                                    num=num+1;%ÁÚÓòÄÚÂú×ããĞÖµµÄÏñËØµãµÄ¸öÊıÔö¼Ó
+                                    handleList=[x,y,inputImage(x,y);handleList];%¼ÓÈë´ı¼ì²âÁĞ±í
+                                    top=min(top,x);%¸üĞÂÍ¼Ïñ·¶Î§Öµ
                                     bottom=max(bottom,x);
                                     left=min(left,y);
                                     right=max(right,y);                                   
@@ -87,20 +87,20 @@ function outputImages = regionExpanding(inputImage,varargin)
                             end       
                         end
                                       
-                        %æ£€æµ‹å®Œåï¼Œå¯¹äºæ‰€æœ‰æ»¡è¶³æ¡ä»¶çš„åƒç´ ï¼Œè¿›è¡Œè‰²å½©æœ€æ¥è¿‘æ¯”è¾ƒ
+                        %¼ì²âÍêºó£¬¶ÔÓÚËùÓĞÂú×ãÌõ¼şµÄÏñËØ£¬½øĞĞÉ«²Ê×î½Ó½ü±È½Ï
                         if num                  
-                            [~,index]=min(abs(handleList(1:num,3)-adv));%æ‰¾åˆ°æœ€æ¥è¿‘åƒç´ çš„åºå·
-                            handleList([1,index],:)=handleList([index,1],:);%äº¤æ¢ä¸¤è¡Œ                         
-                            adv=(adv*size(fulfilList,1)+handleList(1,3))/(size(fulfilList,1)+1);%é‡æ–°è®¡ç®—å¹³å‡å€¼
+                            [~,index]=min(abs(handleList(1:num,3)-adv));%ÕÒµ½×î½Ó½üÏñËØµÄĞòºÅ
+                            handleList([1,index],:)=handleList([index,1],:);%½»»»Á½ĞĞ                         
+                            adv=(adv*size(fulfilList,1)+handleList(1,3))/(size(fulfilList,1)+1);%ÖØĞÂ¼ÆËãÆ½¾ùÖµ
                         end   
                     end
                     
-                    %è®¾ç½®é˜ˆå€¼ï¼Œå»é™¤æ‚è´¨
+                    %ÉèÖÃãĞÖµ£¬È¥³ıÔÓÖÊ
                     if size(fulfilList,1)>3000
-                        count=count+1;%è¾“å‡ºå›¾åƒæ•°é‡å¢åŠ 
-                        outputImages{count}=ones(bottom-top+1,right-left+1);%èƒŒæ™¯è‰²é»˜è®¤ä¸ºç™½
+                        count=count+1;%Êä³öÍ¼ÏñÊıÁ¿Ôö¼Ó
+                        outputImages{count}=ones(bottom-top+1,right-left+1);%±³¾°É«Ä¬ÈÏÎª°×
                         for k=1:size(fulfilList,1)
-                            outputImages{count}...%å¡«å…¥å›¾åƒè‰²å½©ä¿¡æ¯
+                            outputImages{count}...%ÌîÈëÍ¼ÏñÉ«²ÊĞÅÏ¢
                                 (fulfilList(k,1)-top+1,fulfilList(k,2)-left+1)=fulfilList(k,3);
                         end
                     end                  

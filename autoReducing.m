@@ -1,27 +1,27 @@
 function outputImage = autoReducing(inputImage)
-%autoReducing:è‡ªåŠ¨è°ƒæ•´å›¾åƒå¤§å°ä»¥è‡´äºåˆšå¥½æ”¾ä¸‹å›¾åƒ
-%inputImage:å¯ä»¥è¾“å…¥å•ä¾‹å›¾åƒæˆ–å›¾åƒç»†èƒè¡Œå‘é‡
-%outputImage:è‡ªåŠ¨è°ƒæ•´åçš„å›¾åƒç»†èƒæ•°ç»„
+%autoReducing:×Ô¶¯µ÷ÕûÍ¼Ïñ´óĞ¡ÒÔÖÂÓÚ¸ÕºÃ·ÅÏÂÍ¼Ïñ
+%inputImage:¿ÉÒÔÊäÈëµ¥ÀıÍ¼Ïñ»òÍ¼ÏñÏ¸°ûĞĞÏòÁ¿
+%outputImage:×Ô¶¯µ÷ÕûºóµÄÍ¼ÏñÏ¸°ûÊı×é
 %version:1.0.8
 %author:jinshuguangze
 %data:5/7/2018
 
-    outputImage={};%åˆå§‹åŒ–è¾“å‡º
-    if iscell(inputImage) && isrow(inputImage)%å°†å•ä¾‹å›¾å’Œè½¬æ¢ä¸ºç»†èƒæ•°ç»„å¤„ç†è¡¨
+    outputImage={};%³õÊ¼»¯Êä³ö
+    if iscell(inputImage) && isrow(inputImage)%½«µ¥ÀıÍ¼ºÍ×ª»»ÎªÏ¸°ûÊı×é´¦Àí±í
         handleList=inputImage;
     elseif islogical(inputImage) && isnumeric(inputImage)...
-            && (ismatrix(inputImage) || ndims(inputImage)==3)%æ­£å¸¸çš„RGB/ç°åº¦/äºŒå€¼å›¾åƒ
+            && (ismatrix(inputImage) || ndims(inputImage)==3)%Õı³£µÄRGB/»Ò¶È/¶şÖµÍ¼Ïñ
         handleList{1}=inputImage;
     else
-        disp('è¾“å…¥ç±»å‹é”™è¯¯ï¼');
+        disp('ÊäÈëÀàĞÍ´íÎó£¡');
         return;
     end
 
     for i=1:size(handleList,2)
-        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%å…¥å£æ£€æµ‹
-        handleList{i}=im2double(handleList{i});%å°†å›¾åƒåŒç²¾åº¦åŒ–
-        while true%å¾ªç¯ç›´åˆ°æ»¡è¶³è¦æ±‚
-            [row,col,~]=size(handleList{i});%é‡æ–°è®¡ç®—é•¿åº¦å’Œå®½åº¦
+        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%Èë¿Ú¼ì²â
+        handleList{i}=im2double(handleList{i});%½«Í¼ÏñË«¾«¶È»¯
+        while true%Ñ­»·Ö±µ½Âú×ãÒªÇó
+            [row,col,~]=size(handleList{i});%ÖØĞÂ¼ÆËã³¤¶ÈºÍ¿í¶È
             if handleList{i}(1,:,:)==1
                 handleList{i}(1,:,:)=[];
             elseif handleList{i}(row,:,:)==1
@@ -36,6 +36,6 @@ function outputImage = autoReducing(inputImage)
         end
     end
     
-    outputImage=handleList;%è¾“å‡º
+    outputImage=handleList;%Êä³ö
 end
 

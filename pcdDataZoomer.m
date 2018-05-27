@@ -1,13 +1,13 @@
 function outputPath = pcdDataZoomer(inputPath,zoom,transform)
-%pcdDataZoomer:å¯¹ä¸€ä¸ªpcdæ–‡ä»¶å†…çš„åæ ‡å€¼æ•°æ®è¿›è¡Œæ”¾ç¼©
-%inputPath:è¾“å…¥pcdæ–‡ä»¶çš„è·¯å¾„
-%zoom:æ”¾ç¼©å°ºå¯¸
-%outputPath:è¾“å‡ºpcdæ–‡ä»¶çš„è·¯å¾„
-%version:1.0.2_æ˜†å“¥å®šåˆ¶ç‰ˆ
+%pcdDataZoomer:¶ÔÒ»¸öpcdÎÄ¼şÄÚµÄ×ø±êÖµÊı¾İ½øĞĞ·ÅËõ
+%inputPath:ÊäÈëpcdÎÄ¼şµÄÂ·¾¶
+%zoom:·ÅËõ³ß´ç
+%outputPath:Êä³öpcdÎÄ¼şµÄÂ·¾¶
+%version:1.0.2_À¥¸ç¶¨ÖÆ°æ
 %author:jinshuguangze
 %data:5/21/2018
 
-    p=inputParser;%æ„å»ºå…¥å£æ£€æµ‹å¯¹è±¡
+    p=inputParser;%¹¹½¨Èë¿Ú¼ì²â¶ÔÏó
     p.addRequired('inputPath',@(x)validateattributes(x,{'char'},...
         {'row'},'pcdDataZoomer','inputPath',1));
     p.addRequired('zoom',@(x)validateattributes(x,{'numeric'},...
@@ -20,13 +20,13 @@ function outputPath = pcdDataZoomer(inputPath,zoom,transform)
     transform=p.Results.transform;
     
     try
-        [filepath,name,~]=fileparts(inputPath);%åˆ†ç¦»è·¯å¾„
-        outputPath=[filepath,'\',name,'_zoomed_',strrep(datestr(now),':','-'),'.pcd'];%è¾“å‡ºè·¯å¾„
-        pc=pcread(inputPath);%è¯»å–ç‚¹äº‘æ–‡ä»¶
-        Data=pc.Location*zoom*transform;%å¾—åˆ°ç‚¹äº‘åæ ‡æ•°æ®
-        Width=pc.Count;%å¾—åˆ°ç‚¹äº‘é•¿åº¦
+        [filepath,name,~]=fileparts(inputPath);%·ÖÀëÂ·¾¶
+        outputPath=[filepath,'\',name,'_zoomed_',strrep(datestr(now),':','-'),'.pcd'];%Êä³öÂ·¾¶
+        pc=pcread(inputPath);%¶ÁÈ¡µãÔÆÎÄ¼ş
+        Data=pc.Location*zoom*transform;%µÃµ½µãÔÆ×ø±êÊı¾İ
+        Width=pc.Count;%µÃµ½µãÔÆ³¤¶È
         
-        pcdFile=fopen(outputPath,'w+','n','GBK');%æ–°å»ºpcdæ–‡ä»¶å¹¶å†™å…¥æ•°æ®
+        pcdFile=fopen(outputPath,'w+','n','GBK');%ĞÂ½¨pcdÎÄ¼ş²¢Ğ´ÈëÊı¾İ
         fprintf(pcdFile,'%s\r\n','#.PCD v0.7 - The .pcd file is created automatically by the function pcdDataZoomer.m');
         fprintf(pcdFile,'%s\r\n','VERSION 0.7');
         fprintf(pcdFile,'%s\r\n','FIELDS x y z');
@@ -43,7 +43,7 @@ function outputPath = pcdDataZoomer(inputPath,zoom,transform)
         end
         fclose(pcdFile);
     catch
-        disp('è¯»å†™æ–‡ä»¶å‡ºç°æœªçŸ¥é”™è¯¯ï¼');
+        disp('¶ÁĞ´ÎÄ¼ş³öÏÖÎ´Öª´íÎó£¡');
         fclose(pcdFile);
         return;
     end

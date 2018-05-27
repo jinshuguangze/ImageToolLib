@@ -1,29 +1,29 @@
 function outputImage = autoResecting(inputImage)
-%autoResecting:å»é™¤è§’æœçš„æŸ„å’Œæœ«ç«¯ç­‰æ— æ•ˆç‰©è´¨
-%inputImage:å¯ä»¥è¾“å…¥å•ä¾‹å›¾åƒæˆ–å›¾åƒç»†èƒè¡Œå‘é‡
-%outputImage:å»é™¤ç‰©è´¨åçš„å›¾åƒç»†èƒæ•°ç»„
+%autoResecting:È¥³ı½Ç¹ûµÄ±úºÍÄ©¶ËµÈÎŞĞ§ÎïÖÊ
+%inputImage:¿ÉÒÔÊäÈëµ¥ÀıÍ¼Ïñ»òÍ¼ÏñÏ¸°ûĞĞÏòÁ¿
+%outputImage:È¥³ıÎïÖÊºóµÄÍ¼ÏñÏ¸°ûÊı×é
 %version:1.1.0
 %author:jinshuguangze
 %data:5/6/2018
     
-    outputImage={};%åˆå§‹åŒ–è¾“å‡º
-    if iscell(inputImage) && isrow(inputImage)%å°†å•ä¾‹å›¾å’Œè½¬æ¢ä¸ºç»†èƒæ•°ç»„å¤„ç†è¡¨
+    outputImage={};%³õÊ¼»¯Êä³ö
+    if iscell(inputImage) && isrow(inputImage)%½«µ¥ÀıÍ¼ºÍ×ª»»ÎªÏ¸°ûÊı×é´¦Àí±í
         handleList=inputImage;
     elseif islogical(inputImage) && isnumeric(inputImage)...
-            && (ismatrix(inputImage) || ndims(inputImage)==3)%æ­£å¸¸çš„RGB/ç°åº¦/äºŒå€¼å›¾åƒ
+            && (ismatrix(inputImage) || ndims(inputImage)==3)%Õı³£µÄRGB/»Ò¶È/¶şÖµÍ¼Ïñ
         handleList{1}=inputImage;
     else
-        disp('è¾“å…¥ç±»å‹é”™è¯¯ï¼');
+        disp('ÊäÈëÀàĞÍ´íÎó£¡');
         return;
     end
     
     for i=1:size(handleList,2)
-        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%å…¥å£æ£€æµ‹
-        handleList{i}=im2double(handleList{i});%å°†å›¾åƒåŒç²¾åº¦åŒ–
+        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%Èë¿Ú¼ì²â
+        handleList{i}=im2double(handleList{i});%½«Í¼ÏñË«¾«¶È»¯
         [row,col,~]=size(handleList{i});
-        if row>=col%è§’æœå‘ˆç«–çŠ¶
-            count=zeros(1,row);%åˆå§‹åŒ–è®¡æ•°å™¨
-            for j=1:row%è®¡ç®—æ¯è¡Œçš„åƒç´ ä¸ªæ•°
+        if row>=col%½Ç¹û³ÊÊú×´
+            count=zeros(1,row);%³õÊ¼»¯¼ÆÊıÆ÷
+            for j=1:row%¼ÆËãÃ¿ĞĞµÄÏñËØ¸öÊı
                 for k=1:col
                     if handleList{i}(j,k,:)~=1
                         count(j)=count(j)+1;
@@ -31,16 +31,16 @@ function outputImage = autoResecting(inputImage)
                 end
             end
             
-            count=count/max(count);%æ•°ç»„å½’ä¸€åŒ–
-            level=graythresh(count);%åˆ©ç”¨å¤§æ´¥æ–¹æ³•æ‰¾å‡ºæœ€å¤§é˜ˆå€¼
-            sign=find(count<level);%æ‰¾å‡ºä¸æ»¡è¶³é˜ˆå€¼çš„æ•°ç»„
+            count=count/max(count);%Êı×é¹éÒ»»¯
+            level=graythresh(count);%ÀûÓÃ´ó½ò·½·¨ÕÒ³ö×î´óãĞÖµ
+            sign=find(count<level);%ÕÒ³ö²»Âú×ããĞÖµµÄÊı×é
             
-            for j=1:size(sign,2)%å°†ä¸æ»¡è¶³é˜ˆå€¼çš„å…¨éƒ¨ç½®1
+            for j=1:size(sign,2)%½«²»Âú×ããĞÖµµÄÈ«²¿ÖÃ1
                 handleList{i}(sign(j),:,:)=1;
             end    
-        else%è§’æœå‘ˆæ¨ªçŠ¶
-            count=zeros(1,col);%åˆå§‹åŒ–è®¡æ•°å™¨
-            for j=1:col%è®¡ç®—æ¯åˆ—çš„åƒç´ ä¸ªæ•°
+        else%½Ç¹û³Êºá×´
+            count=zeros(1,col);%³õÊ¼»¯¼ÆÊıÆ÷
+            for j=1:col%¼ÆËãÃ¿ÁĞµÄÏñËØ¸öÊı
                 for k=1:row
                     if handleList{i}(k,j,:)~=1
                         count(j)=count(j)+1;
@@ -48,15 +48,15 @@ function outputImage = autoResecting(inputImage)
                 end
             end
             
-            count=count/max(count);%æ•°ç»„å½’ä¸€åŒ–
-            level=graythresh(count);%åˆ©ç”¨å¤§æ´¥æ–¹æ³•æ‰¾å‡ºæœ€å¤§é˜ˆå€¼
-            sign=find(count<level);%æ‰¾å‡ºä¸æ»¡è¶³é˜ˆå€¼çš„æ•°ç»„
+            count=count/max(count);%Êı×é¹éÒ»»¯
+            level=graythresh(count);%ÀûÓÃ´ó½ò·½·¨ÕÒ³ö×î´óãĞÖµ
+            sign=find(count<level);%ÕÒ³ö²»Âú×ããĞÖµµÄÊı×é
             
-            for j=1:size(sign,2)%å°†ä¸æ»¡è¶³é˜ˆå€¼çš„å…¨éƒ¨ç½®1
+            for j=1:size(sign,2)%½«²»Âú×ããĞÖµµÄÈ«²¿ÖÃ1
                 handleList{i}(:,sign(j),:)=1;
             end
         end
     end
     
-    outputImage=handleList;%è¾“å‡º
+    outputImage=handleList;%Êä³ö
 end

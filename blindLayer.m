@@ -1,14 +1,14 @@
 function [outputData,tform] = blindLayer(inputData,varargin)
-%blindLayer:åœ¨æœªçŸ¥åˆ†èŠ‚ç‚¹ä¸ªæ•°çš„æƒ…å†µä¸‹ï¼Œä¼°ç®—èŠ‚ç‚¹ä¸ªæ•°å¹¶å°†ä¸€ä¸ªæ•°ç»„èšé›†åˆ†ç±»
-%inputData:æ•°æ®æ•°ç»„ï¼Œå¯ä»¥ä¸ºä»»æ„éž0ç»´å®žæœ‰é™æ•°ç»„
-%range:å½“åˆ†å±‚æ•°ä¸ºä¸€æ—¶ï¼Œåˆ¤æ–­ä¸ºæœ‰æ•ˆçš„é˜ˆå€¼ï¼ŒèŒƒå›´æ˜¯(0,,1]ï¼Œå¦‚æžœä¸è¾“å…¥ï¼Œåˆ™é»˜è®¤ä¸º0.9
-%outputData:å·²ç»åˆ†å¥½å±‚çš„ç»†èƒžæ•°ç»„ï¼Œæ¯å±‚å‡å€¼æ˜¯ç”±å°åˆ°å¤§
-%tform:è®°å½•è¾“å‡ºæ•°æ®ä¸­ï¼Œæ•°æ®åœ¨è¾“å…¥æ•°ç»„ä¸­çš„åŽŸå§‹ä½ç½®ï¼Œå³inputData(:)ä¸­çš„ä¸‹æ ‡
+%blindLayer:ÔÚÎ´Öª·Ö½Úµã¸öÊýµÄÇé¿öÏÂ£¬¹ÀËã½Úµã¸öÊý²¢½«Ò»¸öÊý×é¾Û¼¯·ÖÀà
+%inputData:Êý¾ÝÊý×é£¬¿ÉÒÔÎªÈÎÒâ·Ç0Î¬ÊµÓÐÏÞÊý×é
+%range:µ±·Ö²ãÊýÎªÒ»Ê±£¬ÅÐ¶ÏÎªÓÐÐ§µÄãÐÖµ£¬·¶Î§ÊÇ(0,,1]£¬Èç¹û²»ÊäÈë£¬ÔòÄ¬ÈÏÎª0.9
+%outputData:ÒÑ¾­·ÖºÃ²ãµÄÏ¸°ûÊý×é£¬Ã¿²ã¾ùÖµÊÇÓÉÐ¡µ½´ó
+%tform:¼ÇÂ¼Êä³öÊý¾ÝÖÐ£¬Êý¾ÝÔÚÊäÈëÊý×éÖÐµÄÔ­Ê¼Î»ÖÃ£¬¼´inputData(:)ÖÐµÄÏÂ±ê
 %version:1.0.7
 %author:jinshuguangze
 %data:5/9/2018
 
-    p=inputParser;%æž„é€ å…¥å£æ£€æµ‹å¯¹è±¡
+    p=inputParser;%¹¹ÔìÈë¿Ú¼ì²â¶ÔÏó
     p.addRequired('inputData',@(x)validateattributes(x,{'numeric'},...
         {'real','nonempty','finite'},'blindLayer','inputData',1));
     p.addOptional('range',0.9,@(x)validateattributes(x,{'double'},...
@@ -17,44 +17,44 @@ function [outputData,tform] = blindLayer(inputData,varargin)
     inputData=p.Results.inputData;
     range=p.Results.range;
 
-    outputData={};%åˆå§‹åŒ–è¾“å‡ºæ•°æ®
-    tform={};%åˆå§‹åŒ–è½¬æ¢ç»†èƒžæ•°ç»„
-    thresh={};%åˆå§‹åŒ–åˆ†å‰²ç»†èƒžæ•°ç»„
-    metric=[];%åˆå§‹åŒ–è¯„åˆ¤ç»†èƒžæ•°ç»„
+    outputData={};%³õÊ¼»¯Êä³öÊý¾Ý
+    tform={};%³õÊ¼»¯×ª»»Ï¸°ûÊý×é
+    thresh={};%³õÊ¼»¯·Ö¸îÏ¸°ûÊý×é
+    metric=[];%³õÊ¼»¯ÆÀÅÐÏ¸°ûÊý×é
     
-    warning('off','all');%æš‚æ—¶å–æ¶ˆç”±äºŽç®—æ³•æœ¬èº«çš„è­¦å‘Šæ˜¾ç¤º
-    for i=1:min(20,(size(inputData,1)-1))%å¾—åˆ°æ‰€æœ‰èŠ‚ç‚¹ä¸ªæ•°æƒ…å†µä¸‹çš„åˆ†ç»„å’Œæœ‰æ•ˆåº¦
+    warning('off','all');%ÔÝÊ±È¡ÏûÓÉÓÚËã·¨±¾ÉíµÄ¾¯¸æÏÔÊ¾
+    for i=1:min(20,(size(inputData,1)-1))%µÃµ½ËùÓÐ½Úµã¸öÊýÇé¿öÏÂµÄ·Ö×éºÍÓÐÐ§¶È
         [thresh{i},metric(i)]=multithresh(inputData,i);
     end
-    warning('on','all');%å†æ¬¡å¼€å¯
+    warning('on','all');%ÔÙ´Î¿ªÆô
     
     if isempty(thresh) || isempty(metric)
-        disp('å‡ºé”™ï¼Œæ— æ³•åˆ†ç»„ï¼');
+        disp('³ö´í£¬ÎÞ·¨·Ö×é£¡');
         return;
     else
-        if metric(1)>range%å¦‚æžœç¬¬ä¸€æ¬¡åˆ†å±‚å°±è¶…è¿‡é˜ˆå€¼ï¼Œåˆ™ç›´æŽ¥ç¡®å®šå±‚æ•°ä¸ºä¸€
+        if metric(1)>range%Èç¹ûµÚÒ»´Î·Ö²ã¾Í³¬¹ýãÐÖµ£¬ÔòÖ±½ÓÈ·¶¨²ãÊýÎªÒ»
             index=1;
-        else%å¦‚æžœæ²¡è¶…è¿‡é˜ˆå€¼
-            effect=find(metric==-inf | ~metric);%æ‰¾åˆ°ç¬¬ä¸€ä¸ª-Infæˆ–è€…0çš„ä½ç½®
-            if isempty(effect)%å¦‚æžœæ²¡æœ‰ï¼Œåˆ™æœç´¢æ‰€æœ‰
-                End=size(metric,2);%å¾ªçŽ¯æœ«å°¾æ˜¯æœ€åŽä¸€ä¸ªæ•°
+        else%Èç¹ûÃ»³¬¹ýãÐÖµ
+            effect=find(metric==-inf | ~metric);%ÕÒµ½µÚÒ»¸ö-Inf»òÕß0µÄÎ»ÖÃ
+            if isempty(effect)%Èç¹ûÃ»ÓÐ£¬ÔòËÑË÷ËùÓÐ
+                End=size(metric,2);%Ñ­»·Ä©Î²ÊÇ×îºóÒ»¸öÊý
             else
-                End=effect-1;%å¾ªçŽ¯æœ«å°¾æ˜¯æ— æ•ˆæ•°å­—å‰é¢ä¸€ä¸ªæ•°
+                End=effect-1;%Ñ­»·Ä©Î²ÊÇÎÞÐ§Êý×ÖÇ°ÃæÒ»¸öÊý
             end
-            %è®¡ç®—æœ‰æ•ˆåº¦å¢žé•¿ç›¸å¯¹äºŽè‡ªèº«çš„å¢žé•¿å¹…åº¦ï¼Œé€‰æ‹©å¹…åº¦æœ€å¤§è€…ä½œä¸ºåˆ†å±‚æ•°é‡
+            %¼ÆËãÓÐÐ§¶ÈÔö³¤Ïà¶ÔÓÚ×ÔÉíµÄÔö³¤·ù¶È£¬Ñ¡Ôñ·ù¶È×î´óÕß×÷Îª·Ö²ãÊýÁ¿
             [~,index]=max((metric(2:End)-metric(1:(End-1)))/metric(1:(End-1)));
         end
 
-        index=index+1;%ç”±äºŽæ˜¯è®°å½•çš„æ˜¯æœ‰æ•ˆå€¼ç›¸å·®æ¯”ä¾‹çš„åºå·ï¼Œæ‰€ä»¥éœ€è¦åŠ ä¸€ä»¥ä¿®æ­£ä¸ºæ­£ç¡®çš„åˆ†å±‚æ¬¡æ•°
-        temp=[min(inputData)-1;thresh{index}(:);max(inputData)];%å°†æ‰€æœ‰èŠ‚ç‚¹æŽ’å¸ƒä¸‹æ¥å¹¶åœ¨é¦–å°¾åŠ å…¥ä¸å¯¹ç§°ç•Œé™
-        count=0;%åˆå§‹åŒ–æœ‰æ•ˆåˆ†å±‚æ•°ï¼Œå¦‚æžœä¸€å±‚ä¸­æ²¡æœ‰æ•°å­—å­˜åœ¨ï¼Œåˆ™ä¸è®¡å…¥æœ‰æ•ˆåˆ†å±‚æ•°é‡Œé¢
+        index=index+1;%ÓÉÓÚÊÇ¼ÇÂ¼µÄÊÇÓÐÐ§ÖµÏà²î±ÈÀýµÄÐòºÅ£¬ËùÒÔÐèÒª¼ÓÒ»ÒÔÐÞÕýÎªÕýÈ·µÄ·Ö²ã´ÎÊý
+        temp=[min(inputData)-1;thresh{index}(:);max(inputData)];%½«ËùÓÐ½ÚµãÅÅ²¼ÏÂÀ´²¢ÔÚÊ×Î²¼ÓÈë²»¶Ô³Æ½çÏÞ
+        count=0;%³õÊ¼»¯ÓÐÐ§·Ö²ãÊý£¬Èç¹ûÒ»²ãÖÐÃ»ÓÐÊý×Ö´æÔÚ£¬Ôò²»¼ÆÈëÓÐÐ§·Ö²ãÊýÀïÃæ
 
-        for i=1:(index+1)%å¯¹äºŽæ‰€æœ‰çš„åˆ†å±‚åŒºé—´
-            inRange=find(inputData>temp(i) & inputData<=temp(i+1));%ä¸¤ä¸ªåˆ†å±‚ä¸­æ‰€æœ‰æ»¡è¶³çš„æ•°æ®æ ‡å·
-            if ~isempty(inRange)%å¦‚æžœä¸ä¸ºç©º
-                count=count+1;%è®¡æ•°å™¨å¢žåŠ 
-                outputData{count}=inputData(inRange);%è¾“å‡ºæ­¤åˆ†å±‚
-                tform{count}=inRange;%ä¿ç•™åŽŸå§‹åæ ‡
+        for i=1:(index+1)%¶ÔÓÚËùÓÐµÄ·Ö²ãÇø¼ä
+            inRange=find(inputData>temp(i) & inputData<=temp(i+1));%Á½¸ö·Ö²ãÖÐËùÓÐÂú×ãµÄÊý¾Ý±êºÅ
+            if ~isempty(inRange)%Èç¹û²»Îª¿Õ
+                count=count+1;%¼ÆÊýÆ÷Ôö¼Ó
+                outputData{count}=inputData(inRange);%Êä³ö´Ë·Ö²ã
+                tform{count}=inRange;%±£ÁôÔ­Ê¼×ø±ê
             end
         end
     end

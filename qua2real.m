@@ -1,13 +1,13 @@
 function realMatrix = qua2real(quaternion)
-%qua2real:å°†å››å…ƒæ•°ç”¨å®æ•°çŸ©é˜µè¡¨ç¤º
-%quaternion:è¾“å…¥å››å…ƒæ•°å¯¹è±¡
-%realMatrix:è¿”å›4*4çš„å®æ•°çŸ©é˜µ
+%qua2real:½«ËÄÔªÊıÓÃÊµÊı¾ØÕó±íÊ¾
+%quaternion:ÊäÈëËÄÔªÊı¶ÔÏó
+%realMatrix:·µ»Ø4*4µÄÊµÊı¾ØÕó
 %version:1.0.0
 %author:jinshuguangze
 %data:5/6/2018
     
     if ~isa(quaternion,'quaternion')
-        disp('è¯·è¾“å…¥å››å…ƒæ•°å¯¹è±¡ï¼');
+        disp('ÇëÊäÈëËÄÔªÊı¶ÔÏó£¡');
     end
     
     mat=quaternion.compact;

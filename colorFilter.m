@@ -1,17 +1,17 @@
 function outputImage = colorFilter(inputImage,filter,varargin)
-%colorFilter:RGBå›¾åƒçš„ä¸‰é€šé“è¿‡æ»¤
-%inputImage:è¾“å…¥å›¾åƒï¼ŒæŒ‡å®šä¸ºRGBå›¾åƒ
-%filter:è¿‡æ»¤å™¨èŒƒå›´æ•°ç»„ï¼Œä¸º3*2çš„æ•°ç»„ï¼Œåˆ†åˆ«ä¸º[Ré€šé“ä¸‹é™ï¼ŒRé€šé“ä¸Šé™;
-%                                                             Gé€šé“ä¸‹é™ï¼ŒGé€šé“ä¸Šé™;
-%                                                             Bé€šé“ä¸‹é™ï¼ŒBé€šé“ä¸Šé™]ï¼Œéƒ½ä¸ºé—­åŒºé—´
-%openStrel:è¾“å…¥strelå¯¹è±¡ï¼Œå¯¹å¸ƒæ™¯è¿›è¡Œå¼€æ“ä½œ
-%closeStrel:è¾“å…¥strelå¯¹è±¡ï¼Œå¯¹å¸ƒæ™¯è¿›è¡Œé—­æ“ä½œ
-%outputImage:è¾“å‡ºå›¾åƒï¼Œå·²ç»è¿›è¡Œäº†è¿‡æ»¤æ“ä½œ
+%colorFilter:RGBÍ¼ÏñµÄÈıÍ¨µÀ¹ıÂË
+%inputImage:ÊäÈëÍ¼Ïñ£¬Ö¸¶¨ÎªRGBÍ¼Ïñ
+%filter:¹ıÂËÆ÷·¶Î§Êı×é£¬Îª3*2µÄÊı×é£¬·Ö±ğÎª[RÍ¨µÀÏÂÏŞ£¬RÍ¨µÀÉÏÏŞ;
+%                                                             GÍ¨µÀÏÂÏŞ£¬GÍ¨µÀÉÏÏŞ;
+%                                                             BÍ¨µÀÏÂÏŞ£¬BÍ¨µÀÉÏÏŞ]£¬¶¼Îª±ÕÇø¼ä
+%openStrel:ÊäÈëstrel¶ÔÏó£¬¶Ô²¼¾°½øĞĞ¿ª²Ù×÷
+%closeStrel:ÊäÈëstrel¶ÔÏó£¬¶Ô²¼¾°½øĞĞ±Õ²Ù×÷
+%outputImage:Êä³öÍ¼Ïñ£¬ÒÑ¾­½øĞĞÁË¹ıÂË²Ù×÷
 %version:1.0.3
 %author:jinshuguangze
 %data:5/23/2018
 
-   	p=inputParser;%æ„é€ å…¥å£æ£€æŸ¥å¯¹è±¡
+   	p=inputParser;%¹¹ÔìÈë¿Ú¼ì²é¶ÔÏó
     p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
         {'size',[NaN,NaN,3],'real','nonnegative'},'regionFilter','inputImage',1));
     p.addRequired('filter',@(x)validateattributes(x,{'double'},...
@@ -27,29 +27,29 @@ function outputImage = colorFilter(inputImage,filter,varargin)
     closeStrel=p.Results.closeStrel;
     
     inputImage=im2double(inputImage);
-    [row,col,~]=size(inputImage);%è·å¾—å›¾åƒé•¿å®½
-    [Rrow,Rcol]=find(inputImage(:,:,1)>=filter(1,1) & inputImage(:,:,1)<=filter(1,2));%è·å–Ré€šé“
-    [Grow,Gcol]=find(inputImage(:,:,2)>=filter(2,1) & inputImage(:,:,2)<=filter(2,2));%è·å–Gé€šé“
-    [Brow,Bcol]=find(inputImage(:,:,3)>=filter(3,1) & inputImage(:,:,3)<=filter(3,2));%è·å–Bé€šé“
-    indexArray=intersect(intersect(cat(2,Rrow,Rcol),cat(2,Grow,Gcol),'rows'),cat(2,Brow,Bcol),'rows');%è·å–äº¤å‰ç´¢å¼•
+    [row,col,~]=size(inputImage);%»ñµÃÍ¼Ïñ³¤¿í
+    [Rrow,Rcol]=find(inputImage(:,:,1)>=filter(1,1) & inputImage(:,:,1)<=filter(1,2));%»ñÈ¡RÍ¨µÀ
+    [Grow,Gcol]=find(inputImage(:,:,2)>=filter(2,1) & inputImage(:,:,2)<=filter(2,2));%»ñÈ¡GÍ¨µÀ
+    [Brow,Bcol]=find(inputImage(:,:,3)>=filter(3,1) & inputImage(:,:,3)<=filter(3,2));%»ñÈ¡BÍ¨µÀ
+    indexArray=intersect(intersect(cat(2,Rrow,Rcol),cat(2,Grow,Gcol),'rows'),cat(2,Brow,Bcol),'rows');%»ñÈ¡½»²æË÷Òı
     
     filterImage=ones(row,col);
     for i=1:size(indexArray,1)
         filterImage(indexArray(i,1),indexArray(i,2))=0;
     end
     
-    if ~isempty(openStrel)%å¼€æ“ä½œ
+    if ~isempty(openStrel)%¿ª²Ù×÷
         filterImage=imopen(filterImage,openStrel);
     end
-    if ~isempty(closeStrel)%é—­æ“ä½œ
+    if ~isempty(closeStrel)%±Õ²Ù×÷
         filterImage=imclose(filterImage,closeStrel);
     end 
     
-    outputImage=ones(row,col,3);%æ„é€ ç©ºç™½èƒŒæ™¯çš„è¾“å‡ºå›¾åƒ
+    outputImage=ones(row,col,3);%¹¹Ôì¿Õ°×±³¾°µÄÊä³öÍ¼Ïñ
     for i=1:row
         for j=1:col
             if ~filterImage(i,j)
-                outputImage(i,j,:)=inputImage(i,j,:);%å¡«å……
+                outputImage(i,j,:)=inputImage(i,j,:);%Ìî³ä
             end
         end
     end

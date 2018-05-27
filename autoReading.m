@@ -1,8 +1,8 @@
-%è‡ªåŠ¨è¯»å–è§’æœç‚¹äº‘å¹¶å¯¹é½
+%×Ô¶¯¶ÁÈ¡½Ç¹ûµãÔÆ²¢¶ÔÆë
 for i=1:4
     mat=zeros(1,7);
     mat(i+3)=1;
-    pc{i}=pcread(txt2pcd(mat,['C:\Users\40825\Desktop\ç‚¹äº‘æ•°æ®\æ–¹å‘',num2str(i)]));
+    pc{i}=pcread(txt2pcd(mat,['C:\Users\40825\Desktop\µãÔÆÊı¾İ\·½Ïò',num2str(i)]));
     %pc{i}=pcdenoise(pc{i});
 end
 

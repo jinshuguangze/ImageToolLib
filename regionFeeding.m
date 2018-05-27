@@ -1,59 +1,59 @@
 function outputImages = regionFeeding(inputImage,filter,range)
-%regionFeeding:ä½¿ç”¨åŒºåŸŸæ”¶ç¼©æ³•å°†ç°åº¦å›¾åƒåˆ†å‰²å•ä¾‹åŒ–
-%inputImage:è¾“å…¥å›¾åƒï¼Œå¯ä»¥ä¸ºç°åº¦å›¾åƒæˆ–è€…äºŒå€¼å›¾åƒ
-%filter:ç»™å®šåˆå§‹ç°åº¦é˜ˆå€¼
-%range:ç»™å®šæ–°åƒç´ å…è®¸ç°åº¦æ³¢åŠ¨æœ€å¤§å€¼
-%outputImages:è¾“å‡ºå›¾åƒç»†èƒæ•°ç»„ï¼Œæ¯ä¸ªå…ƒèƒéƒ½æ˜¯ä¸€ä¸ªå•ä¾‹å›¾åƒ
+%regionFeeding:Ê¹ÓÃÇøÓòÊÕËõ·¨½«»Ò¶ÈÍ¼Ïñ·Ö¸îµ¥Àı»¯
+%inputImage:ÊäÈëÍ¼Ïñ£¬¿ÉÒÔÎª»Ò¶ÈÍ¼Ïñ»òÕß¶şÖµÍ¼Ïñ
+%filter:¸ø¶¨³õÊ¼»Ò¶ÈãĞÖµ
+%range:¸ø¶¨ĞÂÏñËØÔÊĞí»Ò¶È²¨¶¯×î´óÖµ
+%outputImages:Êä³öÍ¼ÏñÏ¸°ûÊı×é£¬Ã¿¸öÔª°û¶¼ÊÇÒ»¸öµ¥ÀıÍ¼Ïñ
 %version:1.0.2
 %author:jinshuguangze
 %data:4/12/2018
 
-    [row,col]=size(inputImage);%è·å¾—åŸå›¾åƒå‚æ•°
-    inputImage=im2double(inputImage);%å°†è¾“å…¥å›¾åƒè½¬æˆåŒç²¾åº¦
-    outputImages{1}=ones(row,col);%é»˜è®¤è¾“å‡º
-    count=0;%è¾“å‡ºå›¾åƒæ€»æ•°ï¼Œé»˜è®¤ä¸º0
+    [row,col]=size(inputImage);%»ñµÃÔ­Í¼Ïñ²ÎÊı
+    inputImage=im2double(inputImage);%½«ÊäÈëÍ¼Ïñ×ª³ÉË«¾«¶È
+    outputImages{1}=ones(row,col);%Ä¬ÈÏÊä³ö
+    count=0;%Êä³öÍ¼Ïñ×ÜÊı£¬Ä¬ÈÏÎª0
     
     for i=1:row
         for j=1:col
             if(inputImage(i,j)<=filter)                             
-                x=i;%æ‹·è´åˆå§‹ç‚¹
+                x=i;%¿½±´³õÊ¼µã
                 y=j;
-                right=y;%åˆå§‹åŒ–å›¾åƒèŒƒå›´å€¼
+                right=y;%³õÊ¼»¯Í¼Ïñ·¶Î§Öµ
                 bottom=x;
                 left=y;
                 top=x;
-                adv=inputImage(x,y);%è®¾ç½®åˆå§‹å¹³å‡ç°åº¦å€¼
-                set=[x,y,adv];%å»ºç«‹åˆå§‹æ•°ç»„
-                inputImage(x,y)=1;%å°†è¯¥ç‚¹ä»åŸå›¾ä¸­å»é™¤
+                adv=inputImage(x,y);%ÉèÖÃ³õÊ¼Æ½¾ù»Ò¶ÈÖµ
+                set=[x,y,adv];%½¨Á¢³õÊ¼Êı×é
+                inputImage(x,y)=1;%½«¸Ãµã´ÓÔ­Í¼ÖĞÈ¥³ı
                 
                 while 1
-                    if(y<col && inputImage(x,y+1)<=adv+range)%å³è¾¹æœ‰æ–°è¿é€šåŸŸ
+                    if(y<col && inputImage(x,y+1)<=adv+range)%ÓÒ±ßÓĞĞÂÁ¬Í¨Óò
                         y=y+1;
-                    elseif(x<row && inputImage(x+1,y)<=adv+range)%ä¸‹è¾¹æœ‰æ–°è¿é€šåŸŸ
+                    elseif(x<row && inputImage(x+1,y)<=adv+range)%ÏÂ±ßÓĞĞÂÁ¬Í¨Óò
                         x=x+1;
-                    elseif(y>1 && inputImage(x,y-1)<=adv+range)%å·¦è¾¹æœ‰æ–°è¿é€šåŸŸ
+                    elseif(y>1 && inputImage(x,y-1)<=adv+range)%×ó±ßÓĞĞÂÁ¬Í¨Óò
                         y=y-1;
-                    elseif(x>1 && inputImage(x-1,y)<=adv+range)%ä¸Šè¾¹æœ‰æ–°è¿é€šåŸŸ
+                    elseif(x>1 && inputImage(x-1,y)<=adv+range)%ÉÏ±ßÓĞĞÂÁ¬Í¨Óò
                         x=x-1;
-                    else%æ²¡æœ‰è¿é€šåŸŸï¼Œé€€å‡ºå¾ªç¯
+                    else%Ã»ÓĞÁ¬Í¨Óò£¬ÍË³öÑ­»·
                         break;
                     end
                                        
-                    right=max(right,y);%æ›´æ–°å›¾åƒèŒƒå›´å€¼
+                    right=max(right,y);%¸üĞÂÍ¼Ïñ·¶Î§Öµ
                     bottom=max(bottom,x);         
                     left=min(left,y);
                     top=min(top,x);                  
-                    h=inputImage(x,y);%è·å¾—æ­¤ç‚¹ç°åº¦å€¼
-                    set=[set;x,y,h];%å°†æ•°æ®å­˜å‚¨è¿›æ•°ç»„
-                    adv=(adv*size(set,1)+h)/(size(set,1)+1);%é‡æ–°è®¡ç®—ç°åº¦å¹³å‡å€¼
-                    inputImage(x,y)=1;%å°†è¯¥ç‚¹ä»åŸå›¾ä¸­å»é™¤
+                    h=inputImage(x,y);%»ñµÃ´Ëµã»Ò¶ÈÖµ
+                    set=[set;x,y,h];%½«Êı¾İ´æ´¢½øÊı×é
+                    adv=(adv*size(set,1)+h)/(size(set,1)+1);%ÖØĞÂ¼ÆËã»Ò¶ÈÆ½¾ùÖµ
+                    inputImage(x,y)=1;%½«¸Ãµã´ÓÔ­Í¼ÖĞÈ¥³ı
                 end
                 
-                %è®¾å®šè¾“å‡ºé˜ˆå€¼ï¼Œä»¥è¿‡æ»¤æ‚è´¨
+                %Éè¶¨Êä³öãĞÖµ£¬ÒÔ¹ıÂËÔÓÖÊ
                 if size(set,1)>200
-                    count=count+1;%è¾“å‡ºå›¾åƒæ•°é‡å¢åŠ 
-                    outputImages{count}=ones(bottom-top+1,right-left+1);%èƒŒæ™¯è‰²é»˜è®¤ä¸ºç™½
-                    for temp=1:size(set,1)%å°†ä½ç½®ä¿¡æ¯ä¸ç°åº¦è¾“å…¥è¿›å»
+                    count=count+1;%Êä³öÍ¼ÏñÊıÁ¿Ôö¼Ó
+                    outputImages{count}=ones(bottom-top+1,right-left+1);%±³¾°É«Ä¬ÈÏÎª°×
+                    for temp=1:size(set,1)%½«Î»ÖÃĞÅÏ¢Óë»Ò¶ÈÊäÈë½øÈ¥
                         outputImages{count}(set(temp,1)-top+1,set(temp,2)-left+1)=set(temp,3);
                     end
                 end

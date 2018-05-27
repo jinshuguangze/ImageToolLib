@@ -1,63 +1,63 @@
  function outputImages = regionExpanding_RGB(inputImage,degree,varargin)
-%regionExpanding_RGB:ä½¿ç”¨åŒºåŸŸè†¨èƒ€æ³•å°†RGBå›¾åƒåˆ†å‰²å•ä¾‹åŒ–ï¼Œå¹¶å¯ä½¿ç”¨edgeå‡½æ•°é¢å¤–è¾…åŠ©åˆ¤å®šè¾¹ç•Œ
-%inputImage:è¾“å…¥å›¾åƒï¼ŒæŒ‡å®šä¸ºRGBå›¾åƒï¼Œä¸”æ„Ÿå…´è¶£åŒºåŸŸä¸ºæ»¡è¶³é¢œè‰²åˆ†å¸ƒè¾ƒä¸ºå•ä¸€
-%degree:æ–°åƒç´ å…è®¸å•åŸè‰²æ³¢åŠ¨çš„èŒƒå›´æ•°ç»„ï¼Œå…è®¸èŒƒå›´æ˜¯0~1
-%outputNum:å¸Œæœ›è¾“å‡ºçš„è‡³å¤šå›¾åƒä¸ªæ•°ï¼Œå¦‚æœä¸è¾“å‡ºæˆ–è¾“å…¥0ï¼Œåˆ™ä¼šåŸºäºåƒç´ ç‚¹ä¸ªæ•°ä¸‹é™æ¢¯åº¦æ™ºèƒ½é€‰æ‹©å›¾åƒä¸ªæ•°
-%estimated:æ„Ÿå…´è¶£åŒºåŸŸçš„RGBä¼°è®¡å€¼æ•°ç»„ï¼Œå¦‚æœä¸è¾“å…¥ï¼Œåˆ™ä¼šåŸºäºOtsuç®—æ³•è‡ªåŠ¨å¾—åˆ°ç»Ÿè®¡æ„ä¹‰ä¸Šçš„ä¼°è®¡å€¼
-%method:è¯†åˆ«è¾¹ç¼˜çš„æ–¹æ³•ï¼Œèƒ½ä½¿ç”¨â€˜Sobelâ€™ï¼Œâ€˜Prewittâ€™ï¼Œâ€˜Robertsâ€™ï¼Œâ€˜Logâ€™ï¼Œâ€˜Zerocrossâ€™ï¼Œâ€™Cannyâ€˜ï¼Œâ€™Approxcannyâ€˜è¿™ä¸ƒç§æ–¹æ³•
-%operator:äºŒç»´è†¨èƒ€èšåˆç®—å­ï¼Œèƒ½ä½¿ç”¨â€™Lowâ€˜ï¼Œâ€™Mediumâ€˜ï¼Œâ€™Highâ€˜ï¼Œâ€™Extraâ€˜å››ç§ç­‰çº§æ¥ä½¿ç”¨å¯¹åº”çš„å†…å»ºç®—å­
-%outputImages:è¾“å‡ºå›¾åƒç»†èƒæ•°ç»„ï¼Œæ¯ä¸ªå…ƒèƒéƒ½æ˜¯ä¸€ä¸ªå•ä¾‹å›¾åƒ
+%regionExpanding_RGB:Ê¹ÓÃÇøÓòÅòÕÍ·¨½«RGBÍ¼Ïñ·Ö¸îµ¥Àı»¯£¬²¢¿ÉÊ¹ÓÃedgeº¯Êı¶îÍâ¸¨ÖúÅĞ¶¨±ß½ç
+%inputImage:ÊäÈëÍ¼Ïñ£¬Ö¸¶¨ÎªRGBÍ¼Ïñ£¬ÇÒ¸ĞĞËÈ¤ÇøÓòÎªÂú×ãÑÕÉ«·Ö²¼½ÏÎªµ¥Ò»
+%degree:ĞÂÏñËØÔÊĞíµ¥Ô­É«²¨¶¯µÄ·¶Î§Êı×é£¬ÔÊĞí·¶Î§ÊÇ0~1
+%outputNum:Ï£ÍûÊä³öµÄÖÁ¶àÍ¼Ïñ¸öÊı£¬Èç¹û²»Êä³ö»òÊäÈë0£¬Ôò»á»ùÓÚÏñËØµã¸öÊıÏÂ½µÌİ¶ÈÖÇÄÜÑ¡ÔñÍ¼Ïñ¸öÊı
+%estimated:¸ĞĞËÈ¤ÇøÓòµÄRGB¹À¼ÆÖµÊı×é£¬Èç¹û²»ÊäÈë£¬Ôò»á»ùÓÚOtsuËã·¨×Ô¶¯µÃµ½Í³¼ÆÒâÒåÉÏµÄ¹À¼ÆÖµ
+%method:Ê¶±ğ±ßÔµµÄ·½·¨£¬ÄÜÊ¹ÓÃ¡®Sobel¡¯£¬¡®Prewitt¡¯£¬¡®Roberts¡¯£¬¡®Log¡¯£¬¡®Zerocross¡¯£¬¡¯Canny¡®£¬¡¯Approxcanny¡®ÕâÆßÖÖ·½·¨
+%operator:¶şÎ¬ÅòÕÍ¾ÛºÏËã×Ó£¬ÄÜÊ¹ÓÃ¡¯Low¡®£¬¡¯Medium¡®£¬¡¯High¡®£¬¡¯Extra¡®ËÄÖÖµÈ¼¶À´Ê¹ÓÃ¶ÔÓ¦µÄÄÚ½¨Ëã×Ó
+%outputImages:Êä³öÍ¼ÏñÏ¸°ûÊı×é£¬Ã¿¸öÔª°û¶¼ÊÇÒ»¸öµ¥ÀıÍ¼Ïñ
 %version:1.0.7
 %author:jinshuguangze
 %data:4/29/2018
     
-    %å…¥å£æ£€æµ‹
-    p=inputParser;%æ„é€ æ£€æµ‹å™¨å¯¹è±¡
-    %è¾“å…¥å›¾åƒï¼Œé™å®šä¸ºRGBï¼Œä¸”æ„Ÿå…´è¶£åŒºåŸŸæœ€å¥½ä¸ºå•è‰²ï¼Œè‹¥ä¸ºå¤šè‰²ï¼Œå¯ä»¥å¤šæ¬¡è¾“å…¥åå–å¹¶é›†
+    %Èë¿Ú¼ì²â
+    p=inputParser;%¹¹Ôì¼ì²âÆ÷¶ÔÏó
+    %ÊäÈëÍ¼Ïñ£¬ÏŞ¶¨ÎªRGB£¬ÇÒ¸ĞĞËÈ¤ÇøÓò×îºÃÎªµ¥É«£¬ÈôÎª¶àÉ«£¬¿ÉÒÔ¶à´ÎÊäÈëºóÈ¡²¢¼¯
     p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
         {'size',[NaN,NaN,3],'integer' ,'nonnegative'},'regionExpanding_RGB','inputImage',1));
-    %å•åŸè‰²å…è®¸èŒƒå›´å€¼ï¼Œåˆ†ä¸‰ä¸ªé€šé“é™å®šä¸º0åˆ°1ä¹‹é—´çš„æ•°ï¼Œæ•°å­—è¶Šå°ï¼Œè¿ç®—è¶Šå¿«
+    %µ¥Ô­É«ÔÊĞí·¶Î§Öµ£¬·ÖÈı¸öÍ¨µÀÏŞ¶¨Îª0µ½1Ö®¼äµÄÊı£¬Êı×ÖÔ½Ğ¡£¬ÔËËãÔ½¿ì
     p.addRequired('degree',@(x)validateattributes(x,{'double'},...
         {'real','size',[1,3],'>',0,'<=',1},'regionExpanding_Gray','degree',2));
-    %è¾“å‡ºå›¾åƒçš„ä¸ªæ•°ï¼Œå¦‚æœä¸è¾“å…¥æˆ–è€…è¾“å…¥0ï¼Œåˆ™é»˜è®¤è¾“å‡ºåŒ…å«åƒç´ ä¸ªæ•°æ¢¯åº¦æœ€å¤§çš„ç‚¹ä¹‹å‰çš„æ‰€æœ‰å›¾åƒ
+    %Êä³öÍ¼ÏñµÄ¸öÊı£¬Èç¹û²»ÊäÈë»òÕßÊäÈë0£¬ÔòÄ¬ÈÏÊä³ö°üº¬ÏñËØ¸öÊıÌİ¶È×î´óµÄµãÖ®Ç°µÄËùÓĞÍ¼Ïñ
     p.addOptional('outputNum',0,@(x)validateattributes(x,{'numeric'},...
         {'scalar','integer','nonnegative'},'regionExpanding_Gray','outputNum',3));   
-    %ä¼°è®¡å€¼æ•°ç»„ï¼Œå³æ„Ÿå…´è¶£åŒºåŸŸçš„RGBä¼°è®¡å€¼ï¼Œè‹¥ç¼ºå¤±åˆ™ä½¿ç”¨Otsuç®—æ³•è·å¾—çš„åˆ†ç•Œç‚¹å‡å»è¾“å…¥çš„å„ä¸ªå•åŸè‰²å…è®¸èŒƒå›´å€¼
+    %¹À¼ÆÖµÊı×é£¬¼´¸ĞĞËÈ¤ÇøÓòµÄRGB¹À¼ÆÖµ£¬ÈôÈ±Ê§ÔòÊ¹ÓÃOtsuËã·¨»ñµÃµÄ·Ö½çµã¼õÈ¥ÊäÈëµÄ¸÷¸öµ¥Ô­É«ÔÊĞí·¶Î§Öµ
     p.addOptional('estimated','None',@(x)validateattributes(x,{'double'},...
         {'real','size',[1,3],'>=',0,'<=',1},'regionExpanding_Gray','estimated',4));   
-    %è¯†åˆ«è¾¹ç¼˜çš„æ–¹æ³•ï¼Œæ”¯æŒæ‰€æœ‰åœ¨åº“å‡½æ•°â€™edgeâ€˜ä¸­å‡ºç°çš„æ–¹æ³•ï¼Œé»˜è®¤ä¸ä½¿ç”¨è¾¹ç•Œé¢å¤–åˆ¤å®šå³'None'
+    %Ê¶±ğ±ßÔµµÄ·½·¨£¬Ö§³ÖËùÓĞÔÚ¿âº¯Êı¡¯edge¡®ÖĞ³öÏÖµÄ·½·¨£¬Ä¬ÈÏ²»Ê¹ÓÃ±ß½ç¶îÍâÅĞ¶¨¼´'None'
     p.addParameter('method','None',@(x)any(validatestring(x,...
         {'None','Sobel','Prewitt','Roberts','Log','Zerocross','Canny','Approxcanny'},'regionExpanding_Gray','method',5)));
-    %äºŒç»´èšåˆç®—å­ï¼Œæ”¯æŒå››ç§ä»å°åˆ°å¤§çš„èŒƒå›´ï¼ŒèŒƒå›´è¶Šå°ï¼Œè¿ç®—è¶Šå¿«ï¼Œé»˜è®¤ä¸ºâ€™Lowâ€˜ç®—å­çš„å››è”é€šåŒºåŸŸ
+    %¶şÎ¬¾ÛºÏËã×Ó£¬Ö§³ÖËÄÖÖ´ÓĞ¡µ½´óµÄ·¶Î§£¬·¶Î§Ô½Ğ¡£¬ÔËËãÔ½¿ì£¬Ä¬ÈÏÎª¡¯Low¡®Ëã×ÓµÄËÄÁªÍ¨ÇøÓò
     p.addParameter('operator','Low',@(x)any(validatestring(x,...
         {'Low','Medium','High','Extra'},'regionExpanding_Gray','operator',6)));
-    p.parse(inputImage,degree,varargin{:});%æ£€æµ‹  
-    inputImage=p.Results.inputImage;%èµ‹å€¼
+    p.parse(inputImage,degree,varargin{:});%¼ì²â  
+    inputImage=p.Results.inputImage;%¸³Öµ
     degree=p.Results.degree;
     outputNum=p.Results.outputNum;
     estimated=p.Results.estimated;
     method=p.Results.method;
     operator=p.Results.operator;
     
-    %é¢„å¤„ç†
-    inputImage=im2double(inputImage);%å°†è¾“å…¥å›¾åƒè½¬æˆåŒç²¾åº¦
-    [row,col,~]=size(inputImage);%è·å¾—åŸå›¾åƒå‚æ•°   
-    stateImage=zeros(row,col);%åˆå§‹åŒ–çŠ¶æ€è¡¨
-    count=0;%åˆå§‹åŒ–è¾“å‡ºå›¾åƒè®¡æ•°å™¨
-    gather={};%åˆå§‹åŒ–å­˜å‚¨æ‰€æœ‰è¾“å‡ºå›¾åƒçš„èšé›†æ•°ç»„
+    %Ô¤´¦Àí
+    inputImage=im2double(inputImage);%½«ÊäÈëÍ¼Ïñ×ª³ÉË«¾«¶È
+    [row,col,~]=size(inputImage);%»ñµÃÔ­Í¼Ïñ²ÎÊı   
+    stateImage=zeros(row,col);%³õÊ¼»¯×´Ì¬±í
+    count=0;%³õÊ¼»¯Êä³öÍ¼Ïñ¼ÆÊıÆ÷
+    gather={};%³õÊ¼»¯´æ´¢ËùÓĞÊä³öÍ¼ÏñµÄ¾Û¼¯Êı×é
 
-    if strcmp(estimated,'None')%å¦‚æœä¼°è®¡å€¼æ²¡æœ‰è¾“å…¥
+    if strcmp(estimated,'None')%Èç¹û¹À¼ÆÖµÃ»ÓĞÊäÈë
         for i=1:3
-            thresh(i)=graythresh(inputImage(:,:,i));%è·å–ç»Ÿè®¡æ„ä¹‰ä¸Šçš„æœ€ä¼˜é˜ˆå€¼
+            thresh(i)=graythresh(inputImage(:,:,i));%»ñÈ¡Í³¼ÆÒâÒåÉÏµÄ×îÓÅãĞÖµ
             if thresh(i)+degree(i)<1
-                estimated(i)=thresh(i)+degree(i);%é»˜è®¤æ„Ÿå…´è¶£åŒºåŸŸä¸ºé è¿‘æŸå•åŸè‰²ï¼Œäº¤å‰æ··åˆè§†è§‰ä¸ºç™½è‰²
+                estimated(i)=thresh(i)+degree(i);%Ä¬ÈÏ¸ĞĞËÈ¤ÇøÓòÎª¿¿½üÄ³µ¥Ô­É«£¬½»²æ»ìºÏÊÓ¾õÎª°×É«
             else
-                estimated(i)=1;%é»˜è®¤æ„Ÿå…´è¶£åŒºåŸŸä¸ºé è¿‘æŸå•åŸè‰²ï¼Œäº¤å‰æ··åˆè§†è§‰ä¸ºç™½è‰²
+                estimated(i)=1;%Ä¬ÈÏ¸ĞĞËÈ¤ÇøÓòÎª¿¿½üÄ³µ¥Ô­É«£¬½»²æ»ìºÏÊÓ¾õÎª°×É«
             end            
         end
     end
     
-    switch upper(operator)%äºŒç»´èšåˆç®—å­å®ä¾‹åŒ–
+    switch upper(operator)%¶şÎ¬¾ÛºÏËã×ÓÊµÀı»¯
         case 'LOW'
             neibor=[-1 0;0 1;1 0;0 -1];
             
@@ -71,80 +71,80 @@
             neibor=[-1 0;0 1;1 0;0 -1;-1 -1;-1 1;1 1;1 -1;0 -2;-2 0;0 2;2 0;
                 2 -1;2 -2;1 -2;-1 -2;-2 -2;-2 -1;-2 1;-2 2;-1 2;1 2;2 2;2 1];
             
-        otherwise%ç”±äºvalidatestringçš„ç‰¹æ€§ï¼Œä¼šæ¥å—ä¸€äº›å¥‡æ€ªçš„è¿‘ä¼¼å­—ç¬¦è¿›æ¥ï¼Œæ­¤æ—¶åªèƒ½è®¾å®šä¸ºé»˜è®¤å€¼
+        otherwise%ÓÉÓÚvalidatestringµÄÌØĞÔ£¬»á½ÓÊÜÒ»Ğ©Ææ¹ÖµÄ½üËÆ×Ö·û½øÀ´£¬´ËÊ±Ö»ÄÜÉè¶¨ÎªÄ¬ÈÏÖµ
             neibor=[-1 0;0 1;1 0;0 -1];
     end
     
-    if strcmp(method,'None') || size(neibor,1)>8%å¯¹è¾¹ç¼˜ç®—æ³•è¿›è¡Œåˆ¤æ–­ï¼Œå¦‚æœèšåˆç®—å­è¿‡å¤§ï¼Œåˆ™ä¸é€‚åˆä½¿ç”¨è¾¹ç•Œè¾…åŠ©åˆ¤æ–­
-        edgeImage=zeros(row,col);%ä¸ä½¿ç”¨è¾¹ç•Œé¢å¤–åˆ¤å®šï¼ŒedgeImgaeæ˜¯ä¸€å¹…0å€¼å›¾
+    if strcmp(method,'None') || size(neibor,1)>8%¶Ô±ßÔµËã·¨½øĞĞÅĞ¶Ï£¬Èç¹û¾ÛºÏËã×Ó¹ı´ó£¬Ôò²»ÊÊºÏÊ¹ÓÃ±ß½ç¸¨ÖúÅĞ¶Ï
+        edgeImage=zeros(row,col);%²»Ê¹ÓÃ±ß½ç¶îÍâÅĞ¶¨£¬edgeImgaeÊÇÒ»·ù0ÖµÍ¼
     else
         edgeImage=edge(inputImage(:,:,1),method)...
             & edge(inputImage(:,:,2),method)...
-            & edge(inputImage(:,:,3),method);%ä½¿ç”¨ä¸‰é€šé“äº¤é›†è¾¹ç•Œé¢å¤–åˆ¤å®šï¼Œåˆå§‹åŒ–è¾¹ç¼˜è¡¨ï¼Œæ˜¯ä¸€å¹…é€»è¾‘å›¾ï¼Œå…¶æ£€æµ‹è¾¹ç¼˜ä¸º1
+            & edge(inputImage(:,:,3),method);%Ê¹ÓÃÈıÍ¨µÀ½»¼¯±ß½ç¶îÍâÅĞ¶¨£¬³õÊ¼»¯±ßÔµ±í£¬ÊÇÒ»·ùÂß¼­Í¼£¬Æä¼ì²â±ßÔµÎª1
     end
     
-    %æ‰¾å‡ºæ»¡è¶³æ¡ä»¶çš„ç”Ÿé•¿å¼€å§‹ç‚¹
+    %ÕÒ³öÂú×ãÌõ¼şµÄÉú³¤¿ªÊ¼µã
     for i=1:row
         for j=1:col
-            if ~stateImage(i,j)%å¦‚æœæ²¡æœ‰è¢«æ£€æµ‹
-                inDegree=1;%åˆå§‹åŒ–èŒƒå›´æ£€æŸ¥æŒ‡ç¤º
+            if ~stateImage(i,j)%Èç¹ûÃ»ÓĞ±»¼ì²â
+                inDegree=1;%³õÊ¼»¯·¶Î§¼ì²éÖ¸Ê¾
                 for m=1:3
-                    if degree(m)==1%å¦‚æœæ³¢åŠ¨èŒƒå›´ä¸ºå…¨èŒƒå›´ï¼Œåˆ™è·³è¿‡èŒƒå›´æ£€æŸ¥
+                    if degree(m)==1%Èç¹û²¨¶¯·¶Î§ÎªÈ«·¶Î§£¬ÔòÌø¹ı·¶Î§¼ì²é
                         continue;
                     end
                     inDegree=inDegree && inputImage(i,j,m)>=estimated(m)-degree(m)...
-                        && inputImage(i,j,m)<=estimated(m)+degree(m);%èŒƒå›´æ£€æŸ¥æŒ‡ç¤ºæ›´æ–°
+                        && inputImage(i,j,m)<=estimated(m)+degree(m);%·¶Î§¼ì²éÖ¸Ê¾¸üĞÂ
                 end
                 
-                if ~inDegree%å¦‚æœä¸æ»¡è¶³èŒƒå›´æ£€æŸ¥
-                    stateImage(i,j)=1;%æ›´æ–°çŠ¶æ€ï¼Œä¸æ»¡è¶³é˜ˆå€¼
-                else%å¦‚æœæ»¡è¶³ç°åº¦é˜ˆå€¼
-                    %åˆå§‹åŒ–é¢„è®¾å€¼
-                    %åˆå§‹åŒ–å¾…é‚»åŸŸæ£€æµ‹åˆ—è¡¨ï¼Œç”±äºæ˜¯ä»å·¦åˆ°å³æ£€ç´¢ï¼Œæ•…åˆå§‹traceå€¼ä¸º3
+                if ~inDegree%Èç¹û²»Âú×ã·¶Î§¼ì²é
+                    stateImage(i,j)=1;%¸üĞÂ×´Ì¬£¬²»Âú×ããĞÖµ
+                else%Èç¹ûÂú×ã»Ò¶ÈãĞÖµ
+                    %³õÊ¼»¯Ô¤ÉèÖµ
+                    %³õÊ¼»¯´ıÁÚÓò¼ì²âÁĞ±í£¬ÓÉÓÚÊÇ´Ó×óµ½ÓÒ¼ìË÷£¬¹Ê³õÊ¼traceÖµÎª3
                     handleList=[i,j,inputImage(i,j,1),inputImage(i,j,2),inputImage(i,j,3),3];
-                    fulfilList=[];%åˆå§‹åŒ–å®Œæˆé‚»åŸŸæ£€æµ‹çš„åˆ—è¡¨
-                    adv=inputImage(i,j,:);%åˆå§‹åŒ–å¹³å‡å€¼
-                    top=i;%åˆå§‹åŒ–å›¾åƒèŒƒå›´å€¼
+                    fulfilList=[];%³õÊ¼»¯Íê³ÉÁÚÓò¼ì²âµÄÁĞ±í
+                    adv=inputImage(i,j,:);%³õÊ¼»¯Æ½¾ùÖµ
+                    top=i;%³õÊ¼»¯Í¼Ïñ·¶Î§Öµ
                     bottom=i;
                     left=j;
                     right=j;                 
                  
-                    %å¼€å§‹åŒºåŸŸå¢é•¿
+                    %¿ªÊ¼ÇøÓòÔö³¤
                     while size(handleList,1)
-                        %å¾ªç¯å †æ ˆå¤„ç†
-                        xtag=handleList(1,1);%é‡å®šä½åˆ°æ­¤ç›®æ ‡
+                        %Ñ­»·¶ÑÕ»´¦Àí
+                        xtag=handleList(1,1);%ÖØ¶¨Î»µ½´ËÄ¿±ê
                         ytag=handleList(1,2);
-                        stateImage(xtag,ytag)=3;%æ›´æ–°çŠ¶æ€ï¼Œå·²å®Œæˆæ£€æµ‹
-                        trace=handleList(1,6);%æå–è¯¥åƒç´ ç‚¹çš„è½¨è¿¹
-                        handleList(1,:)=[];%å°†è¿™ä¸ªåƒç´ ä»å¾…æ£€æµ‹åˆ—è¡¨ä¸­ç§»é™¤
-                        %æ›´æ–°å®Œæˆé‚»åŸŸæ£€æµ‹çš„åˆ—è¡¨  
+                        stateImage(xtag,ytag)=3;%¸üĞÂ×´Ì¬£¬ÒÑÍê³É¼ì²â
+                        trace=handleList(1,6);%ÌáÈ¡¸ÃÏñËØµãµÄ¹ì¼£
+                        handleList(1,:)=[];%½«Õâ¸öÏñËØ´Ó´ı¼ì²âÁĞ±íÖĞÒÆ³ı
+                        %¸üĞÂÍê³ÉÁÚÓò¼ì²âµÄÁĞ±í  
                         fulfilList=[xtag,ytag,inputImage(xtag,ytag,1),inputImage(xtag,ytag,2),inputImage(xtag,ytag,3);fulfilList];
                         
-                        %å¯¹äºé‚»åŸŸèŒƒå›´å†…æ‰€æœ‰çš„åƒç´ ç‚¹æ‰«æä¸€é
-                        num=0;%åˆå§‹åŒ–é‚»åŸŸå†…æ»¡è¶³é˜ˆå€¼çš„åƒç´ ç‚¹çš„ä¸ªæ•°
-                        inAdv=1;%åˆå§‹åŒ–
+                        %¶ÔÓÚÁÚÓò·¶Î§ÄÚËùÓĞµÄÏñËØµãÉ¨ÃèÒ»±é
+                        num=0;%³õÊ¼»¯ÁÚÓòÄÚÂú×ããĞÖµµÄÏñËØµãµÄ¸öÊı
+                        inAdv=1;%³õÊ¼»¯
                         for k=1:size(neibor,1)
-                            x=xtag+neibor(k,1);%æ›´æ–°åæ ‡
+                            x=xtag+neibor(k,1);%¸üĞÂ×ø±ê
                             y=ytag+neibor(k,2);
-                            inRange=x>=1 && y>=1 && x<=row && y<=col;%æ£€æµ‹æ˜¯å¦åœ¨å›¾åƒèŒƒå›´å†…
-                            if inRange && ~stateImage(x,y)%å¦‚æœåœ¨èŒƒå›´å†…è€Œä¸”æ²¡æœ‰è¢«æ‰«æè¿‡
-                                if edgeImage(x,y) && k==trace%å¦‚æœæ˜¯è¾¹ç¼˜ç‚¹è€Œä¸”kæ˜¯æ²¿ç€è½¨è¿¹æ–¹å‘ï¼Œåˆ™è·³è¿‡
+                            inRange=x>=1 && y>=1 && x<=row && y<=col;%¼ì²âÊÇ·ñÔÚÍ¼Ïñ·¶Î§ÄÚ
+                            if inRange && ~stateImage(x,y)%Èç¹ûÔÚ·¶Î§ÄÚ¶øÇÒÃ»ÓĞ±»É¨Ãè¹ı
+                                if edgeImage(x,y) && k==trace%Èç¹ûÊÇ±ßÔµµã¶øÇÒkÊÇÑØ×Å¹ì¼£·½Ïò£¬ÔòÌø¹ı
                                     continue;
                                 end
                                 
                                 for m=1:3   
                                     inAdv=inAdv && inputImage(x,y,m)>=adv(m)-degree(m)...
-                                        && inputImage(x,y,m)<=adv(m)+degree(m);%èŒƒå›´æ£€æŸ¥æŒ‡ç¤ºæ›´æ–°
+                                        && inputImage(x,y,m)<=adv(m)+degree(m);%·¶Î§¼ì²éÖ¸Ê¾¸üĞÂ
                                 end
                                 
-                                if ~inAdv%å¦‚æœä¸æ»¡è¶³é˜ˆå€¼
-                                    stateImage(x,y)=1;%æ›´æ–°çŠ¶æ€ï¼Œä¸æ»¡è¶³é˜ˆå€¼
-                                else%å¦‚æœæ»¡è¶³é˜ˆå€¼
-                                    stateImage(x,y)=2;%æ›´æ–°çŠ¶æ€ï¼Œæœªæ£€æµ‹é‚»åŸŸ
-                                    num=num+1;%é‚»åŸŸå†…æ»¡è¶³é˜ˆå€¼çš„åƒç´ ç‚¹çš„ä¸ªæ•°å¢åŠ 
-                                    %åŠ å…¥å¾…æ£€æµ‹åˆ—è¡¨ï¼Œå¹¶å­˜å‚¨åŸå§‹æ–¹å‘
+                                if ~inAdv%Èç¹û²»Âú×ããĞÖµ
+                                    stateImage(x,y)=1;%¸üĞÂ×´Ì¬£¬²»Âú×ããĞÖµ
+                                else%Èç¹ûÂú×ããĞÖµ
+                                    stateImage(x,y)=2;%¸üĞÂ×´Ì¬£¬Î´¼ì²âÁÚÓò
+                                    num=num+1;%ÁÚÓòÄÚÂú×ããĞÖµµÄÏñËØµãµÄ¸öÊıÔö¼Ó
+                                    %¼ÓÈë´ı¼ì²âÁĞ±í£¬²¢´æ´¢Ô­Ê¼·½Ïò
                                     handleList=[x,y,inputImage(x,y,1),inputImage(x,y,2),inputImage(x,y,3),k;handleList];
-                                    top=min(top,x);%æ›´æ–°å›¾åƒèŒƒå›´å€¼
+                                    top=min(top,x);%¸üĞÂÍ¼Ïñ·¶Î§Öµ
                                     bottom=max(bottom,x);
                                     left=min(left,y);
                                     right=max(right,y);                                   
@@ -152,25 +152,25 @@
                             end       
                         end
                                       
-                        %æ£€æµ‹å®Œåï¼Œå¯¹äºæ‰€æœ‰æ»¡è¶³æ¡ä»¶çš„åƒç´ ï¼Œè¿›è¡Œè‰²å½©æœ€æ¥è¿‘æ¯”è¾ƒ
-                        if num%å¦‚æœå­˜åœ¨æ»¡è¶³è¦æ±‚çš„é‚»åŸŸ                  
+                        %¼ì²âÍêºó£¬¶ÔÓÚËùÓĞÂú×ãÌõ¼şµÄÏñËØ£¬½øĞĞÉ«²Ê×î½Ó½ü±È½Ï
+                        if num%Èç¹û´æÔÚÂú×ãÒªÇóµÄÁÚÓò                  
                             [~,index]=min(abs(handleList(1:num,3)-adv(1))+...
                                 abs(handleList(1:num,4)-adv(2))+...
-                                abs(handleList(1:num,5)-adv(3)));%æ‰¾åˆ°ç»¼åˆæ°´å¹³æœ€æ¥è¿‘çš„åƒç´ åºå·
-                            handleList([1,index],:)=handleList([index,1],:);%äº¤æ¢ä¸¤è¡Œ
+                                abs(handleList(1:num,5)-adv(3)));%ÕÒµ½×ÛºÏË®Æ½×î½Ó½üµÄÏñËØĞòºÅ
+                            handleList([1,index],:)=handleList([index,1],:);%½»»»Á½ĞĞ
                             
-                            for m=1:3%é‡æ–°è®¡ç®—å„è‰²é€šé“å¹³å‡å€¼
+                            for m=1:3%ÖØĞÂ¼ÆËã¸÷É«Í¨µÀÆ½¾ùÖµ
                                 adv(m)=(adv(m)*size(fulfilList,1)+handleList(1,m+2))/(size(fulfilList,1)+1);
                             end
                         end   
                     end
                     
-                    %å­˜å…¥èšé›†æ•°ç»„å¹¶å¡«å…¥ä¿¡æ¯
-                    count=count+1;%è¾“å‡ºå›¾åƒæ•°é‡å¢åŠ 
-                    gather{count,1}=zeros(bottom-top+1,right-left+1);%èƒŒæ™¯è‰²é»˜è®¤ä¸ºç™½
-                    gather{count,2}=size(fulfilList,1);%ç¬¬äºŒåˆ—å­˜å…¥åƒç´ ç‚¹ä¸ªæ•°ä¿¡æ¯
-                    gather{count,3}=[fulfilList(end,1),fulfilList(end,2)];%ç¬¬ä¸‰åˆ—å­˜å…¥è¯¥å›¾åƒåˆå§‹èšé›†åƒç´ ä½ç½®
-                    for k=1:size(fulfilList,1)%å¡«å…¥å›¾åƒå„ä¸ªé€šé“è‰²å½©ä¿¡æ¯
+                    %´æÈë¾Û¼¯Êı×é²¢ÌîÈëĞÅÏ¢
+                    count=count+1;%Êä³öÍ¼ÏñÊıÁ¿Ôö¼Ó
+                    gather{count,1}=zeros(bottom-top+1,right-left+1);%±³¾°É«Ä¬ÈÏÎª°×
+                    gather{count,2}=size(fulfilList,1);%µÚ¶şÁĞ´æÈëÏñËØµã¸öÊıĞÅÏ¢
+                    gather{count,3}=[fulfilList(end,1),fulfilList(end,2)];%µÚÈıÁĞ´æÈë¸ÃÍ¼Ïñ³õÊ¼¾Û¼¯ÏñËØÎ»ÖÃ
+                    for k=1:size(fulfilList,1)%ÌîÈëÍ¼Ïñ¸÷¸öÍ¨µÀÉ«²ÊĞÅÏ¢
                         gather{count,1}(fulfilList(k,1)-top+1,fulfilList(k,2)-left+1,1)=fulfilList(k,3);
                         gather{count,1}(fulfilList(k,1)-top+1,fulfilList(k,2)-left+1,2)=fulfilList(k,4);
                         gather{count,1}(fulfilList(k,1)-top+1,fulfilList(k,2)-left+1,3)=fulfilList(k,5);
@@ -180,17 +180,17 @@
         end
     end
     
-    %å¤„ç†è¾“å‡ºå›¾åƒ
-    if ~count%æ— å›¾åƒï¼Œé»˜è®¤è¾“å‡ºä¸ºåŸå›¾åƒ
+    %´¦ÀíÊä³öÍ¼Ïñ
+    if ~count%ÎŞÍ¼Ïñ£¬Ä¬ÈÏÊä³öÎªÔ­Í¼Ïñ
         outputImages{1}=inputImage;
-    elseif count==1%åªæœ‰ä¸€å‰¯å›¾åƒï¼Œç›´æ¥è¾“å‡º
+    elseif count==1%Ö»ÓĞÒ»¸±Í¼Ïñ£¬Ö±½ÓÊä³ö
         outputImages{1}=gather{1,1};
-    else%æœ‰å¤šå¹…å›¾åƒï¼Œç”¨å†’æ³¡æ’åºé™åºæ’åˆ—
-        outputImages={};%åˆå§‹åŒ–è¾“å‡ºå›¾åƒç»†èƒæ•°ç»„
+    else%ÓĞ¶à·ùÍ¼Ïñ£¬ÓÃÃ°ÅİÅÅĞò½µĞòÅÅÁĞ
+        outputImages={};%³õÊ¼»¯Êä³öÍ¼ÏñÏ¸°ûÊı×é
         for i=1:count
             for j=2:count
                 if gather{j-1,2}<gather{j,2}
-                    tempA=gather{j-1,1};%äº¤æ¢ä¸¤è¡Œ
+                    tempA=gather{j-1,1};%½»»»Á½ĞĞ
                     tempB=gather{j-1,2};
                     tempC=gather{j-1,3};
                     gather{j-1,1}=gather{j,1};
@@ -203,33 +203,33 @@
             end
         end
         
-        %å†³å®šçœŸå®è¾“å‡ºæ•°é‡
-        if outputNum%å¦‚æœè§„å®šäº†è¾“å‡ºå›¾åƒæ•°ç›®      
-                indexMax=min(count,outputNum);%è¾“å‡ºæ•°é‡ä¸ºè¾ƒå°è€…
-        else%å¦‚æœæ²¡æœ‰è§„å®šè¾“å‡ºå›¾åƒæ•°ç›®ï¼Œåˆ™é€‰æ‹©æ¢¯åº¦ä¸‹é™æœ€é™¡çš„ç‚¹ä¹‹å‰çš„å›¾åƒ
-            maxGrad=0;%åˆå§‹åŒ–æœ€å¤§æ¢¯åº¦
+        %¾ö¶¨ÕæÊµÊä³öÊıÁ¿
+        if outputNum%Èç¹û¹æ¶¨ÁËÊä³öÍ¼ÏñÊıÄ¿      
+                indexMax=min(count,outputNum);%Êä³öÊıÁ¿Îª½ÏĞ¡Õß
+        else%Èç¹ûÃ»ÓĞ¹æ¶¨Êä³öÍ¼ÏñÊıÄ¿£¬ÔòÑ¡ÔñÌİ¶ÈÏÂ½µ×î¶¸µÄµãÖ®Ç°µÄÍ¼Ïñ
+            maxGrad=0;%³õÊ¼»¯×î´óÌİ¶È
             for i=2:count
                 if maxGrad<gather{i-1,2}-gather{i,2}
                     maxGrad=gather{i-1,2}-gather{i,2};
-                    indexMax=i-1;%è®°å½•æ­¤åºå·
+                    indexMax=i-1;%¼ÇÂ¼´ËĞòºÅ
                 end
             end
         end
         
-        %æ ¹æ®æ’åˆ—é¡ºåºå†³å®šè¾“å‡ºé¡ºåº
-        orderSign=[];%åˆå§‹åŒ–é¡ºåºæ ‡å·æ•°ç»„
-        for i=1:indexMax%æå–æ‰€æœ‰è¾“å‡ºå›¾ç‰‡çš„é¡ºåºæ ‡å·
+        %¸ù¾İÅÅÁĞË³Ğò¾ö¶¨Êä³öË³Ğò
+        orderSign=[];%³õÊ¼»¯Ë³Ğò±êºÅÊı×é
+        for i=1:indexMax%ÌáÈ¡ËùÓĞÊä³öÍ¼Æ¬µÄË³Ğò±êºÅ
             orderSign=[orderSign;gather{i,3}];
         end
-        [rowCell,tform]=blindLayer(orderSign(:,1));%è·å–æ¯è¡Œçš„åæ ‡èšé›†
-        if isempty(rowCell) || isempty(tform)%å¦‚æœæ’åºå¤±è´¥ï¼Œä½¿ç”¨åŒ…å«åƒç´ å¤šå°‘é™åºæ’åˆ—
+        [rowCell,tform]=blindLayer(orderSign(:,1));%»ñÈ¡Ã¿ĞĞµÄ×ø±ê¾Û¼¯
+        if isempty(rowCell) || isempty(tform)%Èç¹ûÅÅĞòÊ§°Ü£¬Ê¹ÓÃ°üº¬ÏñËØ¶àÉÙ½µĞòÅÅÁĞ
             outputImages=gather(1:indexMax,1);
-        else%æ’åºæˆåŠŸï¼Œä½¿ç”¨è¡Œåˆ—æ’åº
-            for i=1:size(rowCell,2)%æ¯ä¸€è¡Œçš„åæ ‡è¿­ä»£
-                for j=1:size(rowCell{i},1)%æ¯ä¸€è¡Œçš„ä¸€åˆ—è¿­ä»£
-                    [~,index]=min(orderSign(tform{i},2));%æ‰¾åˆ°æœ€å°çš„åˆ—åæ ‡çš„åºå·
-                    orderSign(tform{i}(index),2)=col+1;%å°†æ­¤åæ ‡ç§»å‡ºå›¾å¤–
-                    outputImages=[outputImages,gather{tform{i}(index),1}];%æ‹¼æ¥è¾“å‡ºå›¾åƒç»†èƒæ•°ç»„
+        else%ÅÅĞò³É¹¦£¬Ê¹ÓÃĞĞÁĞÅÅĞò
+            for i=1:size(rowCell,2)%Ã¿Ò»ĞĞµÄ×ø±êµü´ú
+                for j=1:size(rowCell{i},1)%Ã¿Ò»ĞĞµÄÒ»ÁĞµü´ú
+                    [~,index]=min(orderSign(tform{i},2));%ÕÒµ½×îĞ¡µÄÁĞ×ø±êµÄĞòºÅ
+                    orderSign(tform{i}(index),2)=col+1;%½«´Ë×ø±êÒÆ³öÍ¼Íâ
+                    outputImages=[outputImages,gather{tform{i}(index),1}];%Æ´½ÓÊä³öÍ¼ÏñÏ¸°ûÊı×é
                 end
             end
         end

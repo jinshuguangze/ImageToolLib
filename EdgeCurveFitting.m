@@ -1,28 +1,28 @@
 for i=1:size(pureFruitDataCell,2)
-    %é¢„è®¾é€‰é¡¹
+    %Ô¤ÉèÑ¡Ïî
     options = fitoptions('Method','Smooth','SmoothingParam',0.001);
-    %å¯¹è¾“å…¥è¿›è¡Œé‡å¡‘
+    %¶ÔÊäÈë½øĞĞÖØËÜ
     [xLeft,yLeft]=prepareCurveData(pureFruitDataCell{i}.outerLeft(:,1),...
         pureFruitDataCell{i}.outerLeft(:,2));
     [xRight,yRight]=prepareCurveData(pureFruitDataCell{i}.outerRight(:,1),...
         pureFruitDataCell{i}.outerRight(:,2));
-    %æ›²çº¿æ‹Ÿåˆ
+    %ÇúÏßÄâºÏ
     [funcLeft{i},gdnessLeft{i},outLeft{i}] = fit(xLeft,yLeft,'smooth',options);
     [funcRight{i},gdnessRight{i},outRight{i}] = fit(xRight,yRight,'smooth',options);
-    %å¾—åˆ°å¯¼æ•°å’ŒäºŒé˜¶å¯¼æ•°
+    %µÃµ½µ¼ÊıºÍ¶ş½×µ¼Êı
     [derifuncLeft1{i},derifuncLeft2{i}]=differentiate(funcLeft{i},pureFruitDataCell{i}.outerLeft(:,1));
     [derifuncRight1{i},derifuncRight2{i}]=differentiate(funcRight{i},pureFruitDataCell{i}.outerRight(:,1));
     
-    %å·¦è¾¹ç¼˜æ›²çº¿å¤„ç†
-    extremeLeft=[];%åˆå§‹åŒ–å·¦æ›²çº¿æå€¼ç‚¹æ•°ç»„
-    if ~(isempty(derifuncLeft1) || isempty(derifuncLeft2))%ç¡®ä¿å¯¼å‡½æ•°å€¼ä¸ä¸ºç©º
-        for j=1:size(derifuncLeft1{i},1)%å¯»æ‰¾æ‰€æœ‰æå€¼ç‚¹
-            if ~abs(derifuncLeft2{i}(j))<1e-6%æ’é™¤æ— æ•ˆæå€¼ç‚¹
-                if ~derifuncLeft1{i}(j)%å¦‚æœå€¼ç›´æ¥ä¸º0
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+    %×ó±ßÔµÇúÏß´¦Àí
+    extremeLeft=[];%³õÊ¼»¯×óÇúÏß¼«ÖµµãÊı×é
+    if ~(isempty(derifuncLeft1) || isempty(derifuncLeft2))%È·±£µ¼º¯ÊıÖµ²»Îª¿Õ
+        for j=1:size(derifuncLeft1{i},1)%Ñ°ÕÒËùÓĞ¼«Öµµã
+            if ~abs(derifuncLeft2{i}(j))<1e-6%ÅÅ³ıÎŞĞ§¼«Öµµã
+                if ~derifuncLeft1{i}(j)%Èç¹ûÖµÖ±½ÓÎª0
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeLeft=[extremeLeft;pureFruitDataCell{i}.outerLeft(j,1),derifuncLeft2{i}(j)<0];
-                elseif j>1 && derifuncLeft1{i}(j-1)*derifuncLeft1{i}(j)<0%å¦‚æœä¸¤è€…ç¬¦å·ç›¸å
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+                elseif j>1 && derifuncLeft1{i}(j-1)*derifuncLeft1{i}(j)<0%Èç¹ûÁ½Õß·ûºÅÏà·´
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeLeft=[extremeLeft;abs(derifuncLeft1{i}(j-1)/(derifuncLeft1{i}(j)-derifuncLeft1{i}(j-1)))*...
                         (pureFruitDataCell{i}.outerLeft(j,1)-pureFruitDataCell{i}.outerLeft(j-1,1))+...
                         pureFruitDataCell{i}.outerLeft(j-1,1),derifuncLeft2{i}(j)<0];
@@ -30,36 +30,36 @@ for i=1:size(pureFruitDataCell,2)
             end
         end
         if ~isempty(extremeLeft)
-            estimateLeft=size(find(~extremeLeft(:,2)),1);%è§’æœå·¦åŠè¾¹æ²¹èœç±½ä¼°è®¡å€¼
+            estimateLeft=size(find(~extremeLeft(:,2)),1);%½Ç¹û×ó°ë±ßÓÍ²Ë×Ñ¹À¼ÆÖµ
         else
             estimateLeft=0;
         end
         
-        count=0;%åˆå§‹åŒ–æœ‰æ•ˆæ³¢å³°æ•°
-        adv{i}=0;%åˆå§‹åŒ–å·¦ä¾§æ³¢å³°é«˜åº¦å¹³å‡å€¼
+        count=0;%³õÊ¼»¯ÓĞĞ§²¨·åÊı
+        adv{i}=0;%³õÊ¼»¯×ó²à²¨·å¸ß¶ÈÆ½¾ùÖµ
         if size(extremeLeft,1)>1
             for j=2:(size(extremeLeft,1)-1)
-                %é˜²æ­¢åˆ†æ®µå‡½æ•°ç­‰ç‰¹æ®Šæƒ…å†µçš„éå¿…è¦æ£€æµ‹
+                %·ÀÖ¹·Ö¶Îº¯ÊıµÈÌØÊâÇé¿öµÄ·Ç±ØÒª¼ì²â
                 if  extremeLeft(j-1,2)+extremeLeft(j,2)==1 && extremeLeft(j,2)+extremeLeft(j+1,2)==1
-                    count=count+1;%æœ‰æ•ˆæ€§æ³¢å³°æ£€æµ‹è®¡æ•°
-                    tempLeft=abs(funcLeft{i}(extremeLeft(j))-funcLeft{i}(extremeLeft(j-1)));%å·¦æ³¢å³°é«˜åº¦
-                    tempRight=abs(funcLeft{i}(extremeLeft(j))-funcLeft{i}(extremeLeft(j+1)));%å³æ³¢å³°é«˜åº¦
-                    adv{i}=(adv{i}*(count-1)+min(tempLeft,tempRight))/count;%è®¡ç®—å¹³å‡å€¼
+                    count=count+1;%ÓĞĞ§ĞÔ²¨·å¼ì²â¼ÆÊı
+                    tempLeft=abs(funcLeft{i}(extremeLeft(j))-funcLeft{i}(extremeLeft(j-1)));%×ó²¨·å¸ß¶È
+                    tempRight=abs(funcLeft{i}(extremeLeft(j))-funcLeft{i}(extremeLeft(j+1)));%ÓÒ²¨·å¸ß¶È
+                    adv{i}=(adv{i}*(count-1)+min(tempLeft,tempRight))/count;%¼ÆËãÆ½¾ùÖµ
                 end
             end
         end
     end
     
-    %å³è¾¹ç¼˜æ›²çº¿å¤„ç†
-    extremeRight=[];%åˆå§‹åŒ–å³æ›²çº¿æå€¼ç‚¹æ•°ç»„
-    if ~(isempty(derifuncRight1) || isempty(derifuncRight2))%ç¡®ä¿å¯¼å‡½æ•°å€¼ä¸ä¸ºç©º
-        for j=1:size(derifuncRight1{i},1)%å¯»æ‰¾æ‰€æœ‰æå€¼ç‚¹
-            if ~abs(derifuncRight2{i}(j))<1e-6%æ’é™¤æ— æ•ˆæå€¼ç‚¹
-                if ~derifuncRight1{i}(j)%å¦‚æœå€¼ç›´æ¥ä¸º0
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+    %ÓÒ±ßÔµÇúÏß´¦Àí
+    extremeRight=[];%³õÊ¼»¯ÓÒÇúÏß¼«ÖµµãÊı×é
+    if ~(isempty(derifuncRight1) || isempty(derifuncRight2))%È·±£µ¼º¯ÊıÖµ²»Îª¿Õ
+        for j=1:size(derifuncRight1{i},1)%Ñ°ÕÒËùÓĞ¼«Öµµã
+            if ~abs(derifuncRight2{i}(j))<1e-6%ÅÅ³ıÎŞĞ§¼«Öµµã
+                if ~derifuncRight1{i}(j)%Èç¹ûÖµÖ±½ÓÎª0
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeRight=[extremeRight;pureFruitDataCell{i}.outerRight(j,1),derifuncRight2{i}(j)<0];
-                elseif j>1 && derifuncRight1{i}(j-1)*derifuncRight1{i}(j)<0%å¦‚æœä¸¤è€…ç¬¦å·ç›¸å
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+                elseif j>1 && derifuncRight1{i}(j-1)*derifuncRight1{i}(j)<0%Èç¹ûÁ½Õß·ûºÅÏà·´
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeRight=[extremeRight;abs(derifuncRight1{i}(j-1)/(derifuncRight1{i}(j)-derifuncRight1{i}(j-1)))*...
                         (pureFruitDataCell{i}.outerRight(j,1)-pureFruitDataCell{i}.outerRight(j-1,1))+...
                         pureFruitDataCell{i}.outerRight(j-1,1),derifuncRight2{i}(j)<0];
@@ -67,19 +67,19 @@ for i=1:size(pureFruitDataCell,2)
             end
         end
         if ~isempty(extremeRight)
-            estimateRight=size(find(extremeRight(:,2)),1);%è§’æœå·¦åŠè¾¹æ²¹èœç±½ä¼°è®¡å€¼
+            estimateRight=size(find(extremeRight(:,2)),1);%½Ç¹û×ó°ë±ßÓÍ²Ë×Ñ¹À¼ÆÖµ
         else
             estimateRight=0;
         end
         
         if size(extremeRight,1)>1
             for j=2:(size(extremeRight,1)-1)
-                %é˜²æ­¢åˆ†æ®µå‡½æ•°ç­‰ç‰¹æ®Šæƒ…å†µçš„éå¿…è¦æ£€æµ‹
+                %·ÀÖ¹·Ö¶Îº¯ÊıµÈÌØÊâÇé¿öµÄ·Ç±ØÒª¼ì²â
                 if  extremeRight(j-1,2)+extremeRight(j,2)==1 && extremeRight(j,2)+extremeRight(j+1,2)==1
-                    count=count+1;%æœ‰æ•ˆæ€§æ³¢å³°æ£€æµ‹è®¡æ•°
-                    tempLeft=abs(funcRight{i}(extremeRight(j))-funcRight{i}(extremeRight(j-1)));%å·¦æ³¢å³°é«˜åº¦
-                    tempRight=abs(funcRight{i}(extremeRight(j))-funcRight{i}(extremeRight(j+1)));%å³æ³¢å³°é«˜åº¦
-                    adv{i}=(adv{i}*(count-1)+min(tempLeft,tempRight))/count;%è®¡ç®—å¹³å‡å€¼
+                    count=count+1;%ÓĞĞ§ĞÔ²¨·å¼ì²â¼ÆÊı
+                    tempLeft=abs(funcRight{i}(extremeRight(j))-funcRight{i}(extremeRight(j-1)));%×ó²¨·å¸ß¶È
+                    tempRight=abs(funcRight{i}(extremeRight(j))-funcRight{i}(extremeRight(j+1)));%ÓÒ²¨·å¸ß¶È
+                    adv{i}=(adv{i}*(count-1)+min(tempLeft,tempRight))/count;%¼ÆËãÆ½¾ùÖµ
                 end
             end
         end

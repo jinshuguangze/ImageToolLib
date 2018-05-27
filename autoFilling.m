@@ -1,30 +1,30 @@
 function outputImage = autoFilling(inputImage,varargin)
-%autoReducing:è‡ªåŠ¨å¡«å……å›¾åƒä¸­çš„ç©ºéš™ç‚¹
-%inputImage:å¯ä»¥è¾“å…¥å•ä¾‹å›¾åƒæˆ–å›¾åƒç»†èƒè¡Œå‘é‡
-%operator:é‚»åŸŸç®—å­ç­‰çº§ï¼Œå¯ä»¥é€‰æ‹©â€˜Lowâ€˜ï¼Œâ€™Mediumâ€˜ï¼Œâ€™Highâ€˜ï¼Œâ€™Extraâ€˜å››ä¸ªç­‰çº§
-%outputImage:è‡ªåŠ¨å¡«å……åçš„å›¾åƒç»†èƒæ•°ç»„
+%autoReducing:×Ô¶¯Ìî³äÍ¼ÏñÖĞµÄ¿ÕÏ¶µã
+%inputImage:¿ÉÒÔÊäÈëµ¥ÀıÍ¼Ïñ»òÍ¼ÏñÏ¸°ûĞĞÏòÁ¿
+%operator:ÁÚÓòËã×ÓµÈ¼¶£¬¿ÉÒÔÑ¡Ôñ¡®Low¡®£¬¡¯Medium¡®£¬¡¯High¡®£¬¡¯Extra¡®ËÄ¸öµÈ¼¶
+%outputImage:×Ô¶¯Ìî³äºóµÄÍ¼ÏñÏ¸°ûÊı×é
 %version:1.0.6
 %author:jinshuguangze
 %data:5/7/2018
 
-    outputImage={};%åˆå§‹åŒ–è¾“å‡º
-    if iscell(inputImage) && isrow(inputImage)%å°†å•ä¾‹å›¾å’Œè½¬æ¢ä¸ºç»†èƒæ•°ç»„å¤„ç†è¡¨
+    outputImage={};%³õÊ¼»¯Êä³ö
+    if iscell(inputImage) && isrow(inputImage)%½«µ¥ÀıÍ¼ºÍ×ª»»ÎªÏ¸°ûÊı×é´¦Àí±í
         handleList=inputImage;
     elseif islogical(inputImage) && isnumeric(inputImage)...
-            && (ismatrix(inputImage) || ndims(inputImage)==3)%æ­£å¸¸çš„RGB/ç°åº¦/äºŒå€¼å›¾åƒ
+            && (ismatrix(inputImage) || ndims(inputImage)==3)%Õı³£µÄRGB/»Ò¶È/¶şÖµÍ¼Ïñ
         handleList{1}=inputImage;
     else
-        disp('è¾“å…¥ç±»å‹é”™è¯¯ï¼');
+        disp('ÊäÈëÀàĞÍ´íÎó£¡');
         return;
     end
 
-    p=inputParser;%æ„é€ å…¥å£æ£€æµ‹å¯¹è±¡
+    p=inputParser;%¹¹ÔìÈë¿Ú¼ì²â¶ÔÏó
     p.addOptional('operator','Low',@(x)any(validatestring(x,...
         {'Low','Medium','High','Extra'},'autoFilling','operator',2)));
     p.parse(varargin{:});
     operator=p.Results.operator;
     
-    switch upper(operator)%äºŒç»´èšåˆç®—å­å®ä¾‹åŒ–
+    switch upper(operator)%¶şÎ¬¾ÛºÏËã×ÓÊµÀı»¯
         case 'LOW'
             neibor=[-1 0;0 1;1 0;0 -1];
             
@@ -38,50 +38,50 @@ function outputImage = autoFilling(inputImage,varargin)
             neibor=[-1 0;0 1;1 0;0 -1;-1 -1;-1 1;1 1;1 -1;0 -2;-2 0;0 2;2 0;
                 2 -1;2 -2;1 -2;-1 -2;-2 -2;-2 -1;-2 1;-2 2;-1 2;1 2;2 2;2 1];
             
-        otherwise%ç”±äºvalidatestringçš„ç‰¹æ€§ï¼Œä¼šæ¥å—ä¸€äº›å¥‡æ€ªçš„è¿‘ä¼¼å­—ç¬¦è¿›æ¥ï¼Œæ­¤æ—¶åªèƒ½è®¾å®šä¸ºé»˜è®¤å€¼
+        otherwise%ÓÉÓÚvalidatestringµÄÌØĞÔ£¬»á½ÓÊÜÒ»Ğ©Ææ¹ÖµÄ½üËÆ×Ö·û½øÀ´£¬´ËÊ±Ö»ÄÜÉè¶¨ÎªÄ¬ÈÏÖµ
             neibor=[-1 0;0 1;1 0;0 -1];
     end
     
     for i=1:size(handleList,2)
-        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%å›¾åƒå…¥å£æ£€æµ‹
-        handleList{i}=im2double(handleList{i});%å°†å›¾åƒåŒç²¾åº¦åŒ–
-        [row,col,~]=size(handleList{i});%è·å–å›¾åƒé•¿å®½
+        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%Í¼ÏñÈë¿Ú¼ì²â
+        handleList{i}=im2double(handleList{i});%½«Í¼ÏñË«¾«¶È»¯
+        [row,col,~]=size(handleList{i});%»ñÈ¡Í¼Ïñ³¤¿í
         while true
             done=false;
             for j=1:row
                 for k=1:col
-                    if handleList{i}(j,k,:)==1%æœç´¢ç™½ç‚¹
-                        count=0;%åˆå§‹åŒ–æ•°é‡
-                        adv=0;%åˆå§‹åŒ–å¹³å‡å€¼
+                    if handleList{i}(j,k,:)==1%ËÑË÷°×µã
+                        count=0;%³õÊ¼»¯ÊıÁ¿
+                        adv=0;%³õÊ¼»¯Æ½¾ùÖµ
                         for l=1:size(neibor,1)
-                            if (j==1 && neibor(l,1)<0) ||...%åœ¨è¾¹ç¼˜æ—¶ï¼ŒæŸä¸ªæ–¹å‘ä¼šè¢«å¿½ç•¥
+                            if (j==1 && neibor(l,1)<0) ||...%ÔÚ±ßÔµÊ±£¬Ä³¸ö·½Ïò»á±»ºöÂÔ
                                     (j==row && neibor(l,1)>0)||...
                                     (k==1 && neibor(l,2)<0)||...
                                     (k==col && neibor(l,2)>0)
                                 continue;
                             end
                             
-                            x=j+neibor(l,1);%é‡å®šä½åæ ‡å€¼
+                            x=j+neibor(l,1);%ÖØ¶¨Î»×ø±êÖµ
                             y=k+neibor(l,2);
-                            if handleList{i}(x,y,:)~=1%å¦‚æœé‚»åŸŸä¸ä¸ºç™½   
-                                adv=(adv*count+handleList{i}(x,y,:))/(count+1);%é‡æ–°è®¡ç®—å¹³å‡å€¼ï¼Œadvæ˜¯1*1*1æˆ–è€…1*1*3çš„æ•°ç»„
+                            if handleList{i}(x,y,:)~=1%Èç¹ûÁÚÓò²»Îª°×   
+                                adv=(adv*count+handleList{i}(x,y,:))/(count+1);%ÖØĞÂ¼ÆËãÆ½¾ùÖµ£¬advÊÇ1*1*1»òÕß1*1*3µÄÊı×é
                                 count=count+1;
                             end
                         end
                         
-                        if count>size(neibor,1)/2%è¶…è¿‡ç®—å­æ•°é‡çš„ä¸€èˆ¬
+                        if count>size(neibor,1)/2%³¬¹ıËã×ÓÊıÁ¿µÄÒ»°ã
                             done=true;
-                            handleList{i}(j,k,:)=adv(:);%å°†å¹³å‡å€¼èµ‹äºˆåƒç´ ç‚¹
+                            handleList{i}(j,k,:)=adv(:);%½«Æ½¾ùÖµ¸³ÓèÏñËØµã
                         end
                     end
                 end
             end
             
-            if ~done%å¦‚æœæ²¡æœ‰ç‚¹å¡«å……ï¼Œåˆ™è·³å‡ºå¾ªç¯
+            if ~done%Èç¹ûÃ»ÓĞµãÌî³ä£¬ÔòÌø³öÑ­»·
                 break;
             end                      
         end
     end
     
-    outputImage=handleList;%è¾“å‡º
+    outputImage=handleList;%Êä³ö
 end

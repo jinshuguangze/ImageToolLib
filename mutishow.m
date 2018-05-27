@@ -1,39 +1,39 @@
 function mutishow(varargin)
-%mutishow:ç”¨äºæ›´å¿«çš„å¼¹å‡ºå¯¹æ¯”å›¾åƒçª—å£
-%varargin:å¯å˜å‚æ•°ï¼Œè¾“å…¥æ•°é‡ä¸å®šçš„å›¾åƒï¼Œæ”¯æŒæ™®é€šæ•°ç»„ä¸å¯¹åº”ä¸€ç»´ç»†èƒæ•°ç»„é›†åˆ
+%mutishow:ÓÃÓÚ¸ü¿ìµÄµ¯³ö¶Ô±ÈÍ¼Ïñ´°¿Ú
+%varargin:¿É±ä²ÎÊı£¬ÊäÈëÊıÁ¿²»¶¨µÄÍ¼Ïñ£¬Ö§³ÖÆÕÍ¨Êı×éÓë¶ÔÓ¦Ò»Î¬Ï¸°ûÊı×é¼¯ºÏ
 %version:1.0.6
 %author:jinshuguangze
 %data:3/22/2018
 
-    %åˆ¤æ–­è¾“å…¥å›¾åƒæ•°é‡
+    %ÅĞ¶ÏÊäÈëÍ¼ÏñÊıÁ¿
     if(~nargin)
-        disp('æ— å‚æ•°è¾“å…¥ï¼');
+        disp('ÎŞ²ÎÊıÊäÈë£¡');
         return;
     else
-        figure, %æ‰“å¼€å›¾åƒçª—å£
-        count=nargin;%åˆå§‹é»˜è®¤å…ƒç´ ä¸­æ²¡æœ‰ç»†èƒæ•°ç»„
+        figure, %´ò¿ªÍ¼Ïñ´°¿Ú
+        count=nargin;%³õÊ¼Ä¬ÈÏÔªËØÖĞÃ»ÓĞÏ¸°ûÊı×é
         
-        %éå†ä¸€éè·å¾—å›¾åƒæ€»æ•°
+        %±éÀúÒ»±é»ñµÃÍ¼Ïñ×ÜÊı
         for i=1:nargin
             if(iscell(varargin{i}))
-                count=count+size(varargin{i},2)-1;%æ€»æ•°å¢åŠ ç›¸åº”å€¼
+                count=count+size(varargin{i},2)-1;%×ÜÊıÔö¼ÓÏàÓ¦Öµ
             end            
         end
            
-        row=floor(sqrt(count));%è¡Œæ•°
-        columns=ceil(count/row);%åˆ—æ•°
-        point=0;%å›¾åƒæŒ‡é’ˆ
+        row=floor(sqrt(count));%ĞĞÊı
+        columns=ceil(count/row);%ÁĞÊı
+        point=0;%Í¼ÏñÖ¸Õë
                
-        %ç¬¬äºŒééå†æ’å¸ƒå›¾åƒ
+        %µÚ¶ş±é±éÀúÅÅ²¼Í¼Ïñ
         for i=1:nargin           
-            if(iscell(varargin{i}))%å¦‚æœå…ƒç´ æ˜¯ç»†èƒæ•°ç»„ï¼Œåˆ™éå†æ˜¾ç¤º
-                for j=1:size(varargin{i},2)%éå†ç»†èƒæ•°ç»„
-                    point=point+1;%æŒ‡é’ˆç§»åŠ¨
+            if(iscell(varargin{i}))%Èç¹ûÔªËØÊÇÏ¸°ûÊı×é£¬Ôò±éÀúÏÔÊ¾
+                for j=1:size(varargin{i},2)%±éÀúÏ¸°ûÊı×é
+                    point=point+1;%Ö¸ÕëÒÆ¶¯
                     subplot(row,columns,point);
                     imshow(varargin{i}{j});                    
                 end
-            else%å¦‚æœæ˜¯æ™®é€šæ•°ç»„ï¼Œåˆ™ç›´æ¥æ˜¾ç¤º
-                point=point+1;%æŒ‡é’ˆç§»åŠ¨
+            else%Èç¹ûÊÇÆÕÍ¨Êı×é£¬ÔòÖ±½ÓÏÔÊ¾
+                point=point+1;%Ö¸ÕëÒÆ¶¯
                 subplot(row,columns,point);
                 imshow(varargin{i});                
             end

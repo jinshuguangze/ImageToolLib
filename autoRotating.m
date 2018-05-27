@@ -1,21 +1,21 @@
 function outputImage = autoRotating(inputImage)
-%autoRotating:ç”¨äºŽè‡ªåŠ¨å°†å›¾åƒæ—‹è½¬è‡³é•¿åº¦å¤§äºŽé«˜åº¦
-%inputImage:è¾“å…¥å›¾åƒï¼Œå¯ä»¥ä¸ºä»»æ„ç±»åž‹å›¾åƒ
-%outputImage:è¾“å‡ºå›¾åƒï¼Œä¸Žè¾“å…¥å›¾åƒç±»åž‹ä¸€è‡´
+%autoRotating:ÓÃÓÚ×Ô¶¯½«Í¼ÏñÐý×ªÖÁ³¤¶È´óÓÚ¸ß¶È
+%inputImage:ÊäÈëÍ¼Ïñ£¬¿ÉÒÔÎªÈÎÒâÀàÐÍÍ¼Ïñ
+%outputImage:Êä³öÍ¼Ïñ£¬ÓëÊäÈëÍ¼ÏñÀàÐÍÒ»ÖÂ
 %version:1.0.4
 %author:jinshuguangze
 %data:4/9/2018
 
-    %é»˜è®¤ä¸æ—‹è½¬
+    %Ä¬ÈÏ²»Ðý×ª
     outputImage=inputImage;
     
-    %å…¥å£åˆ¤æ–­ï¼Œåˆ¤æ–­æ˜¯å¦ä¸ºæ•°ç»„åž‹æ•°ç»„
+    %Èë¿ÚÅÐ¶Ï£¬ÅÐ¶ÏÊÇ·ñÎªÊý×éÐÍÊý×é
     if ~(isnumeric(inputImage) || islogical(inputImage))
-        disp('è¯·è¾“å…¥å›¾åƒï¼');
+        disp('ÇëÊäÈëÍ¼Ïñ£¡');
         return;
     end
     
-    %æ—‹è½¬æ¡ä»¶åˆ¤æ–­
+    %Ðý×ªÌõ¼þÅÐ¶Ï
     if(size(inputImage,1)>size(inputImage,2))
         outputImage=imrotate(inputImage,90,'nearest','loose');
     end

@@ -6,4 +6,4 @@ for i=1:5
     K{i}=regionExpanding_Gray(J{i},0.1,0,0,'method','None','operator','Low');
 end
 clear i;
-%%TODO:åŠ è½½ç±½æ•°é‡çœŸå®å€¼%%
+%%TODO:¼ÓÔØ×ÑÊıÁ¿ÕæÊµÖµ%%

@@ -1,44 +1,48 @@
 function outputImage = autoCutting(inputImage)
-%autoCutting:ç”¨äºè‡ªåŠ¨åˆ‡å‰²å‡ºä¿¡æ¯å¯†åº¦æ›´å¤§çš„å›¾åƒ
-%inputImage:è¾“å…¥å›¾åƒï¼Œé™å®šä¸ºRGBå›¾åƒ
-%outputImage:è¾“å‡ºå›¾åƒï¼Œç»è¿‡å‰ªåˆ‡
-%version:1.1.2
+%autoCutting:ÓÃÓÚ×Ô¶¯ÇĞ¸î×óÓÒ¶îÍâ±ßÔµÒÔ»ñµÃĞÅÏ¢ÃÜ¶È¸ü´óµÄÍ¼Ïñ
+%inputImage:ÊäÈëÍ¼Ïñ£¬¿ÉÒÔÊÇRGBÍ¼Ïñ»òÕß»Ò¶ÈÍ¼Ïñ
+%outputImage:Êä³öÍ¼Ïñ£¬¾­¹ı¼ôÇĞ
+%version:1.1.5
 %author:jinshuguangze
 %data:4/9/2018
 
-    p=inputParser;%æ„é€ æ£€æµ‹å™¨å¯¹è±¡
+    p=inputParser;%¹¹Ôì¼ì²âÆ÷¶ÔÏó
     p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
-        {'size',[NaN,NaN,3],'integer' ,'nonnegative'},'autoCutting','inputImage',1));
+        {'3d','integer' ,'nonnegative'},'autoCutting','inputImage',1));
     p.parse(inputImage);
     inputImage=p.Results.inputImage;
     
-    %åˆ©ç”¨éœå¤«å˜æ¢æ‰¾å‡ºåˆé€‚çº¿æ®µ
-    grayImage=rgb2gray(inputImage);
-    edgeImage=edge(grayImage,'Canny');%å¯åŠ å‚æ•°
-    [Hough,Theta,Rho]=hough(edgeImage,'RhoResolution',1,'Theta',-60:0.5:60);
+    %ÀûÓÃ»ô·ò±ä»»ÕÒ³öºÏÊÊÏß¶Î
+    if ndims(inputImage)==3%ÈôÊÇRGBÍ¼Ïñ£¬Ôò»Ò¶È»¯
+        grayImage=rgb2gray(inputImage);
+    else
+        grayImage=inputImage;
+    end
+    edgeImage=edge(grayImage,'Log');%¿É¼Ó²ÎÊı
+    [Hough,Theta,Rho]=hough(edgeImage,'RhoResolution',1,'Theta',-45:0.1:45);
     Points=houghpeaks(Hough,10,'Threshold',0.5*max(Hough(:)));%'NHoodSize':Default
     Lines=houghlines(edgeImage,Theta,Rho,Points,'FillGap',20,'MinLength',40);
     
-    %åˆå§‹åŒ–
+    %³õÊ¼»¯
     maxLeft=0;
     minRight=size(inputImage,2);
     midpointX=minRight/2;      
 
-    %æ‰¾å‡ºä¸¤ä¸ªåˆé€‚åˆ‡å‰²ç‚¹
+    %ÕÒ³öÁ½¸öºÏÊÊÇĞ¸îµã
     for temp=1:length(Lines)
-        xLeft=0;%é»˜è®¤çº¿æ®µåœ¨å³ä¾§
+        xLeft=0;%Ä¬ÈÏÏß¶ÎÔÚÓÒ²à
         x1=Lines(temp).point1(1);
         x2=Lines(temp).point2(1);       
 
-        if((midpointX-x1)*(midpointX-x2)<=0)%åˆ¤æ–­çº¿æ®µä¸¤ç«¯ç‚¹æ˜¯å¦åœ¨ä¸­çº¿åŒä¸€ä¾§
-            continue;%ä¸åœ¨åŒä¸€ä¾§ï¼Œæ­¤çº¿æ®µè·³è¿‡
+        if((midpointX-x1)*(midpointX-x2)<=0)%ÅĞ¶ÏÏß¶ÎÁ½¶ËµãÊÇ·ñÔÚÖĞÏßÍ¬Ò»²à
+            continue;%²»ÔÚÍ¬Ò»²à£¬´ËÏß¶ÎÌø¹ı
         else
             if(midpointX-x1>0)
-                xLeft=1;%çº¿æ®µåœ¨å·¦ä¾§
+                xLeft=1;%Ïß¶ÎÔÚ×ó²à
             end
         end   
                     
-        if(xLeft)%æ‰¾å‡ºæ›´æ¥è¿‘ä¸­çº¿çš„åˆ‡å‰²ç‚¹
+        if(xLeft)%ÕÒ³ö¸ü½Ó½üÖĞÏßµÄÇĞ¸îµã
             if(maxLeft<max(x1,x2))
                 maxLeft=max(x1,x2);
             end
@@ -49,7 +53,7 @@ function outputImage = autoCutting(inputImage)
         end
     end
     
-    %å›¾åƒåˆ‡å‰²
+    %Í¼ÏñÇĞ¸î
     outputImage=imcrop(inputImage,[maxLeft,0,minRight-maxLeft,size(inputImage,1)]);
 end
 

@@ -1,83 +1,83 @@
 function outputImages = regionGrowing(inputImage,filter,range)
-%regionGrowing:ä½¿ç”¨åŒºåŸŸç”Ÿé•¿æ³•å°†ç°åº¦å›¾åƒåˆ†å‰²å•ä¾‹åŒ–
-%inputImage:è¾“å…¥å›¾åƒï¼Œå¯ä»¥ä¸ºç°åº¦å›¾åƒæˆ–è€…äºŒå€¼å›¾åƒ
-%filter:ç»™å®šåˆå§‹ç°åº¦é˜ˆå€¼
-%range:ç»™å®šæ–°åƒç´ å…è®¸ç°åº¦æ³¢åŠ¨æœ€å¤§å€¼
-%outputImages:è¾“å‡ºå›¾åƒç»†èƒæ•°ç»„ï¼Œæ¯ä¸ªå…ƒèƒéƒ½æ˜¯ä¸€ä¸ªå•ä¾‹å›¾åƒ
+%regionGrowing:Ê¹ÓÃÇøÓòÉú³¤·¨½«»Ò¶ÈÍ¼Ïñ·Ö¸îµ¥Àı»¯
+%inputImage:ÊäÈëÍ¼Ïñ£¬¿ÉÒÔÎª»Ò¶ÈÍ¼Ïñ»òÕß¶şÖµÍ¼Ïñ
+%filter:¸ø¶¨³õÊ¼»Ò¶ÈãĞÖµ
+%range:¸ø¶¨ĞÂÏñËØÔÊĞí»Ò¶È²¨¶¯×î´óÖµ
+%outputImages:Êä³öÍ¼ÏñÏ¸°ûÊı×é£¬Ã¿¸öÔª°û¶¼ÊÇÒ»¸öµ¥ÀıÍ¼Ïñ
 %version:1.0.2
 %author:jinshuguangze
 %data:4/10/2018
 
-    [row,col]=size(inputImage);%è·å¾—åŸå›¾åƒå‚æ•°
-    inputImage=im2double(inputImage);%å°†è¾“å…¥å›¾åƒè½¬æˆåŒç²¾åº¦
-    outputImages{1}=zeros(row,col);%é»˜è®¤è¾“å‡º
-    count=0;%è¾“å‡ºå›¾åƒæ€»æ•°ï¼Œé»˜è®¤ä¸º0
+    [row,col]=size(inputImage);%»ñµÃÔ­Í¼Ïñ²ÎÊı
+    inputImage=im2double(inputImage);%½«ÊäÈëÍ¼Ïñ×ª³ÉË«¾«¶È
+    outputImages{1}=zeros(row,col);%Ä¬ÈÏÊä³ö
+    count=0;%Êä³öÍ¼Ïñ×ÜÊı£¬Ä¬ÈÏÎª0
     for i=1:row
         for j=1:col
             if(inputImage(i,j)<filter)                
-                Stack=[i,j,inputImage(i,j)];%æ¨¡æ‹Ÿå †æ ˆ
-                adv=inputImage(i,j);%è®¾ç½®åˆå§‹å¹³å‡ç°åº¦å€¼
-                inputImage(i,j)=1;%é˜²æ­¢æ­»å¾ªç¯ï¼Œç¡®è®¤åŒºåŸŸåï¼Œå°†å…¶ç½®1
+                Stack=[i,j,inputImage(i,j)];%Ä£Äâ¶ÑÕ»
+                adv=inputImage(i,j);%ÉèÖÃ³õÊ¼Æ½¾ù»Ò¶ÈÖµ
+                inputImage(i,j)=1;%·ÀÖ¹ËÀÑ­»·£¬È·ÈÏÇøÓòºó£¬½«ÆäÖÃ1
                 
-                Point=0;%æ ˆæŒ‡é’ˆ
-                miny=i;%è”é€šåŒºåŸŸèŒƒå›´ç»å¯¹åæ ‡åˆå§‹åŒ–
+                Point=0;%Õ»Ö¸Õë
+                miny=i;%ÁªÍ¨ÇøÓò·¶Î§¾ø¶Ô×ø±ê³õÊ¼»¯
                 maxy=i;
                 minx=j;
                 maxx=j;
 
-                %åŒºåŸŸç”Ÿé•¿æ³•
-                while Point<size(Stack,1)%å½“æ ˆæŒ‡é’ˆä½äºæ ˆå°¾éƒ¨æ—¶ï¼Œç»ˆæ­¢å¾ªç¯                    
-                    y=Stack(Point+1,1);%ä½¿ç”¨ä¸´æ—¶å˜é‡ä»¥èŠ‚çº¦è®¿é—®æˆæœ¬
+                %ÇøÓòÉú³¤·¨
+                while Point<size(Stack,1)%µ±Õ»Ö¸ÕëÎ»ÓÚÕ»Î²²¿Ê±£¬ÖÕÖ¹Ñ­»·                    
+                    y=Stack(Point+1,1);%Ê¹ÓÃÁÙÊ±±äÁ¿ÒÔ½ÚÔ¼·ÃÎÊ³É±¾
                     x=Stack(Point+1,2);
-                    if(x>1 && inputImage(y,x-1)<=adv+range)%å¯¹äºå››ç§ä¸åŒçš„çŠ¶æ€ï¼Œè¿›è¡Œåˆ†ç±»
-                        state=1;%å·¦è¾¹æœ‰æ–°çš„è¿é€šåŸŸ
+                    if(x>1 && inputImage(y,x-1)<=adv+range)%¶ÔÓÚËÄÖÖ²»Í¬µÄ×´Ì¬£¬½øĞĞ·ÖÀà
+                        state=1;%×ó±ßÓĞĞÂµÄÁ¬Í¨Óò
                     elseif(x<col && inputImage(y,x+1)<=adv+range)
-                        state=2;%å³è¾¹æœ‰æ–°çš„è¿é€šåŸŸ
+                        state=2;%ÓÒ±ßÓĞĞÂµÄÁ¬Í¨Óò
                     elseif(y<row && inputImage(y+1,x)<=adv+range)
-                        state=3;%ä¸‹è¾¹æœ‰æ–°çš„è¿é€šåŸŸ
+                        state=3;%ÏÂ±ßÓĞĞÂµÄÁ¬Í¨Óò
                     else
-                        state=0;%æ— è¿é€šåŸŸ
+                        state=0;%ÎŞÁ¬Í¨Óò
                     end
                     
                     switch state
                         case 0
-                            Point=Point+1;%å½“è¯¥åƒç´ ç‚¹æ²¡æœ‰åŒºåŸŸè”é€šæ—¶ï¼Œè¿”å›ä¸Šä¸€çº§
+                            Point=Point+1;%µ±¸ÃÏñËØµãÃ»ÓĞÇøÓòÁªÍ¨Ê±£¬·µ»ØÉÏÒ»¼¶
                         case 1
                             x=x-1;
-                           if(minx>x)%å¦‚æœå·¦è¾¹ç•Œæ‰©å±•ï¼Œåˆ™æ›´æ–°æ•°æ®minx
+                           if(minx>x)%Èç¹û×ó±ß½çÀ©Õ¹£¬Ôò¸üĞÂÊı¾İminx
                                minx=x;
                            end
                         case 2
                             x=x+1;
-                            if(maxx<x)%å¦‚æœå³è¾¹ç•Œæ‰©å±•ï¼Œåˆ™æ›´æ–°æ•°æ®maxx
+                            if(maxx<x)%Èç¹ûÓÒ±ß½çÀ©Õ¹£¬Ôò¸üĞÂÊı¾İmaxx
                                 maxx=x;
                             end
                         case 3
                             y=y+1;
-                            if(maxy<y)%å¦‚æœå·¦è¾¹ç•Œæ‰©å±•ï¼Œåˆ™æ›´æ–°æ•°æ®maxy
+                            if(maxy<y)%Èç¹û×ó±ß½çÀ©Õ¹£¬Ôò¸üĞÂÊı¾İmaxy
                                 maxy=y;
                             end
                     end
                     
-                    %å¦‚æœæœ‰è”é€šåŸŸï¼Œåˆ™æ›´æ–°çŠ¶æ€
+                    %Èç¹ûÓĞÁªÍ¨Óò£¬Ôò¸üĞÂ×´Ì¬
                     if(state)
-                        z=inputImage(y,x);%è·å–ç°åº¦
-                        adv=(adv*size(Stack,1)+z)/(size(Stack,1)+1);%é‡æ–°è®¡ç®—ç°åº¦å¹³å‡å€¼
+                        z=inputImage(y,x);%»ñÈ¡»Ò¶È
+                        adv=(adv*size(Stack,1)+z)/(size(Stack,1)+1);%ÖØĞÂ¼ÆËã»Ò¶ÈÆ½¾ùÖµ
 
-                        if(Point)%ç”±äºå½“Pointä¸º0æ—¶æœ‰å…¶ç‰¹æ®Šæ€§ï¼Œæ•…åˆ†ç±»è®¨è®º
-                            Stack=[[y,x,z];Stack(Point+1:end,:)];%å…¥æ ˆ
+                        if(Point)%ÓÉÓÚµ±PointÎª0Ê±ÓĞÆäÌØÊâĞÔ£¬¹Ê·ÖÀàÌÖÂÛ
+                            Stack=[[y,x,z];Stack(Point+1:end,:)];%ÈëÕ»
                         else
-                            Stack=[Stack(1:Point,:);[y,x,z];Stack(Point+1:end,:)];%å…¥æ ˆ
+                            Stack=[Stack(1:Point,:);[y,x,z];Stack(Point+1:end,:)];%ÈëÕ»
                         end                   
-                        inputImage(y,x)=1;%é˜²æ­¢æ­»å¾ªç¯ï¼Œç¡®è®¤åŒºåŸŸåï¼Œå°†å…¶ç½®1
+                        inputImage(y,x)=1;%·ÀÖ¹ËÀÑ­»·£¬È·ÈÏÇøÓòºó£¬½«ÆäÖÃ1
                     end
                 end
                 
-                %è®¾å®šè¾“å‡ºé˜ˆå€¼ï¼Œä»¥è¿‡æ»¤æ‚è´¨
+                %Éè¶¨Êä³öãĞÖµ£¬ÒÔ¹ıÂËÔÓÖÊ
                 if size(Stack,1)>100
-                    count=count+1;%è¾“å‡ºå›¾åƒæ•°é‡å¢åŠ 
-                    outputImages{count}=ones(maxy-miny+1,maxx-minx+1);%èƒŒæ™¯è‰²é»˜è®¤ä¸ºç™½
-                    for temp=1:size(Stack,1)%å°†ä½ç½®ä¿¡æ¯ä¸ç°åº¦è¾“å…¥è¿›å»
+                    count=count+1;%Êä³öÍ¼ÏñÊıÁ¿Ôö¼Ó
+                    outputImages{count}=ones(maxy-miny+1,maxx-minx+1);%±³¾°É«Ä¬ÈÏÎª°×
+                    for temp=1:size(Stack,1)%½«Î»ÖÃĞÅÏ¢Óë»Ò¶ÈÊäÈë½øÈ¥
                         outputImages{count}(Stack(temp,1)-miny+1,...
                             Stack(temp,2)-minx+1)=Stack(temp,3);
                     end

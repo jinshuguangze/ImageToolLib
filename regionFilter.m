@@ -1,15 +1,15 @@
 function outputImage = regionFilter(inputImage,method,length,varargin)
-%regionFilter:å¯¹è¾“å…¥å›¾åƒè¿›è¡ŒåŸºäºå®ç°äº†è§£é€‰å®šç‰©ä½“å°ºå¯¸çš„åŒºåŸŸè¿‡æ»¤
-%inputImage:è¾“å…¥å›¾åƒï¼Œå¯ä»¥ä¸ºRGBï¼Œç°åº¦å’ŒäºŒå€¼å›¾åƒ
-%method:è¯†åˆ«è¾¹ç¼˜çš„æ–¹æ³•ï¼Œèƒ½ä½¿ç”¨â€˜Sobelâ€™ï¼Œâ€˜Prewittâ€™ï¼Œâ€˜Robertsâ€™ï¼Œâ€˜Logâ€™ï¼Œâ€˜Zerocrossâ€™ï¼Œâ€™Cannyâ€˜ï¼Œâ€™Approxcannyâ€˜è¿™ä¸ƒç§æ–¹æ³•
-%length:æ„Ÿå…´è¶£ç‰©ä½“çš„ä¼°è®¡é•¿åº¦ï¼Œè¿™å†³å®šäº†è¯¥æ¨ªå‘é•¿åº¦ä»¥ä¸‹çš„ç‰©ä½“ä¼šè¢«æå¤§åœ°è¿‡æ»¤æ‰
-%width:æ„Ÿå…´è¶£ç‰©ä½“çš„ä¼°è®¡å®½åº¦ï¼Œè¿™å†³å®šäº†è¯¥çºµå‘é•¿åº¦ä»¥ä¸‹çš„ç‰©ä½“ä¼šè¢«æå¤§åœ°è¿‡æ»¤æ‰ï¼Œå¦‚æœä¸è¾“å…¥ï¼Œåˆ™æ•°å€¼é»˜è®¤å’Œé•¿åº¦ç›¸ç­‰
-%outputImage:å¤„ç†åè¾“å‡ºçš„å›¾åƒï¼Œä¸è¾“å…¥å›¾åƒç±»å‹ä¸€è‡´
+%regionFilter:¶ÔÊäÈëÍ¼Ïñ½øĞĞ»ùÓÚÊµÏÖÁË½âÑ¡¶¨ÎïÌå³ß´çµÄÇøÓò¹ıÂË
+%inputImage:ÊäÈëÍ¼Ïñ£¬¿ÉÒÔÎªRGB£¬»Ò¶ÈºÍ¶şÖµÍ¼Ïñ
+%method:Ê¶±ğ±ßÔµµÄ·½·¨£¬ÄÜÊ¹ÓÃ¡®Sobel¡¯£¬¡®Prewitt¡¯£¬¡®Roberts¡¯£¬¡®Log¡¯£¬¡®Zerocross¡¯£¬¡¯Canny¡®£¬¡¯Approxcanny¡®ÕâÆßÖÖ·½·¨
+%length:¸ĞĞËÈ¤ÎïÌåµÄ¹À¼Æ³¤¶È£¬Õâ¾ö¶¨ÁË¸ÃºáÏò³¤¶ÈÒÔÏÂµÄÎïÌå»á±»¼«´óµØ¹ıÂËµô
+%width:¸ĞĞËÈ¤ÎïÌåµÄ¹À¼Æ¿í¶È£¬Õâ¾ö¶¨ÁË¸Ã×İÏò³¤¶ÈÒÔÏÂµÄÎïÌå»á±»¼«´óµØ¹ıÂËµô£¬Èç¹û²»ÊäÈë£¬ÔòÊıÖµÄ¬ÈÏºÍ³¤¶ÈÏàµÈ
+%outputImage:´¦ÀíºóÊä³öµÄÍ¼Ïñ£¬ÓëÊäÈëÍ¼ÏñÀàĞÍÒ»ÖÂ
 %version:1.0.5
 %author:jinshuguangze
 %data:5/22/2018
 
-    p=inputParser;%æ„é€ å…¥å£æ£€æŸ¥å¯¹è±¡
+    p=inputParser;%¹¹ÔìÈë¿Ú¼ì²é¶ÔÏó
     p.addRequired('inputImage',@(x)validateattributes(x,{'numeric'},...
         {'3d','real','nonnegative'},'regionFilter','inputImage',1));
     p.addRequired('method',@(x)any(validatestring(x,...
@@ -24,29 +24,29 @@ function outputImage = regionFilter(inputImage,method,length,varargin)
     length=p.Results.length;
     width=p.Results.width;
     
-    if ndims(inputImage)==3%å¦‚æœè¾“å…¥å›¾åƒæ˜¯RGBå›¾åƒï¼Œåˆ™è½¬æˆç°åº¦å›¾åƒ
+    if ndims(inputImage)==3%Èç¹ûÊäÈëÍ¼ÏñÊÇRGBÍ¼Ïñ£¬Ôò×ª³É»Ò¶ÈÍ¼Ïñ
         handleImage=rgb2gray(inputImage);
     else
         handleImage=inputImage;
     end
     
-    if ~width%å¦‚æœå®½åº¦æ— è¾“å…¥ï¼Œåˆ™æ•°å€¼ä¸é•¿åº¦ç›¸ç­‰
+    if ~width%Èç¹û¿í¶ÈÎŞÊäÈë£¬ÔòÊıÖµÓë³¤¶ÈÏàµÈ
         width=length;
     end
     
-    edgeImage=edge(handleImage,method);%å¯¹å›¾åƒè¿›è¡Œè¾¹ç¼˜æ£€æµ‹
-    closeImage=imclose(imclose(edgeImage,strel('line',width,0)),strel('line',length,90));%å¯¹å›¾åƒè¿›è¡Œä¸¤æ–¹å‘ä¸Šçš„çº¿æ¨¡æ¿é—­åˆ
-    openImage=imopen(closeImage,strel('square',min(length,width)));%å¯¹å›¾åƒè¿›è¡Œå¼€æ“ä½œï¼Œè¿‡æ»¤æŸ„ç«¯å’Œæ‚è´¨
-    %ä¸¤å›¾åƒå–å¹¶å¾—åˆ°è¾“å‡ºå›¾åƒ
+    edgeImage=edge(handleImage,method);%¶ÔÍ¼Ïñ½øĞĞ±ßÔµ¼ì²â
+    closeImage=imclose(imclose(edgeImage,strel('line',width,0)),strel('line',length,90));%¶ÔÍ¼Ïñ½øĞĞÁ½·½ÏòÉÏµÄÏßÄ£°å±ÕºÏ
+    openImage=imopen(closeImage,strel('square',min(length,width)));%¶ÔÍ¼Ïñ½øĞĞ¿ª²Ù×÷£¬¹ıÂË±ú¶ËºÍÔÓÖÊ
+    %Á½Í¼ÏñÈ¡²¢µÃµ½Êä³öÍ¼Ïñ
     
-    row=size(openImage,1);%å›¾åƒçš„è¡Œæ•°
-    col=size(openImage,2);%å›¾åƒçš„åˆ—æ•°
-    inputImage=im2double(inputImage);%åŒç²¾åº¦åŒ–
-    outputImage=ones(row,col,3);%æ„é€ ç©ºç™½èƒŒæ™¯çš„è¾“å‡ºå›¾åƒ
+    row=size(openImage,1);%Í¼ÏñµÄĞĞÊı
+    col=size(openImage,2);%Í¼ÏñµÄÁĞÊı
+    inputImage=im2double(inputImage);%Ë«¾«¶È»¯
+    outputImage=ones(row,col,3);%¹¹Ôì¿Õ°×±³¾°µÄÊä³öÍ¼Ïñ
     for i=1:row
         for j=1:col
             if openImage(i,j)
-                outputImage(i,j,:)=inputImage(i,j,:);%å¡«å……
+                outputImage(i,j,:)=inputImage(i,j,:);%Ìî³ä
             end
         end
     end         

@@ -1,43 +1,43 @@
 function data = dataAnalyzer(varargin)
-%dataAnalyzer:å¾—åˆ°è§’æœé¢ç§¯ä¸ä½“ç§¯ç­‰å‚æ•°
-%varargin:å¯å˜å‚æ•°ï¼Œè¾“å…¥çš„å•ä¾‹å›¾åƒæˆ–å•ä¾‹å›¾åƒç»†èƒæ•°ç»„
-%data:è¾“å‡ºæ¯ä¸ªå¯¹åº”å•ä¾‹å›¾åƒçš„ç›¸åº”å‚æ•°çš„ç»“æ„ä½“
+%dataAnalyzer:µÃµ½½Ç¹ûÃæ»ıÓëÌå»ıµÈ²ÎÊı
+%varargin:¿É±ä²ÎÊı£¬ÊäÈëµÄµ¥ÀıÍ¼Ïñ»òµ¥ÀıÍ¼ÏñÏ¸°ûÊı×é
+%data:Êä³öÃ¿¸ö¶ÔÓ¦µ¥ÀıÍ¼ÏñµÄÏàÓ¦²ÎÊıµÄ½á¹¹Ìå
 %version:1.0.3
 %author:jinshuguangze
 %data:4/13/2018
-%TODO:å¢åŠ æ›´å¤šè¾“å‡ºå‚æ•°ï¼Œå°†dataè®¾ç½®æˆå¯å˜é•¿åº¦
+%TODO:Ôö¼Ó¸ü¶àÊä³ö²ÎÊı£¬½«dataÉèÖÃ³É¿É±ä³¤¶È
 
-    if ~nargin%å…¥å£æ£€æµ‹
-        disp('è¯·è¾“å…¥å•ä¾‹å›¾åƒï¼');
+    if ~nargin%Èë¿Ú¼ì²â
+        disp('ÇëÊäÈëµ¥ÀıÍ¼Ïñ£¡');
         return;
     else
-        for i=1:nargin%å¯¹äºæ¯ä¸ªè¾“å…¥ï¼Œéƒ½åˆ†æä¸€é           
-            %åˆ†ææ•°æ®ï¼Œå¾ªç¯åœ¨ç»†èƒæ•°ç»„ä¸­çš„æ¯ä¸ªå…ƒç´ ï¼Œå¦‚æœç›´æ¥æ˜¯å•ä¾‹å›¾åƒåˆ™åªå¾ªç¯ä¸€æ¬¡
+        for i=1:nargin%¶ÔÓÚÃ¿¸öÊäÈë£¬¶¼·ÖÎöÒ»±é           
+            %·ÖÎöÊı¾İ£¬Ñ­»·ÔÚÏ¸°ûÊı×éÖĞµÄÃ¿¸öÔªËØ£¬Èç¹ûÖ±½ÓÊÇµ¥ÀıÍ¼ÏñÔòÖ»Ñ­»·Ò»´Î
             for s=1:size(varargin{i},2)             
-                if iscell(varargin{i})%åŒºåˆ†å½“å‰å¯¹è±¡æ˜¯å¦æ˜¯ç»†èƒæ•°ç»„
+                if iscell(varargin{i})%Çø·Öµ±Ç°¶ÔÏóÊÇ·ñÊÇÏ¸°ûÊı×é
                     vstruct=varargin{i}{s};
                 else
                     vstruct=varargin{i};
                 end
-                [row,col]=size(vstruct);%è·å¾—å›¾åƒå¤§å°
-                area=0;%åˆå§‹åŒ–ä½“ç§¯è®¡æ•°å™¨
-                total=0;%åˆå§‹åŒ–æ€»ä½“è®¡æ•°å™¨
+                [row,col]=size(vstruct);%»ñµÃÍ¼Ïñ´óĞ¡
+                area=0;%³õÊ¼»¯Ìå»ı¼ÆÊıÆ÷
+                total=0;%³õÊ¼»¯×ÜÌå¼ÆÊıÆ÷
                 for j=1:row
-                    count=0;%åˆå§‹åŒ–è¡Œè®¡æ•°å™¨
+                    count=0;%³õÊ¼»¯ĞĞ¼ÆÊıÆ÷
                     for k=1:col
                         if(vstruct(j,k))
-                            count=count+1;%è¡Œè®¡æ•°å™¨å¢åŠ 
+                            count=count+1;%ĞĞ¼ÆÊıÆ÷Ôö¼Ó
                         end
                     end
-                    area=area+pi*(count^2)/4;%é¢ç§¯è®¡ç®—ä¸ç´¯åŠ 
-                    total=total+count;%è®¡å…¥åƒç´ ç‚¹æ€»æ•°
+                    area=area+pi*(count^2)/4;%Ãæ»ı¼ÆËãÓëÀÛ¼Ó
+                    total=total+count;%¼ÆÈëÏñËØµã×ÜÊı
                 end
-                if iscell(varargin{i})%åˆ†åˆ«è®¡ç®—é¢ç§¯å’Œä½“ç§¯
-                    data{i}{s}.acreage=total;%ç»†èƒæ•°ç»„å•ä¾‹å›¾åƒé¢ç§¯
-                    data{i}{s}.volume=area;%ç»†èƒæ•°ç»„å•ä¾‹å›¾åƒä½“ç§¯
+                if iscell(varargin{i})%·Ö±ğ¼ÆËãÃæ»ıºÍÌå»ı
+                    data{i}{s}.acreage=total;%Ï¸°ûÊı×éµ¥ÀıÍ¼ÏñÃæ»ı
+                    data{i}{s}.volume=area;%Ï¸°ûÊı×éµ¥ÀıÍ¼ÏñÌå»ı
                 else
-                    data{i}.acreage=total;%æ™®é€šå•ä¾‹å›¾åƒé¢ç§¯
-                    data{i}.volume=area;%æ™®é€šå•ä¾‹å›¾åƒä½“ç§¯
+                    data{i}.acreage=total;%ÆÕÍ¨µ¥ÀıÍ¼ÏñÃæ»ı
+                    data{i}.volume=area;%ÆÕÍ¨µ¥ÀıÍ¼ÏñÌå»ı
                 end
             end
         end

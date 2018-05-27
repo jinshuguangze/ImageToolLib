@@ -1,52 +1,52 @@
-classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
-%DynMemory:ä¸€ä¸ªåŠ¨æ€å†…å­˜ç±»ï¼Œå®ä¾‹åŒ–å‡ºæ¥çš„äºŒç»´æ•°æ®ç±»å‹èƒ½åœ¨å¾ªç¯ä¸­è‡ªåŠ¨æ£€æµ‹æ˜¯å¦å·²æ»¡ï¼Œ
-%                  å¹¶è‡ªåŠ¨ç”³è¯·æ–°çš„åˆé€‚çš„å†…å­˜ï¼Œä¹Ÿå¯ä»¥æ‰‹åŠ¨å¼€å¯å¢åŠ å†…å­˜
+classdef(Sealed) DynMemory<handle%²»ÔÊĞí¼Ì³Ğ£¬³¬ÀàÊÇ³éÏóÀàhandle
+%DynMemory:Ò»¸ö¶¯Ì¬ÄÚ´æÀà£¬ÊµÀı»¯³öÀ´µÄ¶şÎ¬Êı¾İÀàĞÍÄÜÔÚÑ­»·ÖĞ×Ô¶¯¼ì²âÊÇ·ñÒÑÂú£¬
+%                  ²¢×Ô¶¯ÉêÇëĞÂµÄºÏÊÊµÄÄÚ´æ£¬Ò²¿ÉÒÔÊÖ¶¯¿ªÆôÔö¼ÓÄÚ´æ
 %TODO:
-%1.å¼•å…¥äº‹ä»¶ç±»å‹ï¼ˆeventï¼‰ï¼Œä½¿ç”¨ç›‘å¬å™¨æ¨¡å‹æ¥æ›¿ä»£æ‰‹åŠ¨å¤–éƒ¨å¾ªç¯ï¼Œå…¨ç›‘å¬å™¨ï¼Œå’Œéƒ¨åˆ†ç›‘å¬å™¨ä¸¤ç§æ¨¡å‹
-%å…¨ç›‘å¬å™¨åŒ…å«ä¸€ä¸ªä½¿ç”¨ç‡æ¨¡å‹ï¼Œæ¯å½“åŸå¤§å°å’Œç»´åº¦ä¸­çš„0è¢«å¡«å……åˆ°åˆ«çš„å€¼æ—¶ï¼Œå¢åŠ ä½¿ç”¨ç‡æ¯”ä¾‹ï¼Œåœ¨ä½¿ç”¨ç‡å¢åŠ åˆ°
-%Paraæ—¶ï¼Œä¼šè‡ªåŠ¨addMemoryï¼Œä½†æ˜¯å ç”¨å†…å­˜æˆ–è®¸è¾ƒå¤šï¼›éƒ¨åˆ†ç›‘å¬å™¨åªä¼šç›‘å¬åœ¨Paraä¹‹å¤–çš„æ•°å€¼å˜åŒ–ï¼Œä¸€æ—¦æœ‰å˜åŒ–ï¼Œ
-%ä¼šç«‹å³addMemoryï¼Œè¿™æ ·å¯èƒ½ä¸å¤ªå‡†ç¡®ï¼Œå› ä¸ºæœ‰å¯èƒ½åœ¨å¤–éƒ¨å¯¹å€¼æ˜¯ä»åéƒ¨å¼€å§‹å¾ªç¯çš„
-%2.åšä¸€ä¸ªæšä¸¾é”®å€¼å¯¹æ¥å­˜å‚¨typeä¸å®é™…ç±»å‹ï¼Œå·²å¤±è´¥ï¼Œæš‚æ—¶æ²¡æœ‰å¥½çš„æ€è·¯
-%3.ç»§ç»­å°è¯•ä½¿ç”¨any()æ¥å®ç°å¤šç»´æ£€æµ‹åŠŸèƒ½
+%1.ÒıÈëÊÂ¼şÀàĞÍ£¨event£©£¬Ê¹ÓÃ¼àÌıÆ÷Ä£ĞÍÀ´Ìæ´úÊÖ¶¯Íâ²¿Ñ­»·£¬È«¼àÌıÆ÷£¬ºÍ²¿·Ö¼àÌıÆ÷Á½ÖÖÄ£ĞÍ
+%È«¼àÌıÆ÷°üº¬Ò»¸öÊ¹ÓÃÂÊÄ£ĞÍ£¬Ã¿µ±Ô­´óĞ¡ºÍÎ¬¶ÈÖĞµÄ0±»Ìî³äµ½±ğµÄÖµÊ±£¬Ôö¼ÓÊ¹ÓÃÂÊ±ÈÀı£¬ÔÚÊ¹ÓÃÂÊÔö¼Óµ½
+%ParaÊ±£¬»á×Ô¶¯addMemory£¬µ«ÊÇÕ¼ÓÃÄÚ´æ»òĞí½Ï¶à£»²¿·Ö¼àÌıÆ÷Ö»»á¼àÌıÔÚParaÖ®ÍâµÄÊıÖµ±ä»¯£¬Ò»µ©ÓĞ±ä»¯£¬
+%»áÁ¢¼´addMemory£¬ÕâÑù¿ÉÄÜ²»Ì«×¼È·£¬ÒòÎªÓĞ¿ÉÄÜÔÚÍâ²¿¶ÔÖµÊÇ´Óºó²¿¿ªÊ¼Ñ­»·µÄ
+%2.×öÒ»¸öÃ¶¾Ù¼üÖµ¶ÔÀ´´æ´¢typeÓëÊµ¼ÊÀàĞÍ£¬ÒÑÊ§°Ü£¬ÔİÊ±Ã»ÓĞºÃµÄË¼Â·
+%3.¼ÌĞø³¢ÊÔÊ¹ÓÃany()À´ÊµÏÖ¶àÎ¬¼ì²â¹¦ÄÜ
 
-    properties%å…¬å¼€å­—æ®µ
-        %å­˜å‚¨æ•°å€¼ï¼Œå¯¹è±¡çš„å€¼åŸŸå­˜å‚¨åœ¨æ­¤å­—æ®µä¸­ï¼Œå¹¶ä¸”æœ‰é™åˆ¶æ¡ä»¶é˜²æ­¢éé¢„æœŸæ›´æ”¹
+    properties%¹«¿ª×Ö¶Î
+        %´æ´¢ÊıÖµ£¬¶ÔÏóµÄÖµÓò´æ´¢ÔÚ´Ë×Ö¶ÎÖĞ£¬²¢ÇÒÓĞÏŞÖÆÌõ¼ş·ÀÖ¹·ÇÔ¤ÆÚ¸ü¸Ä
         Value{mustBeNonempty,mustBeMatrix}=0
     end
     
-    properties(SetAccess=private)%åŠç§å¯†å­—æ®µ
-        OriginalSize%åŸå§‹ç”³è¯·å®¹é‡
+    properties(SetAccess=private)%°ëË½ÃÜ×Ö¶Î
+        OriginalSize%Ô­Ê¼ÉêÇëÈİÁ¿
     end
     
-    properties(GetAccess=private,SetAccess=private)%ç§å¯†å­—æ®µ
-        Type%å¯¹è±¡ç±»å‹
-        %å°†åœ¨ä½¿ç”¨ä»»ä½•å…¬å¼€æ–¹æ³•æ—¶è‡ªåŠ¨æ›´æ–°ï¼Œ
-        %ç§å¯†åŸå› æ˜¯å¯èƒ½ç”±äºæ²¡æœ‰è°ƒç”¨å¯¹è±¡çš„æ–¹æ³•ï¼Œ
-        %è€Œç›´æ¥è®¿é—®å­—æ®µè€Œå¯¼è‡´ä¿¡æ¯é”™è¯¯
-        %0:æ•°ç»„
-        %1:ç»“æ„ä½“æ•°ç»„
-        %2:ç»†èƒæ•°ç»„
+    properties(GetAccess=private,SetAccess=private)%Ë½ÃÜ×Ö¶Î
+        Type%¶ÔÏóÀàĞÍ
+        %½«ÔÚÊ¹ÓÃÈÎºÎ¹«¿ª·½·¨Ê±×Ô¶¯¸üĞÂ£¬
+        %Ë½ÃÜÔ­ÒòÊÇ¿ÉÄÜÓÉÓÚÃ»ÓĞµ÷ÓÃ¶ÔÏóµÄ·½·¨£¬
+        %¶øÖ±½Ó·ÃÎÊ×Ö¶Î¶øµ¼ÖÂĞÅÏ¢´íÎó
+        %0:Êı×é
+        %1:½á¹¹ÌåÊı×é
+        %2:Ï¸°ûÊı×é
     end
     
-    properties(Constant)%å¸¸é‡å­—æ®µ
-        Scale=0.9%é»˜è®¤é•¿åº¦æ¯”ä¾‹å€¼
+    properties(Constant)%³£Á¿×Ö¶Î
+        Scale=0.9%Ä¬ÈÏ³¤¶È±ÈÀıÖµ
     end
     
-    methods%æ„é€ å‡½æ•°
+    methods%¹¹Ôìº¯Êı
         function dynObj = DynMemory(varargin)
-        %DynMemory:ç”³è¯·ä¸€æ®µå†…å­˜ï¼Œå¹¶åœ¨å½“å†…å­˜ä¸å¤Ÿçš„æ—¶å€™å¯ä»¥å®ç°è‡ªåŠ¨æ‰©å……
-        %varargin:å¯å˜å‚æ•°ï¼Œå¯ä»¥è¾“å…¥è‡³å¤šä¸‰ä¸ªå‚æ•°ï¼Œå®Œæ•´ç‰ˆæœ¬çš„å‚æ•°åˆ†å¸ƒæ˜¯â€œè¡Œæ•°ï¼Œåˆ—æ•°ï¼Œæ•°æ®ç±»å‹â€
-        %dynObj:è¿”å›ä¸€ä¸ªå·²ç»åˆ†é…å¥½å†…å­˜çš„åŠ¨æ€å†…å­˜å¯¹è±¡ï¼Œé‡Œé¢å¤šä½™çš„ç©ºé—´ä¼šè¢«0å¡«å……
+        %DynMemory:ÉêÇëÒ»¶ÎÄÚ´æ£¬²¢ÔÚµ±ÄÚ´æ²»¹»µÄÊ±ºò¿ÉÒÔÊµÏÖ×Ô¶¯À©³ä
+        %varargin:¿É±ä²ÎÊı£¬¿ÉÒÔÊäÈëÖÁ¶àÈı¸ö²ÎÊı£¬ÍêÕû°æ±¾µÄ²ÎÊı·Ö²¼ÊÇ¡°ĞĞÊı£¬ÁĞÊı£¬Êı¾İÀàĞÍ¡±
+        %dynObj:·µ»ØÒ»¸öÒÑ¾­·ÖÅäºÃÄÚ´æµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó£¬ÀïÃæ¶àÓàµÄ¿Õ¼ä»á±»0Ìî³ä
         %version:1.0.6
         %author:jinshuguangze
         %data:4/15/2018
         %TODO:
-        %1.é¦–å…ˆè¯»å–matlabè¯­è¨€ä¿¡æ¯ï¼Œç„¶åæ ¹æ®è¯­è¨€è¯»å–system('systeminfo')è¯»å–ä¿¡æ¯å¾—åˆ°å†…å­˜
-        %æœ€å¤§å€¼åï¼Œæ ¹æ®matlabé¢„è®¾é¡¹å¾—åˆ°RAMå æ¯”ï¼Œç„¶åç¡®å®šæ•°ç»„å¤§å°çš„æœ€å¤§å€¼ï¼Œé»˜è®¤ä¸ºæœ€å¤§å¤§å°ä¸º
-        %intmax('uint16')ï¼Œé™¤äº†ç»“æ„ä½“æ•°ç»„ä»¥å¤–ï¼Œç»“æ„ä½“æ•°ç»„æœ€å¤§ä¸Šé™ä¸ºintmax('uint64')
-		%2.å¢åŠ tall,tableç­‰ç±»å‹
+        %1.Ê×ÏÈ¶ÁÈ¡matlabÓïÑÔĞÅÏ¢£¬È»ºó¸ù¾İÓïÑÔ¶ÁÈ¡system('systeminfo')¶ÁÈ¡ĞÅÏ¢µÃµ½ÄÚ´æ
+        %×î´óÖµºó£¬¸ù¾İmatlabÔ¤ÉèÏîµÃµ½RAMÕ¼±È£¬È»ºóÈ·¶¨Êı×é´óĞ¡µÄ×î´óÖµ£¬Ä¬ÈÏÎª×î´ó´óĞ¡Îª
+        %intmax('uint16')£¬³ıÁË½á¹¹ÌåÊı×éÒÔÍâ£¬½á¹¹ÌåÊı×é×î´óÉÏÏŞÎªintmax('uint64')
+		%2.Ôö¼Ótall,tableµÈÀàĞÍ
 
-            p=inputParser;%æ„é€ æ£€æµ‹å™¨å¯¹è±¡
+            p=inputParser;%¹¹Ôì¼ì²âÆ÷¶ÔÏó
             p.addOptional('row',1,@(x)validateattributes(x,{'numeric'},...
                 {'scalar','integer','positive'},'DynMemory','row',1));
             p.addOptional('col',1,@(x)validateattributes(x,{'numeric'},...
@@ -55,66 +55,66 @@ classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
                 {'array','struct','cell'},'DynMemory','type',3)));            
             p.parse(varargin{:});
             
-            row=p.Results.row;%å¾—åˆ°å…¥å£æ£€éªŒåçš„å€¼
+            row=p.Results.row;%µÃµ½Èë¿Ú¼ìÑéºóµÄÖµ
             col=p.Results.col;
             type=p.Results.type;
             
-            dynObj.OriginalSize=[row,col];%ä¿å­˜åŸå§‹å¤§å°
-            switch type%ä¸åŒçš„ç±»å‹çš„ä¸åŒç”³è¯·å†…å­˜æ–¹æ³•
-                case 'array'%æ•°ç»„       
-                    dynObj.Value=zeros(row,col);%åˆ›å»ºå¯¹è±¡ï¼Œå½’é›¶
-                    dynObj.Type=0;%è®¾ç½®å¯¹è±¡ç±»å‹
+            dynObj.OriginalSize=[row,col];%±£´æÔ­Ê¼´óĞ¡
+            switch type%²»Í¬µÄÀàĞÍµÄ²»Í¬ÉêÇëÄÚ´æ·½·¨
+                case 'array'%Êı×é       
+                    dynObj.Value=zeros(row,col);%´´½¨¶ÔÏó£¬¹éÁã
+                    dynObj.Type=0;%ÉèÖÃ¶ÔÏóÀàĞÍ
                     
-                case 'struct'%ç»“æ„ä½“æ•°ç»„              
-                    temp(row,col)=struct;%åˆ›å»ºå¯¹è±¡ï¼Œç½®ç©º
-                    dynObj.Value=temp;%ç”±äºMATLABå®ç°æœºåˆ¶é—®é¢˜ï¼Œåªèƒ½ä½¿ç”¨ä¸´æ—¶å˜é‡
-                    dynObj.Type=1;%è®¾ç½®å¯¹è±¡ç±»å‹
+                case 'struct'%½á¹¹ÌåÊı×é              
+                    temp(row,col)=struct;%´´½¨¶ÔÏó£¬ÖÃ¿Õ
+                    dynObj.Value=temp;%ÓÉÓÚMATLABÊµÏÖ»úÖÆÎÊÌâ£¬Ö»ÄÜÊ¹ÓÃÁÙÊ±±äÁ¿
+                    dynObj.Type=1;%ÉèÖÃ¶ÔÏóÀàĞÍ
                     
-                case 'cell'%ç»†èƒæ•°ç»„   
-                    dynObj.Value=cell(row,col);%åˆ›å»ºå¯¹è±¡ï¼Œç½®ç©º
-                    dynObj.Type=2;%è®¾ç½®å¯¹è±¡ç±»å‹
+                case 'cell'%Ï¸°ûÊı×é   
+                    dynObj.Value=cell(row,col);%´´½¨¶ÔÏó£¬ÖÃ¿Õ
+                    dynObj.Type=2;%ÉèÖÃ¶ÔÏóÀàĞÍ
             end
         end
     end
     
-    methods%å…¬å¼€å‡½æ•°
+    methods%¹«¿ªº¯Êı
         function dynObj=refresh(dynObj,varargin)
-        %refresh:è®¿é—®å¯¹è±¡å†…å†…å­˜æœ«ç«¯æœ€åä¸€ç³»åˆ—æ•°å­—æ˜¯å¦æ— å˜åŒ–ï¼Œå¦‚æœæœ‰æ•°å­—æ›´æ”¹è¿‡ï¼Œ
-		%		    åˆ™ç”³è¯·æ›´å¤§çš„å†…å­˜æœ‰å¯èƒ½ä¼šå› ä¸ºæœ¬èº«æ•°ç»„æœ€åä¸€ç³»åˆ—æ•°å­—ä¸º0è€Œåˆ·æ–°å¤±è´¥ï¼Œ
-		%		    ä¼šå› æ­¤è€Œæš‚æ—¶é™ä½æ•ˆç‡ï¼Œä¸€æ—¦æœ‰é0æ•°å­—è¾“å…¥ï¼Œä¼šé©¬ä¸Šæé«˜æ•ˆç‡
-		%dynObj:è¢«å¤„ç†çš„åŠ¨æ€å†…å­˜å¯¹è±¡ï¼Œå¯èƒ½æœ‰é•¿åº¦çš„æ‰©å®¹
-		%varargin:å¯é€‰çš„è¾“å…¥ï¼Œå¯ä»¥è®¾ç½®å¾ªç¯æ£€æµ‹çš„é•¿åº¦æ¯”ä¾‹æˆ–è€…æ£€æµ‹å›ºå®šé•¿åº¦ï¼Œ
-		%			  å¦‚æœç»å¯¹å€¼å°äº1ï¼Œåˆ™æ˜¯æŒ‰ç…§é•¿åº¦æ¯”ä¾‹ï¼Œå¦åˆ™æ˜¯æŒ‰ç…§å›ºå®šé•¿åº¦
-		%			  å¦‚æœæ˜¯è´Ÿæ•°ï¼Œåˆ™ä»å¤´å¼€å§‹æ£€æµ‹è€Œä¸æ˜¯ä»å°¾éƒ¨å¼€å§‹æ£€æµ‹ï¼Œ
-		%		      å¦‚æœä¸è¾“å…¥ï¼Œåˆ™ä¼šä½¿ç”¨é»˜è®¤å€¼ï¼Œå¦‚æœåªè¾“å…¥ä¸€ä¸ªå€¼ï¼Œé‚£ä¹ˆä¼šä¼˜å…ˆè®¾ç½®
-		%			  è¡Œæ•°ï¼Œå¹¶å°è¯•å°†åˆ—æ•°å’Œè¡Œæ•°å‚æ•°å˜æˆä¸€è‡´ï¼Œå¦‚æœå¤±è´¥ï¼Œåˆ™åˆ—æ•°ä¼šè®¾ç½®æˆé»˜è®¤å€¼
+        %refresh:·ÃÎÊ¶ÔÏóÄÚÄÚ´æÄ©¶Ë×îºóÒ»ÏµÁĞÊı×ÖÊÇ·ñÎŞ±ä»¯£¬Èç¹ûÓĞÊı×Ö¸ü¸Ä¹ı£¬
+		%		    ÔòÉêÇë¸ü´óµÄÄÚ´æÓĞ¿ÉÄÜ»áÒòÎª±¾ÉíÊı×é×îºóÒ»ÏµÁĞÊı×ÖÎª0¶øË¢ĞÂÊ§°Ü£¬
+		%		    »áÒò´Ë¶øÔİÊ±½µµÍĞ§ÂÊ£¬Ò»µ©ÓĞ·Ç0Êı×ÖÊäÈë£¬»áÂíÉÏÌá¸ßĞ§ÂÊ
+		%dynObj:±»´¦ÀíµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó£¬¿ÉÄÜÓĞ³¤¶ÈµÄÀ©Èİ
+		%varargin:¿ÉÑ¡µÄÊäÈë£¬¿ÉÒÔÉèÖÃÑ­»·¼ì²âµÄ³¤¶È±ÈÀı»òÕß¼ì²â¹Ì¶¨³¤¶È£¬
+		%			  Èç¹û¾ø¶ÔÖµĞ¡ÓÚ1£¬ÔòÊÇ°´ÕÕ³¤¶È±ÈÀı£¬·ñÔòÊÇ°´ÕÕ¹Ì¶¨³¤¶È
+		%			  Èç¹ûÊÇ¸ºÊı£¬Ôò´ÓÍ·¿ªÊ¼¼ì²â¶ø²»ÊÇ´ÓÎ²²¿¿ªÊ¼¼ì²â£¬
+		%		      Èç¹û²»ÊäÈë£¬Ôò»áÊ¹ÓÃÄ¬ÈÏÖµ£¬Èç¹ûÖ»ÊäÈëÒ»¸öÖµ£¬ÄÇÃ´»áÓÅÏÈÉèÖÃ
+		%			  ĞĞÊı£¬²¢³¢ÊÔ½«ÁĞÊıºÍĞĞÊı²ÎÊı±ä³ÉÒ»ÖÂ£¬Èç¹ûÊ§°Ü£¬ÔòÁĞÊı»áÉèÖÃ³ÉÄ¬ÈÏÖµ
         %version:1.0.7
         %author:jinshuguangze
         %data:4/17/2018	
         
-            dynObj.checkType;%å¯¹å¯¹è±¡çš„å€¼åŸŸè¿›è¡Œç±»å‹æ£€æŸ¥   
+            dynObj.checkType;%¶Ô¶ÔÏóµÄÖµÓò½øĞĞÀàĞÍ¼ì²é   
 
-			[row,col]=size(dynObj.Value);%è·å–å¯¹è±¡è¡Œæ•°å’Œåˆ—æ•°
+			[row,col]=size(dynObj.Value);%»ñÈ¡¶ÔÏóĞĞÊıºÍÁĞÊı
 			
-			p=inputParser;%æ„é€ æ£€æµ‹å™¨å¯¹è±¡
+			p=inputParser;%¹¹Ôì¼ì²âÆ÷¶ÔÏó
 			p.addOptional('rowScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
 				{'real','scalar','nonzero','>',-row,'<',row},'refresh','rowScale',1));			
 			p.addOptional('colScale',dynObj.Scale,@(x)validateattributes(x,{'numeric'},...
 				{'real','scalar','nonzero','>',-col,'<',col},'refresh','colScale',2));
 			p.parse(varargin{:});	
             
-			rScale=p.Results.rowScale;%å¾—åˆ°å…¥å£æ£€éªŒåçš„å€¼
+			rScale=p.Results.rowScale;%µÃµ½Èë¿Ú¼ìÑéºóµÄÖµ
 			cScale=p.Results.colScale;
 			
-            if nargin==2%å¦‚æœåªè¾“å…¥ä¸€ä¸ªæ•°å€¼ï¼Œåˆ™åˆ—æ•°å‚æ•°å°è¯•ç­‰äºè¡Œæ•°å‚æ•°
-				if rScale<col%å°è¯•æˆåŠŸ
+            if nargin==2%Èç¹ûÖ»ÊäÈëÒ»¸öÊıÖµ£¬ÔòÁĞÊı²ÎÊı³¢ÊÔµÈÓÚĞĞÊı²ÎÊı
+				if rScale<col%³¢ÊÔ³É¹¦
 					cScale=rScale;
-				else%å°è¯•å¤±è´¥ï¼Œè®¾ç½®æˆé»˜è®¤å€¼
+				else%³¢ÊÔÊ§°Ü£¬ÉèÖÃ³ÉÄ¬ÈÏÖµ
 					cScale=dynObj.Scale;
 				end
             end							
 			
-            if rScale>=1%æ„é€ åŸºäºè¡Œæ•°å‚æ•°çš„å¯¹è±¡å€¼åŸŸå¾ªç¯å™¨	
+            if rScale>=1%¹¹Ôì»ùÓÚĞĞÊı²ÎÊıµÄ¶ÔÏóÖµÓòÑ­»·Æ÷	
 				rloop=row:-1:row-ceil(rScale);
 			elseif rScale>0 && rScale<1
 				rloop=row:-1:ceil(row*rScale);
@@ -124,7 +124,7 @@ classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
 				rloop=1:floor(-rScale);
             end
 			
-            if cScale>=1%æ„é€ åŸºäºåˆ—æ•°å‚æ•°çš„å¯¹è±¡å€¼åŸŸå¾ªç¯å™¨
+            if cScale>=1%¹¹Ôì»ùÓÚÁĞÊı²ÎÊıµÄ¶ÔÏóÖµÓòÑ­»·Æ÷
 				cloop=col:-1:col-ceil(cScale);
 			elseif cScale>0 && cScale<1
 				cloop=col:-1:ceil(col*cScale);
@@ -134,34 +134,34 @@ classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
 				cloop=1:floor(-cScale);
             end
 			
-			switch dynObj.Type%å¯¹äºå¯¹è±¡çš„ä¸åŒç±»å‹æœ‰ä¸åŒå¤„ç†
-				case 0%æ•°ç»„
-                    checkArray=dynObj.Value(rloop,cloop);%åˆ›å»ºæ£€æµ‹æ•°ç»„
-                    %ä½¿ç”¨é€å¾ªç¯è€Œä¸æ˜¯æ•°ç»„çš„å…¨å±€æ§åˆ¶æœ‰åŠ©äºç¨‹åºæ•ˆç‡çš„æé«˜ï¼Œä¼šåœ¨æ£€æµ‹ä¸€ä¸ªæ•°å­—æˆåŠŸä¹‹åå°±return
+			switch dynObj.Type%¶ÔÓÚ¶ÔÏóµÄ²»Í¬ÀàĞÍÓĞ²»Í¬´¦Àí
+				case 0%Êı×é
+                    checkArray=dynObj.Value(rloop,cloop);%´´½¨¼ì²âÊı×é
+                    %Ê¹ÓÃÖğÑ­»·¶ø²»ÊÇÊı×éµÄÈ«¾Ö¿ØÖÆÓĞÖúÓÚ³ÌĞòĞ§ÂÊµÄÌá¸ß£¬»áÔÚ¼ì²âÒ»¸öÊı×Ö³É¹¦Ö®ºó¾Íreturn
                     for i=1:size(checkArray,1)
                         for j=1:size(checkArray,2)
-                            if checkArray(i,j)%æ£€æµ‹
-                                %æ ¹æ®è¾“å…¥çš„ç¬¦å·åˆ¤æ–­æ·»åŠ å†…å­˜çš„æ–¹å‘
+                            if checkArray(i,j)%¼ì²â
+                                %¸ù¾İÊäÈëµÄ·ûºÅÅĞ¶ÏÌí¼ÓÄÚ´æµÄ·½Ïò
                                 dynObj.addMemory(dynObj.OriginalSize(1)*rScale/abs(rScale));
                                 return;
                             end
                         end
                     end
 				
-                case 1%ç»“æ„ä½“æ•°ç»„
+                case 1%½á¹¹ÌåÊı×é
                     fields=fieldnames(dynObj.Value);
-                    if ~size(fields,1)%ç¡®ä¿è‡³å°‘æœ‰ä¸€ä¸ªå­—æ®µ
+                    if ~size(fields,1)%È·±£ÖÁÉÙÓĞÒ»¸ö×Ö¶Î
                         return;
                     end
-                    %åˆ›å»ºæ£€æµ‹æ•°ç»„
+                    %´´½¨¼ì²âÊı×é
                     checkArray=dynObj.Value(rloop,cloop);
-                    %ä½¿ç”¨é€å¾ªç¯è€Œä¸æ˜¯æ•°ç»„çš„å…¨å±€æ§åˆ¶æœ‰åŠ©äºç¨‹åºæ•ˆç‡çš„æé«˜ï¼Œä¼šåœ¨æ£€æµ‹ä¸€ä¸ªæ•°å­—æˆåŠŸä¹‹åå°±return
+                    %Ê¹ÓÃÖğÑ­»·¶ø²»ÊÇÊı×éµÄÈ«¾Ö¿ØÖÆÓĞÖúÓÚ³ÌĞòĞ§ÂÊµÄÌá¸ß£¬»áÔÚ¼ì²âÒ»¸öÊı×Ö³É¹¦Ö®ºó¾Íreturn
                     for i=1:size(checkArray,1)
                         for j=1:size(checkArray,2)
-                            for k=1:size(fields,1)%æ„é€ è®¿é—®æ‰€æœ‰å­—æ®µçš„å¾ªç¯å™¨
-                                % æ£€æµ‹æ˜¯å¦ä¸ºç©ºï¼ŒåŒæ—¶å¿½ç•¥ä¸€ä¸ªåº”è¯¥æ˜¯ç¼–è¯‘å™¨ä¸æ¸…æ¥šgetfieldæ˜¯åº“å‡½æ•°è€Œä¸æ˜¯getå‡½æ•°çš„é”™è¯¯
+                            for k=1:size(fields,1)%¹¹Ôì·ÃÎÊËùÓĞ×Ö¶ÎµÄÑ­»·Æ÷
+                                % ¼ì²âÊÇ·ñÎª¿Õ£¬Í¬Ê±ºöÂÔÒ»¸öÓ¦¸ÃÊÇ±àÒëÆ÷²»Çå³şgetfieldÊÇ¿âº¯Êı¶ø²»ÊÇgetº¯ÊıµÄ´íÎó
                                 if ~isempty(getfield(checkArray(:),fields{k,1}))%#ok<GFLD>
-                                    %æ ¹æ®è¾“å…¥çš„ç¬¦å·åˆ¤æ–­æ·»åŠ å†…å­˜çš„æ–¹å‘
+                                    %¸ù¾İÊäÈëµÄ·ûºÅÅĞ¶ÏÌí¼ÓÄÚ´æµÄ·½Ïò
                                     dynObj.addMemory(dynObj.OriginalSize(1)*rScale/abs(rScale));
                                     return;
                                 end
@@ -169,13 +169,13 @@ classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
                         end
                     end
 					
-				case 2%ç»†èƒæ•°ç»„
-                    checkArray=dynObj.Value{rloop,cloop};%åˆ›å»ºæ£€æµ‹æ•°ç»„
-                    %ä½¿ç”¨é€å¾ªç¯è€Œä¸æ˜¯æ•°ç»„çš„å…¨å±€æ§åˆ¶æœ‰åŠ©äºç¨‹åºæ•ˆç‡çš„æé«˜ï¼Œä¼šåœ¨æ£€æµ‹ä¸€ä¸ªæ•°å­—æˆåŠŸä¹‹åå°±return
+				case 2%Ï¸°ûÊı×é
+                    checkArray=dynObj.Value{rloop,cloop};%´´½¨¼ì²âÊı×é
+                    %Ê¹ÓÃÖğÑ­»·¶ø²»ÊÇÊı×éµÄÈ«¾Ö¿ØÖÆÓĞÖúÓÚ³ÌĞòĞ§ÂÊµÄÌá¸ß£¬»áÔÚ¼ì²âÒ»¸öÊı×Ö³É¹¦Ö®ºó¾Íreturn
                     for i=1:size(checkArray,1)
                         for j=1:size(checkArray,2)                   
-                            if ~isempty(checkArray(:))%æ£€æµ‹
-                                %æ ¹æ®è¾“å…¥çš„ç¬¦å·åˆ¤æ–­æ·»åŠ å†…å­˜çš„æ–¹å‘
+                            if ~isempty(checkArray(:))%¼ì²â
+                                %¸ù¾İÊäÈëµÄ·ûºÅÅĞ¶ÏÌí¼ÓÄÚ´æµÄ·½Ïò
                                 dynObj.addMemory(dynObj.OriginalSize(1)*rScale/abs(rScale));
                                 return;
                             end
@@ -185,93 +185,93 @@ classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
         end       
         	
         function dynObj=addMemory(dynObj,varargin)
-        %addMemory:ç”±äºå‡½æ•°æ˜¯å…¬å¼€çš„ï¼Œæ‰€ä»¥å¯ä»¥æ‰‹åŠ¨å»ç”³è¯·æ›´å¤§çš„å†…å­˜ï¼Œ
-		%                  é»˜è®¤ä¸ºå¢åŠ è¡Œæ•°ï¼Œæ•°å€¼ä¸ºåˆå§‹ç”³è¯·å†…å­˜çš„è¡Œæ•°ï¼Œ
-        %                  å¦‚æœæƒ³å¢åŠ åˆ—æ•°ï¼Œå°è¯•å‚æ•°ä¸­å¡«å†™(0,col)ï¼Œ
-        %                  æ”¯æŒè¾“å…¥è´Ÿæ•°ï¼Œåœ¨æ­¤æƒ…å†µä¸‹ï¼Œä¼šä»å¯¹åº”ç»´åº¦çš„å¤´éƒ¨å¢åŠ å†…å­˜è€Œä¸æ˜¯å°¾éƒ¨
-        %dynObj:è¢«å¤„ç†çš„åŠ¨æ€å†…å­˜å¯¹è±¡ï¼Œé•¿åº¦å·²ç»å¢åŠ 
-		%varargin:å¯é€‰çš„è¾“å…¥ï¼Œå¯ä»¥æ ¹æ®è¾“å…¥æ¥è®¾ç½®å¢åŠ å€¼çš„å¤§å°ï¼Œ
-		%             æˆ–è€…é€‰æ‹©å¢åŠ çš„æ–¹å‘æ˜¯è¡Œæˆ–è€…åˆ—ï¼Œæˆ–è€…éƒ½è®¾ç½®
+        %addMemory:ÓÉÓÚº¯ÊıÊÇ¹«¿ªµÄ£¬ËùÒÔ¿ÉÒÔÊÖ¶¯È¥ÉêÇë¸ü´óµÄÄÚ´æ£¬
+		%                  Ä¬ÈÏÎªÔö¼ÓĞĞÊı£¬ÊıÖµÎª³õÊ¼ÉêÇëÄÚ´æµÄĞĞÊı£¬
+        %                  Èç¹ûÏëÔö¼ÓÁĞÊı£¬³¢ÊÔ²ÎÊıÖĞÌîĞ´(0,col)£¬
+        %                  Ö§³ÖÊäÈë¸ºÊı£¬ÔÚ´ËÇé¿öÏÂ£¬»á´Ó¶ÔÓ¦Î¬¶ÈµÄÍ·²¿Ôö¼ÓÄÚ´æ¶ø²»ÊÇÎ²²¿
+        %dynObj:±»´¦ÀíµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó£¬³¤¶ÈÒÑ¾­Ôö¼Ó
+		%varargin:¿ÉÑ¡µÄÊäÈë£¬¿ÉÒÔ¸ù¾İÊäÈëÀ´ÉèÖÃÔö¼ÓÖµµÄ´óĞ¡£¬
+		%             »òÕßÑ¡ÔñÔö¼ÓµÄ·½ÏòÊÇĞĞ»òÕßÁĞ£¬»òÕß¶¼ÉèÖÃ
         %version:1.0.6
         %author:jinshuguangze
         %data:4/17/2018	
         
-            dynObj.checkType;%å¯¹å¯¹è±¡çš„å€¼åŸŸè¿›è¡Œç±»å‹æ£€æŸ¥
+            dynObj.checkType;%¶Ô¶ÔÏóµÄÖµÓò½øĞĞÀàĞÍ¼ì²é
             
-            p=inputParser;%æ„é€ æ£€æµ‹å™¨å¯¹è±¡
+            p=inputParser;%¹¹Ôì¼ì²âÆ÷¶ÔÏó
             p.addOptional('rowadd',dynObj.OriginalSize(1),@(x)validateattributes(x,{'numeric'},...
-                {'scalar','integer'},'addMemory','rowadd',1));%åœ¨å¾—åˆ°ç”µè„‘é…ç½®ä¸RAMé™åˆ¶é»‘ç§‘æŠ€åï¼Œä¼šæœ‰å¯¹æ•°ç»„æ•´ä½“å¤§å°çš„é™åˆ¶
+                {'scalar','integer'},'addMemory','rowadd',1));%ÔÚµÃµ½µçÄÔÅäÖÃÓëRAMÏŞÖÆºÚ¿Æ¼¼ºó£¬»áÓĞ¶ÔÊı×éÕûÌå´óĞ¡µÄÏŞÖÆ
             p.addOptional('coladd',0,@(x)validateattributes(x,{'numeric'},...
                 {'scalar','integer'},'addMemory','coladd',2));
             p.parse(varargin{:});
             
-            rowadd=p.Results.rowadd;%å¾—åˆ°å…¥å£æ£€éªŒåçš„å€¼
+            rowadd=p.Results.rowadd;%µÃµ½Èë¿Ú¼ìÑéºóµÄÖµ
             coladd=p.Results.coladd;
 			
-            if rowadd%å¦‚æœè¡Œå¢åŠ é‡ä¸ä¸º0ï¼Œè™½ç„¶å¯ä»¥å–0ä¸ä¼šå‡ºé”™ï¼Œä½†æ˜¯ä¸ºäº†ä¼˜åŒ–è®¡ç®—è¿˜æ˜¯å¢åŠ å…¥å£æ£€éªŒ
-                switch dynObj.Type%å¯¹è¡Œæ•°è¿›è¡Œé€‰æ‹©å¢åŠ æ•°ç»„
-                    case 0%å¦‚æœå¯¹è±¡æ˜¯æ•°ç»„
+            if rowadd%Èç¹ûĞĞÔö¼ÓÁ¿²»Îª0£¬ËäÈ»¿ÉÒÔÈ¡0²»»á³ö´í£¬µ«ÊÇÎªÁËÓÅ»¯¼ÆËã»¹ÊÇÔö¼ÓÈë¿Ú¼ìÑé
+                switch dynObj.Type%¶ÔĞĞÊı½øĞĞÑ¡ÔñÔö¼ÓÊı×é
+                    case 0%Èç¹û¶ÔÏóÊÇÊı×é
                         newMemory=zeros(abs(rowadd),size(dynObj.Value,2));
 
-                    case 1%å¦‚æœå¯¹è±¡æ˜¯ç»“æ„ä½“æ•°ç»„
-                        fields=fieldnames(dynObj.Value);%è·å–æ‰€æœ‰åŸæœ¬å­—æ®µ
+                    case 1%Èç¹û¶ÔÏóÊÇ½á¹¹ÌåÊı×é
+                        fields=fieldnames(dynObj.Value);%»ñÈ¡ËùÓĞÔ­±¾×Ö¶Î
                         structadd=struct;
-                        for i=1:size(fields,1)%å°†æ‰€æœ‰åŸæœ¬å­—æ®µåŠ è¿›ç»“æ„ä½“é‡Œé¢
+                        for i=1:size(fields,1)%½«ËùÓĞÔ­±¾×Ö¶Î¼Ó½ø½á¹¹ÌåÀïÃæ
                             structadd=setfield(structadd,fields{i},[]);%#ok<SFLD>
                         end
                         newMemory=repmat(structadd,abs(rowadd),size(dynObj.Value,2));
 
-                    case 2%å¦‚æœå¯¹è±¡æ˜¯ç»†èƒæ•°ç»„
+                    case 2%Èç¹û¶ÔÏóÊÇÏ¸°ûÊı×é
                         newMemory=cell(abs(rowadd),size(dynObj.Value,2));
                 end
                 
                 if rowadd>0
-                    dynObj.Value=cat(1,dynObj.Value,newMemory);%åœ¨è¡Œæœ«æ–¹å‘ä¸Šæ‹¼æ¥æ•°ç»„
+                    dynObj.Value=cat(1,dynObj.Value,newMemory);%ÔÚĞĞÄ©·½ÏòÉÏÆ´½ÓÊı×é
                 else
-                    dynObj.Value=cat(1,newMemory,dynObj.Value);%åœ¨è¡Œåˆæ–¹å‘ä¸Šæ‹¼æ¥æ•°ç»„
+                    dynObj.Value=cat(1,newMemory,dynObj.Value);%ÔÚĞĞ³õ·½ÏòÉÏÆ´½ÓÊı×é
                 end
             end
             
-            if coladd%å¦‚æœåˆ—å¢åŠ é‡ä¸ä¸º0ï¼Œè™½ç„¶å¯ä»¥å–0ä¸ä¼šå‡ºé”™ï¼Œä½†æ˜¯ä¸ºäº†ä¼˜åŒ–è®¡ç®—è¿˜æ˜¯å¢åŠ å…¥å£æ£€éªŒ
-                switch dynObj.Type%å¯¹è¡Œæ•°è¿›è¡Œé€‰æ‹©å¢åŠ æ•°ç»„
-                    case 0%å¦‚æœå¯¹è±¡æ˜¯æ•°ç»„
+            if coladd%Èç¹ûÁĞÔö¼ÓÁ¿²»Îª0£¬ËäÈ»¿ÉÒÔÈ¡0²»»á³ö´í£¬µ«ÊÇÎªÁËÓÅ»¯¼ÆËã»¹ÊÇÔö¼ÓÈë¿Ú¼ìÑé
+                switch dynObj.Type%¶ÔĞĞÊı½øĞĞÑ¡ÔñÔö¼ÓÊı×é
+                    case 0%Èç¹û¶ÔÏóÊÇÊı×é
                         newMemory=zeros(size(dynObj.Value,1),abs(coladd));
 
-                    case 1%å¦‚æœå¯¹è±¡æ˜¯ç»“æ„ä½“æ•°ç»„
-                        fields=fieldnames(dynObj.Value);%è·å–æ‰€æœ‰åŸæœ¬å­—æ®µ
+                    case 1%Èç¹û¶ÔÏóÊÇ½á¹¹ÌåÊı×é
+                        fields=fieldnames(dynObj.Value);%»ñÈ¡ËùÓĞÔ­±¾×Ö¶Î
                         structadd=struct;
-                        for i=1:size(fields,1)%å°†æ‰€æœ‰åŸæœ¬å­—æ®µåŠ è¿›ç»“æ„ä½“é‡Œé¢
+                        for i=1:size(fields,1)%½«ËùÓĞÔ­±¾×Ö¶Î¼Ó½ø½á¹¹ÌåÀïÃæ
                             structadd=setfield(structadd,fields{i},[]);%#ok<SFLD>
                         end             
                         newMemory=repmat(structadd,size(dynObj.Value,1),abs(coladd));
 
-                    case 2%å¦‚æœå¯¹è±¡æ˜¯ç»†èƒæ•°ç»„
+                    case 2%Èç¹û¶ÔÏóÊÇÏ¸°ûÊı×é
                         newMemory=cell(size(dynObj.Value,1),abs(coladd));
                 end
                 
                 if coladd>0
-                    dynObj.Value=cat(2,dynObj.Value,newMemory);%åœ¨åˆ—æœ«æ–¹å‘ä¸Šæ‹¼æ¥æ•°ç»„
+                    dynObj.Value=cat(2,dynObj.Value,newMemory);%ÔÚÁĞÄ©·½ÏòÉÏÆ´½ÓÊı×é
                 else
-                    dynObj.Value=cat(2,newMemory,dynObj.Value);%åœ¨åˆ—åˆæ–¹å‘ä¸Šæ‹¼æ¥æ•°ç»„
+                    dynObj.Value=cat(2,newMemory,dynObj.Value);%ÔÚÁĞ³õ·½ÏòÉÏÆ´½ÓÊı×é
                 end
             end              
         end                    
     end
        
-	methods(Access=private)%ç§å¯†æ–¹æ³•
+	methods(Access=private)%Ë½ÃÜ·½·¨
 		function checkType(dynObj)
-		%checkType:é€‚ç”¨äºå†…éƒ¨å†åˆ¤æ–­å¯¹è±¡çš„ç±»å‹ï¼Œä¼šè‡ªåŠ¨æ”¹å˜Typeå±æ€§è‡³å½“å‰å¯¹è±¡ç±»å‹
-		%dynObj:è¢«æ£€æµ‹çš„åŠ¨æ€å†…å­˜å¯¹è±¡
-		%type:è¿”å›å½“å‰çš„ç±»å‹
+		%checkType:ÊÊÓÃÓÚÄÚ²¿ÔÙÅĞ¶Ï¶ÔÏóµÄÀàĞÍ£¬»á×Ô¶¯¸Ä±äTypeÊôĞÔÖÁµ±Ç°¶ÔÏóÀàĞÍ
+		%dynObj:±»¼ì²âµÄ¶¯Ì¬ÄÚ´æ¶ÔÏó
+		%type:·µ»Øµ±Ç°µÄÀàĞÍ
 		%version:1.0.3
         %author:jinshuguangze
 		%data:4/19/2018	
 
-			if isstruct(dynObj.Value)%ç»“æ„ä½“æ•°ç»„
+			if isstruct(dynObj.Value)%½á¹¹ÌåÊı×é
 				dynObj.Type=1;
-			elseif iscell(dynObj.Value)%ç»†èƒæ•°ç»„
+			elseif iscell(dynObj.Value)%Ï¸°ûÊı×é
 				dynObj.Type=2;
-			else%å…¶ä»–æ‰€æœ‰ç»Ÿç§°ä¸ºæ™®é€šæ•°ç»„ï¼Œç”±äºå±æ€§åŒ…å«äº†è¾“å…¥æ£€æµ‹ï¼Œæ‰€ä»¥æ— éœ€å†æ¬¡æ£€æµ‹
+			else%ÆäËûËùÓĞÍ³³ÆÎªÆÕÍ¨Êı×é£¬ÓÉÓÚÊôĞÔ°üº¬ÁËÊäÈë¼ì²â£¬ËùÒÔÎŞĞèÔÙ´Î¼ì²â
 				dynObj.Type=0;
 			end
 		end
@@ -279,13 +279,13 @@ classdef(Sealed) DynMemory<handle%ä¸å…è®¸ç»§æ‰¿ï¼Œè¶…ç±»æ˜¯æŠ½è±¡ç±»handle
 end
 
 function mustBeMatrix(value)
-%mustBeMatrix:ä½œä¸ºDynMemoryç±»çš„å±æ€§é™åˆ¶å‡½æ•°ï¼Œå±æ€§å€¼å¿…é¡»æ˜¯äºŒç»´æ•°ç»„
-%value:è¾“å…¥çš„å±æ€§å€¼
+%mustBeMatrix:×÷ÎªDynMemoryÀàµÄÊôĞÔÏŞÖÆº¯Êı£¬ÊôĞÔÖµ±ØĞëÊÇ¶şÎ¬Êı×é
+%value:ÊäÈëµÄÊôĞÔÖµ
 %version:1.0.1
 %author:jinshuguangze
 %data:4/21/2018	
 
     if ~ismatrix(value)
-        error('å¯¹è±¡çš„å€¼åŸŸå±æ€§å¿…é¡»æ˜¯äºŒç»´æ•°ç»„ï¼');
+        error('¶ÔÏóµÄÖµÓòÊôĞÔ±ØĞëÊÇ¶şÎ¬Êı×é£¡');
     end
 end

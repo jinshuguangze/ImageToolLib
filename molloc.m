@@ -1,153 +1,153 @@
 function variable = molloc(varargin)
-%molloc:ç”³è¯·ä¸€æ®µå†…å­˜ï¼Œå¹¶åœ¨å½“å†…å­˜ä¸å¤Ÿçš„æ—¶å€™è‡ªåŠ¨æ‰©å……
-%varargin:å¯å˜å‚æ•°ï¼Œå¯ä»¥è¾“å…¥ä¸€åˆ°ä¸‰ä¸ªå‚æ•°ï¼Œå®Œæ•´ç‰ˆæœ¬çš„å‚æ•°åˆ†å¸ƒæ˜¯â€œè¡Œæ•°ï¼Œåˆ—æ•°ï¼Œæ•°æ®ç±»å‹â€
-%variable:è¿”å›ä¸€ä¸ªå·²ç»åˆ†é…å¥½å†…å­˜çš„å˜é‡ï¼Œé‡Œé¢å¤šä½™çš„ç©ºé—´ä¼šè¢«0å¡«å……
+%molloc:ÉêÇëÒ»¶ÎÄÚ´æ£¬²¢ÔÚµ±ÄÚ´æ²»¹»µÄÊ±ºò×Ô¶¯À©³ä
+%varargin:¿É±ä²ÎÊı£¬¿ÉÒÔÊäÈëÒ»µ½Èı¸ö²ÎÊı£¬ÍêÕû°æ±¾µÄ²ÎÊı·Ö²¼ÊÇ¡°ĞĞÊı£¬ÁĞÊı£¬Êı¾İÀàĞÍ¡±
+%variable:·µ»ØÒ»¸öÒÑ¾­·ÖÅäºÃÄÚ´æµÄ±äÁ¿£¬ÀïÃæ¶àÓàµÄ¿Õ¼ä»á±»0Ìî³ä
 %version:1.0.3
 %author:jinshuguangze
 %data:4/15/2018
 %TODO:
-%1.é¦–å…ˆè¯»å–matlabè¯­è¨€ä¿¡æ¯ï¼Œç„¶åæ ¹æ®è¯­è¨€è¯»å–system('systeminfo')è¯»å–ä¿¡æ¯å¾—åˆ°å†…å­˜
-%æœ€å¤§å€¼åï¼Œæ ¹æ®matlabé¢„è®¾é¡¹å¾—åˆ°RAMå æ¯”ï¼Œç„¶åç¡®å®šæ•°ç»„å¤§å°çš„æœ€å¤§å€¼ï¼Œé»˜è®¤ä¸ºæœ€å¤§å¤§å°ä¸º
-%intmax('uint16')ï¼Œé™¤äº†ç»“æ„ä½“æ•°ç»„ä»¥å¤–ï¼Œç»“æ„ä½“æ•°ç»„æœ€å¤§ä¸Šé™ä¸ºintmax('uint64')
-%2.å¢åŠ ä¸€ä¸ªå‚æ•°ç¡®å®šé¢„åˆ†é…çš„æ•°æ®ç±»å‹
+%1.Ê×ÏÈ¶ÁÈ¡matlabÓïÑÔĞÅÏ¢£¬È»ºó¸ù¾İÓïÑÔ¶ÁÈ¡system('systeminfo')¶ÁÈ¡ĞÅÏ¢µÃµ½ÄÚ´æ
+%×î´óÖµºó£¬¸ù¾İmatlabÔ¤ÉèÏîµÃµ½RAMÕ¼±È£¬È»ºóÈ·¶¨Êı×é´óĞ¡µÄ×î´óÖµ£¬Ä¬ÈÏÎª×î´ó´óĞ¡Îª
+%intmax('uint16')£¬³ıÁË½á¹¹ÌåÊı×éÒÔÍâ£¬½á¹¹ÌåÊı×é×î´óÉÏÏŞÎªintmax('uint64')
+%2.Ôö¼ÓÒ»¸ö²ÎÊıÈ·¶¨Ô¤·ÖÅäµÄÊı¾İÀàĞÍ
 
     switch nargin
-        case 0%å½“è¾“å…¥å‚æ•°ä¸è¶³æ—¶ï¼Œå¼¹å‡ºè­¦å‘Š
-            variable=0;%é»˜è®¤è¾“å‡º
-            disp('è¯·è¾“å…¥è‡³å°‘ä¸€ä¸ªå‚æ•°ï¼');    
+        case 0%µ±ÊäÈë²ÎÊı²»×ãÊ±£¬µ¯³ö¾¯¸æ
+            variable=0;%Ä¬ÈÏÊä³ö
+            disp('ÇëÊäÈëÖÁÉÙÒ»¸ö²ÎÊı£¡');    
             return;
             
-        case 1%å½“è¾“å…¥å‚æ•°åªä¸ºä¸€ä¸ªæ—¶ï¼Œåªå…è®¸å‡ºç°æ­£æ•°  
+        case 1%µ±ÊäÈë²ÎÊıÖ»ÎªÒ»¸öÊ±£¬Ö»ÔÊĞí³öÏÖÕıÊı  
             if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0        
-                %æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºè¡Œå‘é‡ï¼Œä¸”æœ€é•¿é•¿åº¦ä¸ºintmax('uint16')
-                if varargin{1}>intmax('uint16')%è¾“å…¥å‚æ•°è¿‡å¤§
-                    variable=zeros(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
-                    disp(['å‚æ•°1ï¼šåˆ—æ•°è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',num2str(intmax('uint16')),'ï¼']);             
+                %´ËÊ±±äÁ¿±»¸³ÓèÎªĞĞÏòÁ¿£¬ÇÒ×î³¤³¤¶ÈÎªintmax('uint16')
+                if varargin{1}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                    variable=zeros(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
+                    disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',num2str(intmax('uint16')),'£¡']);             
                     return;
-                else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…
+                else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
                     variable=zeros(1,uint16(varargin{1}));
                 end
-            else%å¦‚æœè¾“å…¥çš„æ•°å­—ä¸ä¸ºæ­£æ•°
-                variable=zeros(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
-                disp('å‚æ•°1ï¼šåˆ—æ•°å¿…é¡»æ˜¯ä¸€ä¸ªæ­£æ•°ï¼');
+            else%Èç¹ûÊäÈëµÄÊı×Ö²»ÎªÕıÊı
+                variable=zeros(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
+                disp('²ÎÊı1£ºÁĞÊı±ØĞëÊÇÒ»¸öÕıÊı£¡');
                 return;
             end
             
-        case 2%å½“è¾“å…¥å‚æ•°ä¸ºä¸¤ä¸ªæ—¶ï¼Œå…è®¸å‡ºç°ä¸¤ä¸ªæ­£æ•°æˆ–è€…æ­£æ•°åŠ å­—ç¬¦ä¸²
+        case 2%µ±ÊäÈë²ÎÊıÎªÁ½¸öÊ±£¬ÔÊĞí³öÏÖÁ½¸öÕıÊı»òÕßÕıÊı¼Ó×Ö·û´®
             if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0
-                if isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0%æ•°å­—åŠ æ•°å­—
-                    %æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºæ•°ç»„ï¼Œä¸”ç”³è¯·å¤§å°ä¸è¶…è¿‡intmax('uint16')
-                    if varargin{1}*varargin{2}>intmax('uint16')%è¾“å…¥å‚æ•°è¿‡å¤§
-                        variable=zeros(intmax('uint8'),intmax('uint8'));%é»˜è®¤è¾“å‡º
-                        disp(['å‚æ•°1ï¼šè¡Œæ•°ä¸å‚æ•°2ï¼šåˆ—æ•°çš„ä¹˜ç§¯è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',...
-                            num2str(intmax('uint16')),'ï¼']);
+                if isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0%Êı×Ö¼ÓÊı×Ö
+                    %´ËÊ±±äÁ¿±»¸³ÓèÎªÊı×é£¬ÇÒÉêÇë´óĞ¡²»³¬¹ıintmax('uint16')
+                    if varargin{1}*varargin{2}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                        variable=zeros(intmax('uint8'),intmax('uint8'));%Ä¬ÈÏÊä³ö
+                        disp(['²ÎÊı1£ºĞĞÊıÓë²ÎÊı2£ºÁĞÊıµÄ³Ë»ı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',...
+                            num2str(intmax('uint16')),'£¡']);
                         return;
-                    else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…                 
+                    else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ                 
                         variable=zeros(uint16(varargin{1}),uint16(varargin{2}));
                     end
-                elseif ischar(varargin{2})%æ•°å­—åŠ å­—ç¬¦ä¸²
+                elseif ischar(varargin{2})%Êı×Ö¼Ó×Ö·û´®
                     switch varargin{2}
-                        case 'array'%æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºè¡Œå‘é‡ï¼Œä¸”æœ€é•¿é•¿åº¦ä¸ºintmax('uint16')
-                            if varargin{1}>intmax('uint16')%è¾“å…¥å‚æ•°è¿‡å¤§
-                                variable=zeros(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
-                                disp(['å‚æ•°1ï¼šåˆ—æ•°è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',num2str(intmax('uint16')),'ï¼']);
+                        case 'array'%´ËÊ±±äÁ¿±»¸³ÓèÎªĞĞÏòÁ¿£¬ÇÒ×î³¤³¤¶ÈÎªintmax('uint16')
+                            if varargin{1}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                variable=zeros(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
+                                disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',num2str(intmax('uint16')),'£¡']);
                                 return;
-                            else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…
+                            else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
                                 variable=zeros(1,uint16(varargin{1}));
                             end
                             
-                        case 'struct'%æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºç»“æ„ä½“è¡Œå‘é‡ï¼Œæœ€é•¿é•¿åº¦ä¸ºintmax('uint64')
-                            if varargin{1}>intmax('uint64')%è¾“å…¥å‚æ•°è¿‡å¤§
-                                variable(1,intmax('uint64'))=struct();%é»˜è®¤è¾“å‡º
-                                disp(['å‚æ•°1ï¼šåˆ—æ•°è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',num2str(intmax('uint64')),'ï¼']);
+                        case 'struct'%´ËÊ±±äÁ¿±»¸³ÓèÎª½á¹¹ÌåĞĞÏòÁ¿£¬×î³¤³¤¶ÈÎªintmax('uint64')
+                            if varargin{1}>intmax('uint64')%ÊäÈë²ÎÊı¹ı´ó
+                                variable(1,intmax('uint64'))=struct();%Ä¬ÈÏÊä³ö
+                                disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',num2str(intmax('uint64')),'£¡']);
                                 return;
-                            else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…
+                            else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
                                 variable(1,uint64(varargin{1}))=struct();
                             end
                             
-                        case 'cell'%æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºç»†èƒè¡Œå‘é‡ï¼Œä¸”æœ€é•¿é•¿åº¦ä¸ºintmax('uint16')
-                            if varargin{1}>intmax('uint16')%è¾“å…¥å‚æ•°è¿‡å¤§
-                                variable=cell(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
+                        case 'cell'%´ËÊ±±äÁ¿±»¸³ÓèÎªÏ¸°ûĞĞÏòÁ¿£¬ÇÒ×î³¤³¤¶ÈÎªintmax('uint16')
+                            if varargin{1}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                                variable=cell(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
                                 variable(:)={0};
-                                disp(['å‚æ•°1ï¼šåˆ—æ•°è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',num2str(intmax('uint16')),'ï¼']);
+                                disp(['²ÎÊı1£ºÁĞÊı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',num2str(intmax('uint16')),'£¡']);
                                 return;
-                            else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…
+                            else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
                                 variable=cell(1,varargin{1});
                                 variable(:)={0};
                             end
                             
-                        otherwise%å­—ç¬¦ä¸²ä¸æ˜¯ä»¥ä¸Šä¸‰ç§
-                            variable=zeros(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
-                            disp('ç›®å‰åªæ”¯æŒ''array''ï¼Œ''struct''ï¼Œ''cell''ä¸‰ç§ç±»å‹çš„åŠ¨æ€å†…å­˜ç”³è¯·ï¼');
+                        otherwise%×Ö·û´®²»ÊÇÒÔÉÏÈıÖÖ
+                            variable=zeros(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
+                            disp('Ä¿Ç°Ö»Ö§³Ö''array''£¬''struct''£¬''cell''ÈıÖÖÀàĞÍµÄ¶¯Ì¬ÄÚ´æÉêÇë£¡');
                             return;
                     end
-                else%ç¬¬äºŒä¸ªå‚æ•°ä¸æ»¡è¶³æ¡ä»¶
-                    variable=zeros(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
-                    disp('å‚æ•°2ï¼šæ•°æ®ç±»å‹è¯·è¾“å…¥ä¸€ä¸ªæ­£æ•°æˆ–è€…å­—ç¬¦ä¸²ï¼');
+                else%µÚ¶ş¸ö²ÎÊı²»Âú×ãÌõ¼ş
+                    variable=zeros(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
+                    disp('²ÎÊı2£ºÊı¾İÀàĞÍÇëÊäÈëÒ»¸öÕıÊı»òÕß×Ö·û´®£¡');
                     return;
                 end
-            else%ç¬¬ä¸€ä¸ªå‚æ•°ä¸æ»¡è¶³æ¡ä»¶
-                variable=zeros(1,intmax('uint16'));%é»˜è®¤è¾“å‡º
-                disp('å‚æ•°1ï¼šåˆ—æ•°å¿…é¡»ä¸ºæ­£æ•°ï¼');
+            else%µÚÒ»¸ö²ÎÊı²»Âú×ãÌõ¼ş
+                variable=zeros(1,intmax('uint16'));%Ä¬ÈÏÊä³ö
+                disp('²ÎÊı1£ºÁĞÊı±ØĞëÎªÕıÊı£¡');
                 return;
             end
                 
-        case 3%å½“è¾“å…¥å‚æ•°ä¸ºä¸‰ä¸ªæ—¶ï¼Œé¡ºåºå¿…é¡»æ˜¯æ•°å­—ï¼Œæ•°å­—ï¼Œå­—ç¬¦ä¸²
+        case 3%µ±ÊäÈë²ÎÊıÎªÈı¸öÊ±£¬Ë³Ğò±ØĞëÊÇÊı×Ö£¬Êı×Ö£¬×Ö·û´®
             if isscalar(varargin{1}) && isnumeric(varargin{1}) && varargin{1}>0 ...
                     && isscalar(varargin{2}) && isnumeric(varargin{2}) && varargin{2}>0 ...
-                    && ischar(varargin{3})%æ»¡è¶³æ­£æ•°æ­£æ•°å­—ç¬¦ä¸²ç»„åˆ
+                    && ischar(varargin{3})%Âú×ãÕıÊıÕıÊı×Ö·û´®×éºÏ
                 switch varargin{3}
-                    case 'array'%æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºæ•°ç»„ï¼Œä¸”ç”³è¯·å¤§å°ä¸è¶…è¿‡intmax('uint16')
-                        if varargin{1}*varargin{2}>intmax('uint16')%è¾“å…¥å‚æ•°è¿‡å¤§
-                            variable=zeros(intmax('uint8'),intmax('uint8'));%é»˜è®¤è¾“å‡º
-                            disp(['å‚æ•°1ï¼šè¡Œæ•°ä¸å‚æ•°2ï¼šåˆ—æ•°çš„ä¹˜ç§¯è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',...
-                                num2str(intmax('uint16')),'ï¼']);
+                    case 'array'%´ËÊ±±äÁ¿±»¸³ÓèÎªÊı×é£¬ÇÒÉêÇë´óĞ¡²»³¬¹ıintmax('uint16')
+                        if varargin{1}*varargin{2}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                            variable=zeros(intmax('uint8'),intmax('uint8'));%Ä¬ÈÏÊä³ö
+                            disp(['²ÎÊı1£ºĞĞÊıÓë²ÎÊı2£ºÁĞÊıµÄ³Ë»ı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',...
+                                num2str(intmax('uint16')),'£¡']);
                             return;
-                        else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…                 
+                        else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ                 
                             variable=zeros(uint16(varargin{1}),uint16(varargin{2}));
                         end                       
                         
-                    case 'struct'%æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºç»“æ„ä½“æ•°ç»„ï¼Œè¡Œæ•°ä¸åˆ—æ•°éƒ½ä¸è¶…è¿‡intmax('uint64')
-                        if varargin{1}>intmax('uint64')%å‚æ•°1è¿‡å¤§
-                            variable(intmax('uint64'),intmax('uint64'))=struct();%é»˜è®¤è¾“å‡º
-                            disp(['å‚æ•°1ï¼šè¡Œæ•°è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',num2str(intmax('uint64')),'ï¼']);
+                    case 'struct'%´ËÊ±±äÁ¿±»¸³ÓèÎª½á¹¹ÌåÊı×é£¬ĞĞÊıÓëÁĞÊı¶¼²»³¬¹ıintmax('uint64')
+                        if varargin{1}>intmax('uint64')%²ÎÊı1¹ı´ó
+                            variable(intmax('uint64'),intmax('uint64'))=struct();%Ä¬ÈÏÊä³ö
+                            disp(['²ÎÊı1£ºĞĞÊı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',num2str(intmax('uint64')),'£¡']);
                             return;
-                        elseif varargin{2}>intmax('uint64')%å‚æ•°2è¿‡å¤§
-                            variable(intmax('uint64'),intmax('uint64'))=struct();%é»˜è®¤è¾“å‡º
-                            disp(['å‚æ•°2ï¼šåˆ—æ•°è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',num2str(intmax('uint64')),'ï¼']);
+                        elseif varargin{2}>intmax('uint64')%²ÎÊı2¹ı´ó
+                            variable(intmax('uint64'),intmax('uint64'))=struct();%Ä¬ÈÏÊä³ö
+                            disp(['²ÎÊı2£ºÁĞÊı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',num2str(intmax('uint64')),'£¡']);
                             return;                       
-                        else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…
+                        else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ
                             variable(uint64(varargin{1}),uint64(varargin{2}))=struct();
                         end
                         
-                    case 'cell'%æ­¤æ—¶å˜é‡è¢«èµ‹äºˆä¸ºç»†èƒæ•°ç»„ï¼Œä¸”ç”³è¯·å¤§å°ä¸è¶…è¿‡intmax('uint16')
-                        if varargin{1}*varargin{2}>intmax('uint16')%è¾“å…¥å‚æ•°è¿‡å¤§
-                            variable=cell(intmax('uint8'),intmax('uint8'));%é»˜è®¤è¾“å‡º
+                    case 'cell'%´ËÊ±±äÁ¿±»¸³ÓèÎªÏ¸°ûÊı×é£¬ÇÒÉêÇë´óĞ¡²»³¬¹ıintmax('uint16')
+                        if varargin{1}*varargin{2}>intmax('uint16')%ÊäÈë²ÎÊı¹ı´ó
+                            variable=cell(intmax('uint8'),intmax('uint8'));%Ä¬ÈÏÊä³ö
                             variable(:)={0};
-                            disp(['å‚æ•°1ï¼šè¡Œæ•°ä¸å‚æ•°2ï¼šåˆ—æ•°çš„ä¹˜ç§¯è¿‡å¤§ï¼Œæœ€å¤§ä¸èƒ½è¶…è¿‡',...
-                                num2str(intmax('uint16')),'ï¼']);
+                            disp(['²ÎÊı1£ºĞĞÊıÓë²ÎÊı2£ºÁĞÊıµÄ³Ë»ı¹ı´ó£¬×î´ó²»ÄÜ³¬¹ı',...
+                                num2str(intmax('uint16')),'£¡']);
                             return;
-                        else%è¾“å…¥å‚æ•°åœ¨èŒƒå›´å†…                 
+                        else%ÊäÈë²ÎÊıÔÚ·¶Î§ÄÚ                 
                             variable=cell(uint16(varargin{1}),uint16(varargin{2}));
                             variable(:)={0};
                         end    
 
-                    otherwise%å­—ç¬¦ä¸²ä¸æ˜¯ä»¥ä¸Šä¸‰ç§
-                        variable=zeros(intmax('uint8'),intmax('uint8'));%é»˜è®¤è¾“å‡º
-                        disp('ç›®å‰åªæ”¯æŒ''array''ï¼Œ''struct''ï¼Œ''cell''ä¸‰ç§ç±»å‹çš„åŠ¨æ€å†…å­˜ç”³è¯·ï¼');
+                    otherwise%×Ö·û´®²»ÊÇÒÔÉÏÈıÖÖ
+                        variable=zeros(intmax('uint8'),intmax('uint8'));%Ä¬ÈÏÊä³ö
+                        disp('Ä¿Ç°Ö»Ö§³Ö''array''£¬''struct''£¬''cell''ÈıÖÖÀàĞÍµÄ¶¯Ì¬ÄÚ´æÉêÇë£¡');
                         return;
                 end
-            else%å‚æ•°æ’åˆ—ç»„åˆä¸æ»¡è¶³æ¡ä»¶
-                variable=zeros(intmax('uint8'),intmax('uint8'));%é»˜è®¤è¾“å‡º
-                disp(['å‚æ•°1ï¼šåˆ—æ•°å¿…é¡»ä¸ºæ­£æ•°ï¼Œ',...
-                    'å‚æ•°2ï¼šè¡Œæ•°å¿…é¡»ä¸ºæ­£æ•°ï¼Œ',...
-                    'å‚æ•°3ï¼šæ•°æ®ç±»å‹å¿…é¡»ä¸ºå­—ç¬¦ä¸²ï¼']);
+            else%²ÎÊıÅÅÁĞ×éºÏ²»Âú×ãÌõ¼ş
+                variable=zeros(intmax('uint8'),intmax('uint8'));%Ä¬ÈÏÊä³ö
+                disp(['²ÎÊı1£ºÁĞÊı±ØĞëÎªÕıÊı£¬',...
+                    '²ÎÊı2£ºĞĞÊı±ØĞëÎªÕıÊı£¬',...
+                    '²ÎÊı3£ºÊı¾İÀàĞÍ±ØĞëÎª×Ö·û´®£¡']);
                 return;
             end
             
-        otherwise%å½“è¾“å…¥å‚æ•°è¿‡å¤šæ—¶
-            variable=0;%é»˜è®¤è¾“å‡º
-            disp('è¾“å…¥å‚æ•°è¿‡å¤šï¼');
+        otherwise%µ±ÊäÈë²ÎÊı¹ı¶àÊ±
+            variable=0;%Ä¬ÈÏÊä³ö
+            disp('ÊäÈë²ÎÊı¹ı¶à£¡');
             return;
     end
 end

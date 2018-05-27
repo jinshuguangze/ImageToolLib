@@ -1,66 +1,66 @@
 function outputImage = autoFixing(inputImage)
-%autoFixing:æ—‹è½¬è§’æžœå›¾åƒä»¥è¾¾åˆ°å›ºå®šçš„ç«–ç›´è§’åº¦
-%inputImage:å¯ä»¥è¾“å…¥å•ä¾‹å›¾åƒæˆ–å›¾åƒç»†èƒžè¡Œå‘é‡
-%outputImage:æ—‹è½¬åŽçš„å›¾åƒç»†èƒžæ•°ç»„
+%autoFixing:Ðý×ª½Ç¹ûÍ¼ÏñÒÔ´ïµ½¹Ì¶¨µÄÊúÖ±½Ç¶È
+%inputImage:¿ÉÒÔÊäÈëµ¥ÀýÍ¼Ïñ»òÍ¼ÏñÏ¸°ûÐÐÏòÁ¿
+%outputImage:Ðý×ªºóµÄÍ¼ÏñÏ¸°ûÊý×é
 %version:1.1.6
 %author:jinshuguangze
 %data:5/5/2018
     
-    outputImage={};%åˆå§‹åŒ–è¾“å‡º
-    if iscell(inputImage) && isrow(inputImage)%å°†å•ä¾‹å›¾å’Œè½¬æ¢ä¸ºç»†èƒžæ•°ç»„å¤„ç†è¡¨
+    outputImage={};%³õÊ¼»¯Êä³ö
+    if iscell(inputImage) && isrow(inputImage)%½«µ¥ÀýÍ¼ºÍ×ª»»ÎªÏ¸°ûÊý×é´¦Àí±í
         handleList=inputImage;
     elseif islogical(inputImage) && isnumeric(inputImage)...
-            && (ismatrix(inputImage) || ndims(inputImage)==3)%æ­£å¸¸çš„RGB/ç°åº¦/äºŒå€¼å›¾åƒ
+            && (ismatrix(inputImage) || ndims(inputImage)==3)%Õý³£µÄRGB/»Ò¶È/¶þÖµÍ¼Ïñ
         handleList{1}=inputImage;
     else
-        disp('è¾“å…¥ç±»åž‹é”™è¯¯ï¼');
+        disp('ÊäÈëÀàÐÍ´íÎó£¡');
         return;
     end
     
     for i=1:size(handleList,2)
-        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%å…¥å£æ£€æµ‹
-        handleList{i}=im2double(handleList{i});%å°†å›¾åƒåŒç²¾åº¦åŒ–
-        Start=[];%åˆå§‹åŒ–è®°å½•èµ·ç‚¹
-        End=[];%åˆå§‹åŒ–è®°å½•ç»ˆç‚¹
+        validateattributes(handleList{i},{'numeric'},{'3d','nonnegative'},'autoFixing');%Èë¿Ú¼ì²â
+        handleList{i}=im2double(handleList{i});%½«Í¼ÏñË«¾«¶È»¯
+        Start=[];%³õÊ¼»¯¼ÇÂ¼Æðµã
+        End=[];%³õÊ¼»¯¼ÇÂ¼ÖÕµã
         [row,col,~]=size(handleList{i});
-        if row>=col%è§’æžœå‘ˆç«–çŠ¶
+        if row>=col%½Ç¹û³ÊÊú×´
             for j=1:ceil(row/2)
-                if isempty(Start)%å¦‚æžœè¿˜æ²¡æœ‰èµ·å§‹ç‚¹
-                    IndexStart=find(handleList{i}(j,:,:)<1);%å¯»æ‰¾æ‰€æœ‰ä¸ä¸ºç™½çš„åƒç´ 
+                if isempty(Start)%Èç¹û»¹Ã»ÓÐÆðÊ¼µã
+                    IndexStart=find(handleList{i}(j,:,:)<1);%Ñ°ÕÒËùÓÐ²»Îª°×µÄÏñËØ
                     if ~isempty(IndexStart)
-                        Start=[j,floor((IndexStart(1)+IndexStart(end))/2)];%èµ·å§‹ç‚¹ä¸ºä¸¤ç«¯ä¸­ç‚¹
+                        Start=[j,floor((IndexStart(1)+IndexStart(end))/2)];%ÆðÊ¼µãÎªÁ½¶ËÖÐµã
                     end
                 end
                 
-                if isempty(End)%å¦‚æžœè¿˜æ²¡æœ‰ç»ˆæœ«ç‚¹
-                    IndexEnd=find(handleList{i}(row-j+1,:,:)<1);%å¯»æ‰¾æ‰€æœ‰ä¸ä¸ºç™½çš„åƒç´ 
+                if isempty(End)%Èç¹û»¹Ã»ÓÐÖÕÄ©µã
+                    IndexEnd=find(handleList{i}(row-j+1,:,:)<1);%Ñ°ÕÒËùÓÐ²»Îª°×µÄÏñËØ
                     if ~isempty(IndexEnd)
-                        End=[row-j+1,floor((IndexEnd(1)+IndexEnd(end))/2)];%ç»ˆæœ«ç‚¹ä¸ºä¸¤ç«¯ä¸­ç‚¹
+                        End=[row-j+1,floor((IndexEnd(1)+IndexEnd(end))/2)];%ÖÕÄ©µãÎªÁ½¶ËÖÐµã
                     end
                 end
             end
-        else%è§’æžœå‘ˆæ¨ªçŠ¶
+        else%½Ç¹û³Êºá×´
             for j=1:ceil(col/2)
-                if isempty(Start)%å¦‚æžœè¿˜æ²¡æœ‰èµ·å§‹ç‚¹
-                    IndexStart=find(handleList{i}(:,j,:)<1);%å¯»æ‰¾æ‰€æœ‰ä¸ä¸ºç™½çš„åƒç´ 
+                if isempty(Start)%Èç¹û»¹Ã»ÓÐÆðÊ¼µã
+                    IndexStart=find(handleList{i}(:,j,:)<1);%Ñ°ÕÒËùÓÐ²»Îª°×µÄÏñËØ
                     if ~isempty(IndexStart)
-                        Start=[floor((IndexStart(1)+IndexStart(end))/2),j];%èµ·å§‹ç‚¹ä¸ºä¸¤ç«¯ä¸­ç‚¹
+                        Start=[floor((IndexStart(1)+IndexStart(end))/2),j];%ÆðÊ¼µãÎªÁ½¶ËÖÐµã
                     end
                 end
                 
-                if isempty(End)%å¦‚æžœè¿˜æ²¡æœ‰ç»ˆæœ«ç‚¹
-                    IndexEnd=find(handleList{i}(:,row-j+1,:)<1);%å¯»æ‰¾æ‰€æœ‰ä¸ä¸ºç™½çš„åƒç´ 
+                if isempty(End)%Èç¹û»¹Ã»ÓÐÖÕÄ©µã
+                    IndexEnd=find(handleList{i}(:,row-j+1,:)<1);%Ñ°ÕÒËùÓÐ²»Îª°×µÄÏñËØ
                     if ~isempty(IndexEnd)
-                        End=[floor((IndexEnd(1)+IndexEnd(end))/2),row-j+1];%ç»ˆæœ«ç‚¹ä¸ºä¸¤ç«¯ä¸­ç‚¹
+                        End=[floor((IndexEnd(1)+IndexEnd(end))/2),row-j+1];%ÖÕÄ©µãÎªÁ½¶ËÖÐµã
                     end
                 end
             end
         end
         
-        if ~(isempty(Start) || isempty(End) || isequal(Start,End))%åŒæ—¶å­˜åœ¨èµ·å§‹ç‚¹å’Œç»ˆç‚¹ä¸”ä¸¤è€…ä¸æ˜¯åŒä¸€ä¸ªç‚¹
-            angle=atan((End(2)-Start(2))/(End(1)-Start(1)));%èŽ·å–æ—‹è½¬è§’åº¦
-            tform=affine2d([cos(angle),sin(angle),0;-sin(angle),cos(angle),0;1,1,1]);%æž„é€ 2Då˜æ¢å¯¹è±¡
-            outputImage{i}=imwarp(handleList{i},tform,'nearest','FillValues',1);%æ—‹è½¬ï¼Œæœ€è¿‘é‚»åŸŸæ’å€¼ï¼Œä½¿ç”¨ç™½è‰²æ¥å¡«å……åŒºåŸŸ
+        if ~(isempty(Start) || isempty(End) || isequal(Start,End))%Í¬Ê±´æÔÚÆðÊ¼µãºÍÖÕµãÇÒÁ½Õß²»ÊÇÍ¬Ò»¸öµã
+            angle=atan((End(2)-Start(2))/(End(1)-Start(1)));%»ñÈ¡Ðý×ª½Ç¶È
+            tform=affine2d([cos(angle),sin(angle),0;-sin(angle),cos(angle),0;1,1,1]);%¹¹Ôì2D±ä»»¶ÔÏó
+            outputImage{i}=imwarp(handleList{i},tform,'nearest','FillValues',1);%Ðý×ª£¬×î½üÁÚÓò²åÖµ£¬Ê¹ÓÃ°×É«À´Ìî³äÇøÓò
         end
     end
 end

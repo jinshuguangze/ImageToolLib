@@ -1,31 +1,31 @@
 for i=1:size(pureFruitDataCell,2)
-    %é¢„è®¾é€‰é¡¹
+    %Ô¤ÉèÑ¡Ïî
     options = fitoptions('Method','Smooth','SmoothingParam',0.001);
-    %å¯¹è¾“å…¥è¿›è¡Œé‡å¡‘
+    %¶ÔÊäÈë½øĞĞÖØËÜ
     [xLeft,yLeft]=prepareCurveData(pureFruitDataCell{i}.outerLeft(:,1),...
         pureFruitDataCell{i}.outerLeft(:,2));
     [xRight,yRight]=prepareCurveData(pureFruitDataCell{i}.outerRight(:,1),...
         pureFruitDataCell{i}.outerRight(:,2));
     [xMid,yMid]=prepareCurveData(pureFruitDataCell{i}.skeleton(:,1),...
         pureFruitDataCell{i}.skeleton(:,2));
-    %æ›²çº¿æ‹Ÿåˆ
+    %ÇúÏßÄâºÏ
     [funcLeft{i},gdnessLeft{i},outLeft{i}] = fit(xLeft,yLeft,'smooth',options);
     [funcRight{i},gdnessRight{i},outRight{i}] = fit(xRight,yRight,'smooth',options);
     [funcMid{i},gdnessMid{i},outMid{i}] = fit(xMid,yMid,'poly2');
-    %å¾—åˆ°å¯¼æ•°å’ŒäºŒé˜¶å¯¼æ•°
+    %µÃµ½µ¼ÊıºÍ¶ş½×µ¼Êı
     [derifuncLeft1{i},derifuncLeft2{i}]=differentiate(funcLeft{i},pureFruitDataCell{i}.outerLeft(:,1));
     [derifuncRight1{i},derifuncRight2{i}]=differentiate(funcRight{i},pureFruitDataCell{i}.outerRight(:,1));
     
-    %å·¦è¾¹ç¼˜æ›²çº¿å¤„ç†
-    extremeLeft=[];%åˆå§‹åŒ–å·¦æ›²çº¿æå€¼ç‚¹æ•°ç»„
-    if ~(isempty(derifuncLeft1) || isempty(derifuncLeft2))%ç¡®ä¿å¯¼å‡½æ•°å€¼ä¸ä¸ºç©º
-        for j=1:size(derifuncLeft1{i},1)%å¯»æ‰¾æ‰€æœ‰æå€¼ç‚¹
-            if ~abs(derifuncLeft2{i}(j))<1e-6%æ’é™¤æ— æ•ˆæå€¼ç‚¹
-                if ~derifuncLeft1{i}(j)%å¦‚æœå€¼ç›´æ¥ä¸º0
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+    %×ó±ßÔµÇúÏß´¦Àí
+    extremeLeft=[];%³õÊ¼»¯×óÇúÏß¼«ÖµµãÊı×é
+    if ~(isempty(derifuncLeft1) || isempty(derifuncLeft2))%È·±£µ¼º¯ÊıÖµ²»Îª¿Õ
+        for j=1:size(derifuncLeft1{i},1)%Ñ°ÕÒËùÓĞ¼«Öµµã
+            if ~abs(derifuncLeft2{i}(j))<1e-6%ÅÅ³ıÎŞĞ§¼«Öµµã
+                if ~derifuncLeft1{i}(j)%Èç¹ûÖµÖ±½ÓÎª0
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeLeft=[extremeLeft;pureFruitDataCell{i}.outerLeft(j,1),derifuncLeft2{i}(j)<0];
-                elseif j>1 && derifuncLeft1{i}(j-1)*derifuncLeft1{i}(j)<0%å¦‚æœä¸¤è€…ç¬¦å·ç›¸å
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+                elseif j>1 && derifuncLeft1{i}(j-1)*derifuncLeft1{i}(j)<0%Èç¹ûÁ½Õß·ûºÅÏà·´
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeLeft=[extremeLeft;abs(derifuncLeft1{i}(j-1)/(derifuncLeft1{i}(j)-derifuncLeft1{i}(j-1)))*...
                         (pureFruitDataCell{i}.outerLeft(j,1)-pureFruitDataCell{i}.outerLeft(j-1,1))+...
                         pureFruitDataCell{i}.outerLeft(j-1,1),derifuncLeft2{i}(j)<0];
@@ -33,27 +33,27 @@ for i=1:size(pureFruitDataCell,2)
             end
         end
         
-        valueMax=[];%åˆå§‹åŒ–æå¤§å€¼ç‚¹é›†åˆ
-        valueMin=[];%åˆå§‹åŒ–æå°å€¼ç‚¹é›†åˆ
+        valueMax=[];%³õÊ¼»¯¼«´óÖµµã¼¯ºÏ
+        valueMin=[];%³õÊ¼»¯¼«Ğ¡Öµµã¼¯ºÏ
         for j=1:size(extremeLeft,1)
             if extremeLeft(j,2)
-                valueMax=[valueMax,abs(funcLeft{i}(j)-funcMid{i}(j))];%æå¤§å€¼
+                valueMax=[valueMax,abs(funcLeft{i}(j)-funcMid{i}(j))];%¼«´óÖµ
             else
-                valueMin=[valueMin,abs(funcLeft{i}(j)-funcMid{i}(j))];%æå°å€¼
+                valueMin=[valueMin,abs(funcLeft{i}(j)-funcMid{i}(j))];%¼«Ğ¡Öµ
             end
         end
-        advLeft(i)=mean(valueMax)-mean(valueMin);%è®¡ç®—ä¸¤è€…å¹³å‡å€¼çš„å·®ï¼Œå¦‚æœæ²¡æœ‰æå¤§å€¼æå°å€¼ï¼Œåˆ™ä¸ºNaN
+        advLeft(i)=mean(valueMax)-mean(valueMin);%¼ÆËãÁ½ÕßÆ½¾ùÖµµÄ²î£¬Èç¹ûÃ»ÓĞ¼«´óÖµ¼«Ğ¡Öµ£¬ÔòÎªNaN
     end
     
-    extremeRight=[];%åˆå§‹åŒ–å·¦æ›²çº¿æå€¼ç‚¹æ•°ç»„
-    if ~(isempty(derifuncRight1) || isempty(derifuncRight2))%ç¡®ä¿å¯¼å‡½æ•°å€¼ä¸ä¸ºç©º
-        for j=1:size(derifuncRight1{i},1)%å¯»æ‰¾æ‰€æœ‰æå€¼ç‚¹
-            if ~abs(derifuncRight2{i}(j))<1e-6%æ’é™¤æ— æ•ˆæå€¼ç‚¹
-                if ~derifuncRight1{i}(j)%å¦‚æœå€¼ç›´æ¥ä¸º0
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+    extremeRight=[];%³õÊ¼»¯×óÇúÏß¼«ÖµµãÊı×é
+    if ~(isempty(derifuncRight1) || isempty(derifuncRight2))%È·±£µ¼º¯ÊıÖµ²»Îª¿Õ
+        for j=1:size(derifuncRight1{i},1)%Ñ°ÕÒËùÓĞ¼«Öµµã
+            if ~abs(derifuncRight2{i}(j))<1e-6%ÅÅ³ıÎŞĞ§¼«Öµµã
+                if ~derifuncRight1{i}(j)%Èç¹ûÖµÖ±½ÓÎª0
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeRight=[extremeRight;pureFruitDataCell{i}.outerRight(j,1),derifuncRight2{i}(j)<0];
-                elseif j>1 && derifuncRight1{i}(j-1)*derifuncRight1{i}(j)<0%å¦‚æœä¸¤è€…ç¬¦å·ç›¸å
-                    %å­˜å‚¨æå€¼ç‚¹æ¨ªåæ ‡ï¼Œç¬¬äºŒåˆ—ä¸­æå°å€¼ä¸º0ï¼Œæå¤§å€¼ä¸º1
+                elseif j>1 && derifuncRight1{i}(j-1)*derifuncRight1{i}(j)<0%Èç¹ûÁ½Õß·ûºÅÏà·´
+                    %´æ´¢¼«Öµµãºá×ø±ê£¬µÚ¶şÁĞÖĞ¼«Ğ¡ÖµÎª0£¬¼«´óÖµÎª1
                     extremeRight=[extremeRight;abs(derifuncRight1{i}(j-1)/(derifuncRight1{i}(j)-derifuncRight1{i}(j-1)))*...
                         (pureFruitDataCell{i}.outerRight(j,1)-pureFruitDataCell{i}.outerRight(j-1,1))+...
                         pureFruitDataCell{i}.outerRight(j-1,1),derifuncRight2{i}(j)<0];
@@ -61,16 +61,16 @@ for i=1:size(pureFruitDataCell,2)
             end
         end
         
-        valueMax=[];%åˆå§‹åŒ–æå¤§å€¼ç‚¹é›†åˆ
-        valueMin=[];%åˆå§‹åŒ–æå°å€¼ç‚¹é›†åˆ
+        valueMax=[];%³õÊ¼»¯¼«´óÖµµã¼¯ºÏ
+        valueMin=[];%³õÊ¼»¯¼«Ğ¡Öµµã¼¯ºÏ
         for j=1:size(extremeRight,1)
             if extremeRight(j,2)
-                valueMax=[valueMax,abs(funcRight{i}(j)-funcMid{i}(j))];%æå¤§å€¼
+                valueMax=[valueMax,abs(funcRight{i}(j)-funcMid{i}(j))];%¼«´óÖµ
             else
-                valueMin=[valueMin,abs(funcRight{i}(j)-funcMid{i}(j))];%æå°å€¼
+                valueMin=[valueMin,abs(funcRight{i}(j)-funcMid{i}(j))];%¼«Ğ¡Öµ
             end
         end  
-        advRight(i)=mean(valueMax)-mean(valueMin);%è®¡ç®—ä¸¤è€…å¹³å‡å€¼çš„å·®ï¼Œå¦‚æœæ²¡æœ‰æå¤§å€¼æå°å€¼ï¼Œåˆ™ä¸ºNaN
+        advRight(i)=mean(valueMax)-mean(valueMin);%¼ÆËãÁ½ÕßÆ½¾ùÖµµÄ²î£¬Èç¹ûÃ»ÓĞ¼«´óÖµ¼«Ğ¡Öµ£¬ÔòÎªNaN
     end
 end
 
