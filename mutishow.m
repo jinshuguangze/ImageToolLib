@@ -29,7 +29,7 @@ function mutishow(varargin)
             if(iscell(varargin{i}))%如果元素是细胞数组，则遍历显示
                 for j=1:size(varargin{i},2)%遍历细胞数组
                     point=point+1;%指针移动
-                    subplot(row,columns,point);
+                    subplot(3,6,point);
                     imshow(varargin{i}{j});                    
                 end
             else%如果是普通数组，则直接显示

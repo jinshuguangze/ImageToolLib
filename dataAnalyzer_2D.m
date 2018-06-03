@@ -158,15 +158,17 @@ function dataCell = dataAnalyzer_2D(inputImage,scale)
     mod=0.75;%畸变系数
     for i=1:num%计算体积
         volume=0;%初始化体积
-        if advArray(i)<thresh%小于阈值的当做侧面处理
+        if advArray(i)<thresh
             for j=1:row
                 radius=dataCell{i}.diameter(j)/2;
                 volume=volume+(1+sqrt(2)/2)*mod*scale*pi*radius^2;%椭圆面积
+                %volume=volume+(1.05+0.975*sqrt(2)/2)*mod*scale*pi*radius^2;%椭圆面积
             end
-        else%大于阈值的当做正面处理
+        else
             for j=1:row
                 radius=dataCell{i}.diameter(j)/2;
                 volume=volume+(2-sqrt(2))/mod*scale*pi*radius^2;%椭圆面积
+                %volume=volume+(1.875-0.925*sqrt(2))/mod*scale*pi*radius^2;%椭圆面积
             end
         end
         dataCell{i}.volume=volume;%存储体积字段

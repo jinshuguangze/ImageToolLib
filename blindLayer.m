@@ -4,7 +4,7 @@ function [outputData,tform] = blindLayer(inputData,varargin)
 %range:当分层数为一时，判断为有效的阈值，范围是(0,,1]，如果不输入，则默认为0.9
 %outputData:已经分好层的细胞数组，每层均值是由小到大
 %tform:记录输出数据中，数据在输入数组中的原始位置，即inputData(:)中的下标
-%version:1.0.7
+%version:1.0.8
 %author:jinshuguangze
 %data:5/9/2018
 
@@ -33,7 +33,7 @@ function [outputData,tform] = blindLayer(inputData,varargin)
         return;
     else
         if metric(1)>range%如果第一次分层就超过阈值，则直接确定层数为一
-            index=1;
+            index=0;
         else%如果没超过阈值
             effect=find(metric==-inf | ~metric);%找到第一个-Inf或者0的位置
             if isempty(effect)%如果没有，则搜索所有

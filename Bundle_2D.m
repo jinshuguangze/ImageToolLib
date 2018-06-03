@@ -1,12 +1,13 @@
-originalImage=imread('C:/Users/Default/Desktop/data.CR2');%读取
+originalImage=imread('C:/Users/40825/Desktop/images/图41.CR2');%读取
 originalImage=autoRotating(originalImage);%自动旋转
 grayImage=rgb2gray(originalImage);%灰度化
 grayImage=autoCutting(grayImage);%自动切割多余成分
 grayImage=imrotate(grayImage,90);
 grayImage=autoCutting(grayImage);
 grayImage=imrotate(grayImage,-90);
-grayImage=medfilt2(grayImage);%中值滤波
-fruitCell=regionExpanding_Gray(grayImage,0.1,0,0,'method','None','operator','Low');%分割出单个角果
+%grayImage=medfilt2(grayImage);%中值滤波，非必须
+%分割出单个角果
+fruitCell=regionExpanding_Gray(grayImage,0.1,0,0,'method','Canny','edgeKeep','exclude','operator','Medium','outputSort','Reality');
 pureFruitCell=autoResecting(fruitCell);%去除角柄
 pureFruitCell=autoFixing(pureFruitCell);%将角果方向旋转至竖直
 pureFruitCell=autoResecting(pureFruitCell);%去除旋转误差

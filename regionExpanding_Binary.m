@@ -4,8 +4,9 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
 %outputNum:希望输出的至多图像个数，如果不输出或输入0，则会基于像素点个数下降梯度智能选择图像个数
 %method:识别边缘的方法，能使用‘Sobel’，‘Prewitt’，‘Roberts’，‘Log’，‘Zerocross’，’Canny‘，’Approxcanny‘这七种方法
 %operator:二维膨胀聚合算子，能使用’Low‘，’Medium‘，’High‘，’Extra‘四种等级来使用对应的内建算子
+%outputSort:输出图像的顺序，能使用’Succession‘(种子点检测顺序)，‘Quantity’(像素数量降序)，‘Reality’(真实排序)这三种方法
 %outputImages:输出图像细胞数组，每个元胞都是一个单例图像
-%version:1.0.2
+%version:1.0.7
 %author:jinshuguangze
 %data:5/23/2018
 %
@@ -36,11 +37,16 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
     %二维聚合算子，支持四种从小到大的范围，范围越小，运算越快，默认为’Low‘算子的四联通区域
     p.addParameter('operator','Low',@(x)any(validatestring(x,...
         {'Low','Medium','High','Extra'},'regionExpanding_Binary','operator',4)));
+    %输出图像顺序，支持种子点检测顺序，像素数量降序，真实排序这三种，默认为种子点检测顺序
+    p.addParameter('outputSort','Succession',@(x)any(validatestring(x,...
+        {'Succession','Quantity','Reality'},'regionExpanding_Gray','outputSort',7)));
+    
     p.parse(inputImage,varargin{:});%检测  
     inputImage=p.Results.inputImage;%赋值
     outputNum=p.Results.outputNum;
     method=p.Results.method;
     operator=p.Results.operator;
+    outputSort=p.Results.outputSort;
     
     %预处理
     inputImage=im2double(inputImage);%将输入图像转成双精度
@@ -67,7 +73,7 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
             neibor=[-1 0;0 1;1 0;0 -1];
     end
     
-    if strcmp(method,'None') || size(neibor,1)>8%对边缘算法进行判断，如果聚合算子过大，则不适合使用边界辅助判断
+    if strcmpi(method,'None') || size(neibor,1)>8%对边缘算法进行判断，如果聚合算子过大，则不适合使用边界辅助判断
         edgeImage=zeros(row,col);%不使用边界额外判定，edgeImgae是一幅0值图
     else
         edgeImage=edge(inputImage,method);%使用边界额外判定，初始化边缘表，是一幅逻辑图，其检测边缘为1
@@ -144,18 +150,19 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
         outputImages{1}=gather{1,1};
     else%有多幅图像，用冒泡排序降序排列
         outputImages={};%初始化输出图像细胞数组
+        gatherTemp=gather;%作为聚集数组的备份
         for i=1:count
             for j=2:count
-                if gather{j-1,2}<gather{j,2}
-                    tempA=gather{j-1,1};%交换两行
-                    tempB=gather{j-1,2};
-                    tempC=gather{j-1,3};
-                    gather{j-1,1}=gather{j,1};
-                    gather{j-1,2}=gather{j,2};
-                    gather{j-1,3}=gather{j,3};
-                    gather{j,1}=tempA;
-                    gather{j,2}=tempB;
-                    gather{j,3}=tempC;
+                if gatherTemp{j-1,2}<gatherTemp{j,2}
+                    tempA=gatherTemp{j-1,1};%交换两行
+                    tempB=gatherTemp{j-1,2};
+                    tempC=gatherTemp{j-1,3};
+                    gatherTemp{j-1,1}=gatherTemp{j,1};
+                    gatherTemp{j-1,2}=gatherTemp{j,2};
+                    gatherTemp{j-1,3}=gatherTemp{j,3};
+                    gatherTemp{j,1}=tempA;
+                    gatherTemp{j,2}=tempB;
+                    gatherTemp{j,3}=tempC;
                 end
             end
         end
@@ -166,29 +173,36 @@ function outputImages = regionExpanding_Binary(inputImage,varargin)
         else%如果没有规定输出图像数目，则选择梯度下降最陡的点之前的图像
             maxGrad=0;%初始化最大梯度
             for i=2:count
-                if maxGrad<gather{i-1,2}-gather{i,2}
-                    maxGrad=gather{i-1,2}-gather{i,2};
+                if maxGrad<=gatherTemp{i-1,2}-gatherTemp{i,2}
+                    maxGrad=gatherTemp{i-1,2}-gatherTemp{i,2};
                     indexMax=i-1;%记录此序号
                 end
             end
         end
         
         %根据排列顺序决定输出顺序
-        orderSign=[];%初始化顺序标号数组
-        for i=1:indexMax%提取所有输出图片的顺序标号
-            orderSign=[orderSign;gather{i,3}];
-        end
-        [rowCell,tform]=blindLayer(orderSign(:,1));%获取每行的坐标聚集
-        if isempty(rowCell) || isempty(tform)%如果排序失败，使用包含像素多少降序排列
-            outputImages=gather(1:indexMax,1);
-        else%排序成功，使用行列排序
-            for i=1:size(rowCell,2)%每一行的坐标迭代
-                for j=1:size(rowCell{i},1)%每一行的一列迭代
-                    [~,index]=min(orderSign(tform{i},2));%找到最小的列坐标的序号
-                    orderSign(tform{i}(index),2)=col+1;%将此坐标移出图外
-                    outputImages=[outputImages,gather{tform{i}(index),1}];%拼接输出图像细胞数组
+        switch upper(outputSort)
+            case 'SUCCESSION'%按照种子点检测顺序
+                
+            case 'QUANTITY'%按照内含像素数量输出
+                outputImages=gatherTemp(1:indexMax,1)';
+                return;
+                
+            case 'REALITY'%按照真实排序输出
+                orderSign=cell2mat(gatherTemp(1:indexMax,3));%提取所有输出图片的顺序标号
+                [rowCell,tform]=blindLayer(orderSign(:,1));%获取每行的坐标聚集       
+                if ~isempty(rowCell) && ~isempty(tform)%排序成功，使用行列排序，若是失败则自动使用种子点检测顺序
+                    for i=1:size(rowCell,2)%每一行的坐标迭代
+                        for j=1:size(rowCell{i},1)%每一行的一列迭代
+                            [~,index]=min(orderSign(tform{i},2));%找到最小的列坐标的序号
+                            orderSign(tform{i}(index),2)=col+1;%将此坐标移出图外
+                            outputImages=[outputImages,gatherTemp{tform{i}(index),1}];%拼接输出图像细胞数组
+                        end
+                    end
+                    return;
                 end
-            end
         end
+        
+        outputImages=gather(find(cell2mat(gather(:,2))>=gatherTemp{indexMax,2},indexMax),1)';%按照种子点检测顺序排序
     end
 end
